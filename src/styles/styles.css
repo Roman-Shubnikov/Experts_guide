@@ -2,6 +2,7 @@
 @import './bright_light.css';
 @import './vkcom.css';
 @import './fonts/main.css';
+@import './animations.css';
 
 .vkui__root, .vkui__portal-root{
     --font-common: "VK Regular", system-ui, "Helvetica Neue", Roboto, sans-serif;
@@ -64,4 +65,16 @@ div,p{
     color: #5C9CE6;
     margin-left: 4px;
     margin-top: 2px;
+}
+.heart_bottom {
+    margin-left: 8px;
+    margin-top: 2px;
+    color: #FF3347;
+}
+.heart_anim {
+    animation: pulse_heart 3s linear infinite;
+}
+.child_90 .vkuiSimpleCell__main .vkuiSimpleCell__content {
+    width: 90%;
+    display: block;
 }

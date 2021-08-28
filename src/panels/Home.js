@@ -11,32 +11,49 @@ import {
 	Div,
 	ScreenSpinner,
 	Counter,
+	usePlatform,
+	VKCOM,
+	Link,
+	Tabs,
+	HorizontalScroll,
+	TabsItem,
+	PanelHeader,
+	PanelHeaderButton,
+	FixedLayout,
+	IconButton,
+
 } from '@vkontakte/vkui';
 import {
-	Icon28FireOutline,
 	Icon56NotebookCheckOutline,
-	Icon28MoneyWadOutline,
-	Icon28MarketOutline,
-	Icon28WalletOutline,
-	Icon28StudOutline,
-	Icon28PodcastOutline,
-	Icon28LikeOutline,
-	Icon28Square4Outline,
-	Icon28TextLiveOutline,
 	Icon56ErrorTriangleOutline,
-	Icon28ArchiveOutline,
 	Icon56UsersOutline,
 	Icon16Verified,
+	Icon16Like,
+	Icon28BrainOutline,
+	Icon28VideoCircleOutline,
 } from '@vkontakte/icons'
 import experts_community from '../img/experts_community.png'
 import fun_experts_community from '../img/fun_experts_community.png'
-import { BASE_LINKS_MENU, GENERAL_LINKS, SCORE_POSITION_COLORS, TOPICS } from '../config';
-import { enumerate, getKeyByValue } from '../functions/tools';
+import {
+	GENERAL_LINKS, 
+	GROUP_DESCRIPTIONS, 
+	SCORE_POSITION_COLORS, 
+	TOPICS 
+} from '../config';
+import {
+	enumerate, 
+	getKeyByValue,
+} from '../functions/tools';
+import { ExpertMenu, MenuArticles, ProfileInfo } from '../components';
+import easterEggMusic from '../music/caramell.mp3'
 export default props => {
 	const [scoreData, setScoreData] = useState(null);
-	const linksConstructor = (base_link) => {
-		return base_link + props.activeTopic + BASE_LINKS_MENU.suffix;
-	}
+	const [heartClicks, setHeartClicks] = useState(0);
+	const [showPlayer, setShowPlayer] = useState(false);
+	const [audio, setAudio] = useState(null);
+	const [audioPaused, setAudioPaused] = useState(true);
+	const platform = usePlatform();
+	const setActiveTopic = props.setActiveTopic;
 	const scoreGenerator = () => {
 		let render_score = [];
 		for(let i=0;i<scoreData[props.activeTopic].length;i++){
@@ -61,13 +78,66 @@ export default props => {
 		}
 		return render_score;
 	}
+	const genTabs = () => {
+		let render_tabs = [];
+		let topics = props.getActualTopic();
+		for(let i=0;i<topics.length;i++){
+			let current_topic = getKeyByValue(TOPICS, topics[i].topic);
+			render_tabs.push(
+				<TabsItem
+				key={current_topic}
+				onClick={() => setActiveTopic(current_topic)}
+				selected={current_topic === props.activeTopic}>
+					{topics[i].topic}
+				</TabsItem>
+			)
+		}
+		return(<>
+			<div style={{height: 50}}></div>
+			<FixedLayout className='mobile_tabs' vertical="top" filled>
+				<Tabs mode='buttons'>
+					<HorizontalScroll>
+						{render_tabs}
+					</HorizontalScroll>
+				</Tabs>
+			</FixedLayout>
+			
+		</>)
+		
+	}
+	const playAudio = () => {
+		if(!audio.paused){
+			audio.pause()
+		} else {
+			audio.volume = 0.2;
+			const audioPromise = audio.play()
+			if (audioPromise !== undefined) {
+			audioPromise
+				.then(_ => {
+				// autoplay started
+				
+				})
+				.catch(err => {
+				// catch dom exception
+				console.info(err)
+				})
+			}
+		}
+		setAudioPaused(audio.paused);
+	}
+	
+	const easterEggCounter = () => {
+		if(heartClicks > 10) {setShowPlayer(true);return};
+		setHeartClicks(prev => prev+1)
+	}
 	useEffect(() => {
 		if(props.isExpert){
+			setAudio(new Audio(easterEggMusic));
 			fetch('https://cors.roughs.ru/https://c3po.ru/api/experts.getTop?token=9h3d83h8r8ehe9xehd93u')
 			.then(data => data.json())
 			.then(data => {
 				let sliced_data = {}
-				for(let i =0; i<data.keys.length;i++){
+				for(let i =0; i<data.keys.length;i++) {
 					sliced_data[getKeyByValue(TOPICS, data.keys[i])] = data[data.keys[i]].slice(0,3);
 				}
 				sliced_data['users_data'] = data.users_data;
@@ -79,6 +149,14 @@ export default props => {
 	}, [props.isExpert])
 	return(
 	<Panel id={props.id}>
+		{platform !== VKCOM && <PanelHeader
+		left={
+			<PanelHeaderButton
+			href={GENERAL_LINKS.experts_card}
+			target="_blank" rel="noopener noreferrer">
+				<Icon28BrainOutline />
+			</PanelHeaderButton>
+		}>{props.isExpert === null ? '...' : props.isExpert ? 'Тематики' : 'Доступ закрыт'}</PanelHeader>}
 		{props.isExpert === null ? <ScreenSpinner /> : props.isExpert || 
 		<Group>
 			<Placeholder
@@ -98,9 +176,20 @@ export default props => {
 		
 		}
 		{props.isExpert === null ? <ScreenSpinner /> : props.isExpert &&
-		<>{getKeyByValue(TOPICS, props.userInfo.topic_name) === props.activeTopic ? <Group>
+		<>
+		{platform !== VKCOM && 
+		<>
+		{genTabs()}
+		<Group>
+			<ProfileInfo 
+			vkInfoUser={props.vkInfoUser}
+			userInfo={props.userInfo}
+			actsWeek={props.actsWeek} />
+		</Group>
+		</>}
+		{getKeyByValue(TOPICS, props.userInfo.topic_name) === props.activeTopic ? <Group>
 			<Placeholder
-			icon={<Icon56NotebookCheckOutline />}
+			icon={platform === VKCOM && <Icon56NotebookCheckOutline />}
 			action={<Button
 					size='m'
 					href={GENERAL_LINKS.community}
@@ -114,47 +203,11 @@ export default props => {
 		</Group> :
 		<Group>
 			<Placeholder
-			icon={<Icon56UsersOutline />}>
+			icon={platform === VKCOM && <Icon56UsersOutline />}>
 					Если ваш знакомый хочет курировать данный раздел, попросите его подать заявку через сообщения сообщества
 			</Placeholder>
 		</Group>}
-		<Group>
-			<SimpleCell
-			before={<Icon28FireOutline />}
-			expandable
-			target="_blank" rel="noopener noreferrer"
-			href={GENERAL_LINKS.prometeus}>
-				Об огне Прометея
-			</SimpleCell>
-			<SimpleCell
-			expandable
-			target="_blank" rel="noopener noreferrer"
-			href={GENERAL_LINKS.scores}
-			before={<Icon28MoneyWadOutline />}>
-				Баллы экспертов и магазин
-			</SimpleCell>
-			<SimpleCell
-			expandable
-			target="_blank" rel="noopener noreferrer"
-			href={GENERAL_LINKS.market}
-			before={<Icon28MarketOutline />}>
-				Магазин
-			</SimpleCell>
-			<SimpleCell
-			expandable
-			target="_blank" rel="noopener noreferrer"
-			href={GENERAL_LINKS.billing}
-			before={<Icon28WalletOutline />}>
-				Детализация счета
-			</SimpleCell>
-			<SimpleCell
-			expandable
-			target="_blank" rel="noopener noreferrer"
-			href={GENERAL_LINKS.ideas_for_guide}
-			before={<Icon28ArchiveOutline />}>
-				Предложить идею для справочника
-			</SimpleCell>
-		</Group>
+		<ExpertMenu />
 		<Group header={<SimpleCell disabled description='Обновлен в течении недели'>Рейтинг</SimpleCell>}>
 			{scoreData === null ? <ScreenSpinner />:
 			scoreData && scoreGenerator()}
@@ -174,14 +227,14 @@ export default props => {
 					Перейти в сообщество
 				</Button>
 			}
-			caption='Закрытый неофициальный клуб экспертов ВКонтакте. Здесь
-			происходит вся магия: мы публикуем информационный контент
-			для экспертов, чтобы улучшить ценность контент-индустрии
-			курируемой тематической ленты.'>
+			caption={platform === VKCOM ? 
+			GROUP_DESCRIPTIONS.pc.fun 
+			: 
+			GROUP_DESCRIPTIONS.mobile.fun}>
 				Клуб экспертов ВКонтакте
 			</RichCell>
 			:
-			<RichCell
+			platform === VKCOM && <RichCell
 			multiline
 			disabled
 			before={<Avatar size={72} src={experts_community}></Avatar>}
@@ -193,55 +246,38 @@ export default props => {
 					Подать заявку в сообщество
 				</Button>
 			}
-			caption='Вступите в ряды экспертов ВКонтакте и отмечайте лучшие публикации
-			своей тематической ленты.'>
+			caption={GROUP_DESCRIPTIONS.pc.official}>
 				<div style={{display: 'flex'}}>Эксперты ВКонтакте <Icon16Verified className='verified' /></div>
 			</RichCell>}
 		</Group>
 		{props.isExpert === null ? <ScreenSpinner /> : props.isExpert &&
 		<Group>
-			<SimpleCell
-			expandable
-			target="_blank" rel="noopener noreferrer"
-			href={linksConstructor(BASE_LINKS_MENU.interactive)}
-			before={<Icon28StudOutline />}>
-				Интерактив
-			</SimpleCell>
-			<SimpleCell
-			expandable
-			target="_blank" rel="noopener noreferrer"
-			href={linksConstructor(BASE_LINKS_MENU.podcasts)}
-			before={<Icon28PodcastOutline />}>
-				Подкасты
-			</SimpleCell>
-			<SimpleCell
-			expandable
-			target="_blank" rel="noopener noreferrer"
-			href={linksConstructor(BASE_LINKS_MENU.materials)}
-			before={<Icon28LikeOutline />}>
-				Полезный материал
-			</SimpleCell>
-			<SimpleCell
-			expandable
-			target="_blank" rel="noopener noreferrer"
-			href={linksConstructor(BASE_LINKS_MENU.plots)}
-			before={<Icon28Square4Outline />}>
-				Сюжеты
-			</SimpleCell>
-			<SimpleCell
-			expandable
-			disabled
-			style={{opacity: '.4'}}
-			before={<Icon28TextLiveOutline />}>
-				Репортажи
-			</SimpleCell>
+			<MenuArticles 
+			activeTopic={props.activeTopic} />
 			<Div>
 				<Footer style={{textAlign: 'left', margin: 0}}>
 					Если у вас появилась ошибка «Вы не можете просматривать стену этого сообщества» перейдите в клуб экспертов ВКонтакте и подайте заявку.
 				</Footer>
 			</Div>
 			
+			
 		</Group>}
+		<Group>
+			<Div style={{display: 'flex', justifyContent: 'center', position: 'relative'}}>
+				<Link>Клуб экспертов ВКонтакте</Link>
+				<Icon16Like 
+				onClick={() => easterEggCounter()}
+				style={heartClicks ? {transform: `scale(${1 + heartClicks/10})`} : {}} 
+				className={heartClicks === 0 ? 'heart_bottom heart_anim' : 'heart_bottom'} />
+				{showPlayer && <IconButton
+				style={{position: 'absolute', right: '10%', bottom: '2%'}}
+				onClick={() => playAudio()}>
+					<Icon28VideoCircleOutline
+						style={{color:'var(--accent)'}}
+						className={audio ? audioPaused ? '' : 'heart_anim' : ''} />
+				</IconButton>}
+			</Div>
+		</Group>
 
 	</Panel>
 	);

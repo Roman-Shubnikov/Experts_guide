@@ -1,7 +1,9 @@
+import React from 'react';
+
 import {
 	Icon28PaletteOutline,
     Icon28BasketballBallOutline,
-    Icon28PictureStackOutline,
+    Icon28CameraOutline,
     Icon28MusicOutline,
     Icon28PlaneOutline,
     Icon28MovieReelOutline,
@@ -11,6 +13,7 @@ import {
     Icon28AccessibilityOutline,
     Icon28LaptopOutline,
 } from '@vkontakte/icons'
+
 export const GROUP_EXPERTS_ID = 182611749;
 export const GROUP_FAN_EXPERTS_ID = 206651170;
 
@@ -25,6 +28,7 @@ export const GENERAL_LINKS = {
     more_about_experts: 'https://vk.com/blog/themefeeds',
     ideas_for_guide: 'https://vk.com/topic-206651170_48189045',
     who_experts: 'https://vk.com/faq18060',
+    theme_feed: 'https://vk.com/blog/themefeeds',
 }
 
 export const BASE_LINKS_MENU = {
@@ -32,6 +36,7 @@ export const BASE_LINKS_MENU = {
     podcasts: 'https://vk.com/wall-206651170?q=%23podcast.',
     materials: 'https://vk.com/wall-206651170?q=%23material.',
     plots: 'https://vk.com/wall-206651170?q=%23plots.',
+    music: 'https://vk.com/wall-206651170?q=%23compilation.',
     suffix: '%40clubvkexperts',
 }
 export const TOPICS = {
@@ -55,7 +60,7 @@ export const ICON_TOPICS = [
     {icon: Icon28PaletteOutline, topic: 'Арт', color: '#FF3347'},
     {icon: Icon28BasketballBallOutline, topic: 'Спорт', color: '#FFA000'},
     {icon: Icon28LaptopOutline, topic: 'IT', color: '#3F8AE0'},
-    {icon: Icon28PictureStackOutline, topic: 'Фото', color: '#3F8AE0'},
+    {icon: Icon28CameraOutline, topic: 'Фото', color: '#3F8AE0'},
     {icon: Icon28MusicOutline, topic: 'Музыка', color: '#AA65F0'},
     {icon: Icon28PlaneOutline, topic: 'Туризм', color: '#FF3347'},
     {icon: Icon28MovieReelOutline, topic: 'Кино', color: '#76787A'},
@@ -70,3 +75,23 @@ export const SCORE_POSITION_COLORS = [
     '#B0BEC5',
     '#FFA726',
 ]
+
+export const GROUP_DESCRIPTIONS = {
+    pc: {
+        fun: <span>Закрытый неофициальный клуб экспертов ВКонтакте. Здесь
+        происходит вся магия: мы публикуем информационный контент
+        для экспертов, чтобы улучшить ценность контент-индустрии
+        курируемой тематической ленты.</span>,
+
+    official: <span>
+            Вступите в ряды экспертов ВКонтакте и отмечайте лучшие публикации
+			своей тематической ленты.
+        </span>
+    },
+    mobile: {
+        fun: 'На страже оригинального контента',
+        official: '',
+    }
+    
+
+}

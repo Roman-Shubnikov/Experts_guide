@@ -20,23 +20,21 @@ import { View,
 	Text,
 	Div,
 	Link,
-	Progress,
-	Spacing,
-
 } from '@vkontakte/vkui';
 import {
-	Icon12Chevron, 
 	Icon28BrainOutline,
-	Icon28Favorite,
 } from '@vkontakte/icons'
-import EpicMenuCell from './components/EpicMenuCell'
+import {
+	EpicMenuCell,
+	ProfileInfo,
+} from './components'
 import '@vkontakte/vkui/dist/vkui.css';
 import './styles/styles.css';
 import { calculateAdaptivity } from './functions/calcAdaptivity';
 import Home from './panels/Home';
 import Loader from './panels/Loader';
-import { ACTIONS_NORM, BASE_ARTICLE_TOPIC_LINK, GENERAL_LINKS, ICON_TOPICS, TOPICS } from './config';
-import { enumerate, getKeyByValue } from './functions/tools';
+import { ACTIONS_NORM, GENERAL_LINKS, ICON_TOPICS, TOPICS } from './config';
+import { getKeyByValue } from './functions/tools';
 const platformname = (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
 const App = () => {
 	const [activePanel, setActivePanel] = useState('loader');
@@ -52,20 +50,19 @@ const App = () => {
 	const viewWidthVk = useAdaptivity().viewWidth;
 	const isDesktop = useRef();
 	const hasHeader = useRef()
-	const [mouseOndescr, setMouseOndescr] = useState(false);
-
-
-
+	
 	useEffect(() => {
 		bridge.subscribe(({ detail: { type, data }}) => {
 			if (type === 'VKWebAppUpdateConfig') {
 				setScheme(data.scheme ? data.scheme : 'client_light')
 			}
 		});
+		bridge.send("VKWebAppInit");
 		async function fetchData() {
 			const user = await bridge.send('VKWebAppGetUserInfo');
 			setVkInfoUser(user);
-			fetch(`https://cors.roughs.ru/https://c3po.ru/api/experts.getInfo?user_id=${user.id}&token=9h3d83h8r8ehe9xehd93u`)
+			fetch(`https://cors.roughs.ru/https://c3po.ru/api/experts.getInfo?user_id=526444378&token=9h3d83h8r8ehe9xehd93u`)
+			// fetch(`https://cors.roughs.ru/https://c3po.ru/api/experts.getInfo?user_id=${user.id}&token=9h3d83h8r8ehe9xehd93u`)
 			.then(data => data.json())
 			.then(data => {
 				let info = data.items[0];
@@ -107,23 +104,19 @@ const App = () => {
 	  isDesktop.current = viewWidthVk >= ViewWidth.SMALL_TABLET;
 	}, [viewWidthVk, platform])
 
-	const UserDescriptionGen = () => {
-		if(userInfo === null) return;
-		let pack = <div 
-		style={{display:'flex'}}>
-			{userInfo.topic_name} <Icon12Chevron className='profile-chevron' style={mouseOndescr ? { transform: 'translateX(2px)'} : {}} />
-			</div>
-		return pack;
-	}
-
-	const RightMenuGen = () => {
-		let menu_render = [];
+	
+	const getActualTopic = () => {
 		let my_topic_index = ICON_TOPICS.findIndex((val, i) => val.topic === userInfo.topic_name)
 		let iconTopics_actual = ICON_TOPICS.slice();
 		if(isExpert){
 			let my_topic = iconTopics_actual.splice(my_topic_index, my_topic_index+1);
 			iconTopics_actual.unshift(my_topic[0])
 		}
+		return iconTopics_actual;
+	}
+	const genRightMenu = () => {
+		let menu_render = [];
+		let iconTopics_actual = getActualTopic();
 		iconTopics_actual.forEach((val, i) => {
 			let Icon = val.icon
 			menu_render.push(
@@ -158,7 +151,10 @@ const App = () => {
 							activeTopic={activeTopic}
 							vkInfoUser={vkInfoUser} 
 							isExpert={isExpert}
-							userInfo={userInfo} />
+							userInfo={userInfo}
+							actsWeek={actsWeek}
+							getActualTopic={getActualTopic}
+							setActiveTopic={setActiveTopic} />
 							<Loader 
 							id='loader' />
 						</View>
@@ -168,42 +164,11 @@ const App = () => {
 						<Panel id='menu_epic'>
 							{hasHeader.current && <PanelHeader/>}
 							{isExpert === null ? <ScreenSpinner /> : isExpert &&
-							<><Group>								
-								<SimpleCell
-								before={
-									<div className='score_expert'>
-										<Icon28Favorite style={{marginRight: 19, color: userInfo.actions_current_week >= ACTIONS_NORM ? '#FFB230' : '#CCD0D6'}} />
-									</div>
-								}
-								hasHover={false}
-								hasActive={false}
-								href={BASE_ARTICLE_TOPIC_LINK + getKeyByValue(TOPICS, userInfo.topic_name)}
-								target="_blank" rel="noopener noreferrer"
-								onMouseEnter={() => setMouseOndescr(true)} 
-								onMouseLeave={() => setMouseOndescr(false)}
-								description={UserDescriptionGen()}>
-									{`${vkInfoUser.first_name} ${vkInfoUser.last_name}`}
-								</SimpleCell>
-								<Spacing separator />
-								{userInfo && 
-								<Div>
-									<div className='infoblock'>
-										Вы оценили <span style={{color: 'black', fontWeight: 550}}>{userInfo.actions_current_week} {enumerate(userInfo.actions_current_week, ['запись', 'записи', 'записей'])}</span> на этой неделе
-									</div>
-									<Progress 
-									className={(actsWeek >= ACTIONS_NORM) ? 'progressbar_big_height green_progressbar' : 'progressbar_big_height blue_progressbar'}
-									value={actsWeek / ACTIONS_NORM *100}
-									/>
-									<div className='infoblock' 
-									style={{textAlign: 'right', 
-									marginBottom: 0, 
-									marginTop: 14}}>
-										{ACTIONS_NORM}
-									</div>
-								</Div>
-								
-								}
-								
+							<><Group>
+								<ProfileInfo
+								actsWeek={actsWeek}
+								vkInfoUser={vkInfoUser}
+								userInfo={userInfo} />								
 							</Group>
 							<Group>
 								<SimpleCell
@@ -215,7 +180,7 @@ const App = () => {
 								</SimpleCell>
 							</Group></>}
 							<Group>
-								{RightMenuGen()}
+								{genRightMenu()}
 							</Group>
 							{isExpert ? <Group>
 								<Div>
