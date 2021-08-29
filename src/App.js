@@ -61,8 +61,8 @@ const App = () => {
 		async function fetchData() {
 			const user = await bridge.send('VKWebAppGetUserInfo');
 			setVkInfoUser(user);
-			fetch(`https://cors.roughs.ru/https://c3po.ru/api/experts.getInfo?user_id=526444378&token=9h3d83h8r8ehe9xehd93u`)
-			// fetch(`https://cors.roughs.ru/https://c3po.ru/api/experts.getInfo?user_id=${user.id}&token=9h3d83h8r8ehe9xehd93u`)
+			// fetch(`https://c3po.ru/api/experts.getInfo?user_id=526444378&` + window.location.search.replace('?', ''))
+			fetch(`https://c3po.ru/api/experts.getInfo?user_id=${user.id}&` + window.location.search.replace('?', ''))
 			.then(data => data.json())
 			.then(data => {
 				let info = data.items[0];

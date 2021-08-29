@@ -18,7 +18,9 @@ export const GROUP_EXPERTS_ID = 182611749;
 export const GROUP_FAN_EXPERTS_ID = 206651170;
 
 export const GENERAL_LINKS = {
-    community: 'https://vk.me/clubvkexperts',
+    group_fan: 'https://vk.com/clubvkexperts',
+    group_official_community: 'https://vk.me/vkexperts',
+    group_fan_community: 'https://vk.me/clubvkexperts',
     scores: 'https://vk.com/@vkexperts-shop-and-incentive-points',
     experts_card: 'https://vk.com/app7171491',
     market: 'https://vk.com/market-182611749',

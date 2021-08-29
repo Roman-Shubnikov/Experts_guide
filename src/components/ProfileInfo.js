@@ -13,6 +13,7 @@ import {
     Icon12Chevron,
     Icon28Favorite,
     Icon28InfoCircleOutline,
+    Icon16Crown,
 } from "@vkontakte/icons";
 import {
     ACTIONS_NORM, 
@@ -46,12 +47,12 @@ export default ({userInfo, actsWeek, vkInfoUser}) => {
 	}
     const genMainChild = () => {
         if(platform === VKCOM){
-            return `${vkInfoUser.first_name} ${vkInfoUser.last_name}`
+            return <div style={{display: 'flex'}}>{`${vkInfoUser.first_name} ${vkInfoUser.last_name}`} {userInfo.is_best && <Icon16Crown className='profile-crown' />}</div>
         } else {
             return(
                 <div style={{marginBottom: 12, width: '100%'}}>
-                    <div style={{marginBottom: 12}}>
-                        Вы эксперт
+                    <div style={{marginBottom: 12, display: 'flex'}}>
+                        Вы эксперт {userInfo.is_best && <Icon16Crown className='profile-crown' />}
                     </div>
                     <Progress 
                     style={{width: '100%'}}

@@ -78,3 +78,8 @@ div,p{
     width: 90%;
     display: block;
 }
+.profile-crown {
+    margin-top: 2px;
+    margin-left: 5px;
+    color: #FFA000;
+}

@@ -31,6 +31,8 @@ import {
 	Icon16Like,
 	Icon28BrainOutline,
 	Icon28VideoCircleOutline,
+	Icon28DoorArrowLeftOutline,
+	Icon16Crown,
 } from '@vkontakte/icons'
 import experts_community from '../img/experts_community.png'
 import fun_experts_community from '../img/fun_experts_community.png'
@@ -45,7 +47,7 @@ import {
 	getKeyByValue,
 } from '../functions/tools';
 import { ExpertMenu, MenuArticles, ProfileInfo } from '../components';
-import easterEggMusic from '../music/caramell.mp3'
+import easterEggMusic from '../music/riversolo.mp3'
 export default props => {
 	const [scoreData, setScoreData] = useState(null);
 	const [heartClicks, setHeartClicks] = useState(0);
@@ -62,7 +64,6 @@ export default props => {
 			let name = user_data.first_name + " " + user_data.last_name;
 			let topic_name = user_info.topic_name;
 			let actions_current_week = user_info.actions_current_week;
-			
 			render_score.push(
 				<SimpleCell
 				expandable
@@ -72,7 +73,7 @@ export default props => {
 				before={<Avatar src={user_data.photo_max_orig} />}
 				description={topic_name + ' · ' + actions_current_week.toLocaleString() + ' ' + enumerate(actions_current_week, ['оценённый', 'оценённых', 'оценённых'])+' постов'}
 				after={<Counter style={{background: SCORE_POSITION_COLORS[i]}}>{i+1}</Counter>}>
-					{name}
+					<div style={{display: 'flex'}}>{name} {user_info.is_best && <Icon16Crown className='profile-crown' />}</div>
 				</SimpleCell>
 			)
 		}
@@ -131,9 +132,9 @@ export default props => {
 		setHeartClicks(prev => prev+1)
 	}
 	useEffect(() => {
+		setAudio(new Audio(easterEggMusic));
 		if(props.isExpert){
-			setAudio(new Audio(easterEggMusic));
-			fetch('https://cors.roughs.ru/https://c3po.ru/api/experts.getTop?token=9h3d83h8r8ehe9xehd93u')
+			fetch('https://c3po.ru/api/experts.getTop?' + window.location.search.replace('?', ''))
 			.then(data => data.json())
 			.then(data => {
 				let sliced_data = {}
@@ -151,10 +152,16 @@ export default props => {
 	<Panel id={props.id}>
 		{platform !== VKCOM && <PanelHeader
 		left={
-			<PanelHeaderButton
+			props.isExpert ? <PanelHeaderButton
 			href={GENERAL_LINKS.experts_card}
 			target="_blank" rel="noopener noreferrer">
 				<Icon28BrainOutline />
+			</PanelHeaderButton>
+			: 
+			<PanelHeaderButton
+			href={GENERAL_LINKS.group_official_community}
+			target="_blank" rel="noopener noreferrer">
+				<Icon28DoorArrowLeftOutline />
 			</PanelHeaderButton>
 		}>{props.isExpert === null ? '...' : props.isExpert ? 'Тематики' : 'Доступ закрыт'}</PanelHeader>}
 		{props.isExpert === null ? <ScreenSpinner /> : props.isExpert || 
@@ -162,13 +169,14 @@ export default props => {
 			<Placeholder
 			icon={<Icon56ErrorTriangleOutline />}
 			action={
-				<Button
-				size='m'
-				mode='tertiary'
-				href={GENERAL_LINKS.who_experts}
-				target="_blank" rel="noopener noreferrer">
-					Кто такие эксперты?
-				</Button>
+					<Button
+					size='m'
+					mode='tertiary'
+					href={GENERAL_LINKS.who_experts}
+					target="_blank" rel="noopener noreferrer">
+						Кто такие эксперты?
+					</Button>
+				
 			}>
 				Вы не являетесь экспертом ВКонтакте
 			</Placeholder>
@@ -192,7 +200,7 @@ export default props => {
 			icon={platform === VKCOM && <Icon56NotebookCheckOutline />}
 			action={<Button
 					size='m'
-					href={GENERAL_LINKS.community}
+					href={GENERAL_LINKS.group_fan_community}
 					target="_blank" rel="noopener noreferrer"
 					mode='primary'>
 						Да, хочу курировать тематику
@@ -214,33 +222,35 @@ export default props => {
 
 		</Group></>}
 
-		<Group>
+		
 			{props.isExpert === null ? <ScreenSpinner /> : props.isExpert ?
-			<RichCell
-			disabled
-			multiline
-			before={<Avatar size={72} src={fun_experts_community}></Avatar>}
-			actions={
-				<Button size='m'
-				href='https://vk.com/clubvkexperts'
-				target="_blank" rel="noopener noreferrer">
-					Перейти в сообщество
-				</Button>
-			}
-			caption={platform === VKCOM ? 
-			GROUP_DESCRIPTIONS.pc.fun 
-			: 
-			GROUP_DESCRIPTIONS.mobile.fun}>
-				Клуб экспертов ВКонтакте
-			</RichCell>
+			<Group>
+				<RichCell
+				disabled
+				multiline
+				before={<Avatar size={72} src={fun_experts_community}></Avatar>}
+				actions={
+					<Button size='m'
+					href={GENERAL_LINKS.group_fan}
+					target="_blank" rel="noopener noreferrer">
+						Перейти в сообщество
+					</Button>
+				}
+				caption={platform === VKCOM ? 
+				GROUP_DESCRIPTIONS.pc.fun 
+				: 
+				GROUP_DESCRIPTIONS.mobile.fun}>
+					Клуб экспертов ВКонтакте
+				</RichCell>
+			</Group>
 			:
-			platform === VKCOM && <RichCell
+			platform === VKCOM && <Group><RichCell
 			multiline
 			disabled
 			before={<Avatar size={72} src={experts_community}></Avatar>}
 			actions={
 				<Button size='m'
-				href='https://vk.me/vkexperts'
+				href={GENERAL_LINKS.group_official_community}
 				target="_blank" rel="noopener noreferrer"
 				>
 					Подать заявку в сообщество
@@ -248,8 +258,7 @@ export default props => {
 			}
 			caption={GROUP_DESCRIPTIONS.pc.official}>
 				<div style={{display: 'flex'}}>Эксперты ВКонтакте <Icon16Verified className='verified' /></div>
-			</RichCell>}
-		</Group>
+			</RichCell></Group>}
 		{props.isExpert === null ? <ScreenSpinner /> : props.isExpert &&
 		<Group>
 			<MenuArticles 
@@ -265,17 +274,17 @@ export default props => {
 		<Group>
 			<Div style={{display: 'flex', justifyContent: 'center', position: 'relative'}}>
 				<Link>Клуб экспертов ВКонтакте</Link>
-				<Icon16Like 
-				onClick={() => easterEggCounter()}
-				style={heartClicks ? {transform: `scale(${1 + heartClicks/10})`} : {}} 
-				className={heartClicks === 0 ? 'heart_bottom heart_anim' : 'heart_bottom'} />
-				{showPlayer && <IconButton
-				style={{position: 'absolute', right: '10%', bottom: '2%'}}
+				
+				{showPlayer ? <IconButton
 				onClick={() => playAudio()}>
 					<Icon28VideoCircleOutline
 						style={{color:'var(--accent)'}}
 						className={audio ? audioPaused ? '' : 'heart_anim' : ''} />
-				</IconButton>}
+				</IconButton>:
+				<Icon16Like 
+				onClick={() => easterEggCounter()}
+				style={heartClicks ? {transform: `scale(${1 + heartClicks/10})`} : {}} 
+				className={heartClicks === 0 ? 'heart_bottom heart_anim' : 'heart_bottom'} />}
 			</Div>
 		</Group>
 
