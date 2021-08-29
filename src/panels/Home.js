@@ -71,7 +71,7 @@ export default props => {
 				target="_blank" rel="noopener noreferrer"
 				key={user_info.user_id}
 				before={<Avatar src={user_data.photo_max_orig} />}
-				description={topic_name + ' · ' + actions_current_week.toLocaleString() + ' ' + enumerate(actions_current_week, ['оценённый', 'оценённых', 'оценённых'])+' постов'}
+				description={topic_name + ' · ' + actions_current_week.toLocaleString() + ' ' + enumerate(actions_current_week, ['пост', 'поста', 'постов'])}
 				after={<Counter style={{background: SCORE_POSITION_COLORS[i]}}>{i+1}</Counter>}>
 					<div style={{display: 'flex'}}>{name} {user_info.is_best && <Icon16Crown className='profile-crown' />}</div>
 				</SimpleCell>
