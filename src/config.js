@@ -31,6 +31,7 @@ export const GENERAL_LINKS = {
     ideas_for_guide: 'https://vk.com/topic-206651170_48189045',
     who_experts: 'https://vk.com/faq18060',
     theme_feed: 'https://vk.com/blog/themefeeds',
+    orders: 'https://vk.com/market?act=cart&owner_id=-182611749',
 }
 
 export const BASE_LINKS_MENU = {

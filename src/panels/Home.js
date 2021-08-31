@@ -21,6 +21,7 @@ import {
 	PanelHeaderButton,
 	FixedLayout,
 	IconButton,
+	Spacing,
 
 } from '@vkontakte/vkui';
 import {
@@ -219,6 +220,18 @@ export default props => {
 		<Group header={<SimpleCell disabled description='Обновлен в течении недели'>Рейтинг</SimpleCell>}>
 			{scoreData === null ? <ScreenSpinner />:
 			scoreData && scoreGenerator()}
+			<Spacing separator />
+			<SimpleCell
+				disabled
+				before={<Avatar src={props.vkInfoUser.photo_max_orig} />}
+				description={props.userInfo.topic_name + ' · ' + 
+				props.userInfo.actions_current_week.toLocaleString() + 
+				' ' + enumerate(props.userInfo.actions_current_week, ['пост', 'поста', 'постов'])}
+				after={<Counter style={{background: '#70B2FF'}}>{props.userInfo.position}</Counter>}>
+					<div style={{display: 'flex'}}>
+						{`${props.vkInfoUser.first_name} ${props.vkInfoUser.last_name}`} {props.userInfo.is_best && <Icon16Crown className='profile-crown' />}
+					</div>
+			</SimpleCell>
 
 		</Group></>}
 

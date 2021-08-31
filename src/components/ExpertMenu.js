@@ -3,6 +3,7 @@ import {
     usePlatform,
     VKCOM,
     Group,
+    Spacing,
 
 } from "@vkontakte/vkui"
 import {
@@ -12,6 +13,7 @@ import {
 	Icon28WalletOutline,
 	Icon28ArchiveOutline,
 	Icon28ListOutline,
+    Icon28MortarOutline,
 } from '@vkontakte/icons'
 import {
     GENERAL_LINKS, 
@@ -24,6 +26,7 @@ const menuBlocs = [
         icon: Icon28FireOutline, 
         link: GENERAL_LINKS.prometeus,
         color: '#F15C44',
+        separator: true,
     },
     {
         title: 'Баллы экспертов и магазин', 
@@ -38,10 +41,17 @@ const menuBlocs = [
         color: '#FFA000',
     },
     {
+        title: 'Заказы', 
+        icon: Icon28MortarOutline, 
+        link: GENERAL_LINKS.orders,
+        color: '#FFA000',
+    },
+    {
         title: 'Детализация счета', 
         icon: Icon28WalletOutline, 
         link: GENERAL_LINKS.billing,
         color: '#3888F1',
+        separator: true,
     },
     {
         title: 'Предложить идею для справочника', 
@@ -62,17 +72,20 @@ const specialMenuNotVKCOM = [
 
 export default props => {
     const platform = usePlatform();
+    const isVKCOM = platform === VKCOM;
     return(
         <Group>{
         menuBlocs.map((Val, i) => 
-        <CellMenu
+        <><CellMenu
         key={i}
         href={Val.link}
-        color={platform !== VKCOM ? Val.color : 'var(--accent)'}
+        color={!isVKCOM ? Val.color : 'var(--accent)'}
         Icon={Val.icon}>
             {Val.title}
-        </CellMenu>)}
-        {platform !== VKCOM && specialMenuNotVKCOM.map((Val, i) => 
+        </CellMenu>
+        {Val.separator && isVKCOM && <Spacing key={i+ 'sep'} separator />}
+        </>)}
+        {!isVKCOM && specialMenuNotVKCOM.map((Val, i) => 
         <CellMenu
         key={i}
         href={Val.link}
