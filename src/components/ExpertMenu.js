@@ -76,15 +76,15 @@ export default props => {
     return(
         <Group>{
         menuBlocs.map((Val, i) => 
-        <><CellMenu
-        key={i}
-        href={Val.link}
-        color={!isVKCOM ? Val.color : 'var(--accent)'}
-        Icon={Val.icon}>
-            {Val.title}
-        </CellMenu>
-        {Val.separator && isVKCOM && <Spacing key={i+ 'sep'} separator />}
-        </>)}
+        <React.Fragment key={i}>
+            <CellMenu
+            href={Val.link}
+            color={!isVKCOM ? Val.color : 'var(--accent)'}
+            Icon={Val.icon}>
+                {Val.title}
+            </CellMenu>
+            {Val.separator && isVKCOM && <Spacing separator />}
+        </React.Fragment>)}
         {!isVKCOM && specialMenuNotVKCOM.map((Val, i) => 
         <CellMenu
         key={i}

@@ -50,6 +50,9 @@ div,p{
 .vkuiProgress__in{
     transition: all .7s ease-out;
 }
+.vkuiSimpleCell__after {
+    color: #818C99;
+}
 .infoblock {
     margin-bottom: 14px;
     line-height: 18px;
@@ -78,8 +81,14 @@ div,p{
     width: 90%;
     display: block;
 }
-.profile-crown {
+.crown {
+    color: #FFA000;
+}
+.crown_profile {
     margin-top: 2px;
     margin-left: 5px;
-    color: #FFA000;
+}
+.crown_user-gradient {
+    margin-top: 4px;
+    margin-left: 5px;
 }

@@ -95,6 +95,7 @@ export const GROUP_DESCRIPTIONS = {
         fun: 'На страже оригинального контента',
         official: '',
     }
-    
-
+}
+export const ENUMERATE_VARIANTS = {
+    posts: ['пост', 'поста', 'постов'],
 }

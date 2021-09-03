@@ -3,3 +3,4 @@ export { default as ProfileInfo } from "./ProfileInfo";
 export { default as ExpertMenu } from './ExpertMenu';
 export { default as CellMenu } from "./CellMenu";
 export { default as MenuArticles } from "./MenuArticles";
+export { default as UserGradient } from "./UserGradient";

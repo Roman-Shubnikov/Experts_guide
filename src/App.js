@@ -20,9 +20,12 @@ import { View,
 	Text,
 	Div,
 	Link,
+	Spacing,
+	PanelSpinner,
 } from '@vkontakte/vkui';
 import {
 	Icon28BrainOutline,
+	Icon28SubtitlesOutline,
 } from '@vkontakte/icons'
 import {
 	EpicMenuCell,
@@ -33,6 +36,7 @@ import './styles/styles.css';
 import { calculateAdaptivity } from './functions/calcAdaptivity';
 import Home from './panels/Home';
 import Loader from './panels/Loader';
+import UsersInfoGet from './panels/UsersInfoGet';
 import { ACTIONS_NORM, GENERAL_LINKS, ICON_TOPICS, TOPICS } from './config';
 import { getKeyByValue } from './functions/tools';
 const platformname = (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
@@ -121,11 +125,13 @@ const App = () => {
 			let Icon = val.icon
 			menu_render.push(
 				<EpicMenuCell
+				activePanel={activePanel}
 				key={val.topic}
 				disabled={!isExpert}
 				activeTopic={activeTopic}
 				topic={getKeyByValue(TOPICS, val.topic)}
 				icon={<Icon style={{color: val.color}} />}
+				setActivePanel={setActivePanel}
 				setActiveTopic={setActiveTopic}>
 					{val.topic}
 				</EpicMenuCell>
@@ -155,6 +161,9 @@ const App = () => {
 							actsWeek={actsWeek}
 							getActualTopic={getActualTopic}
 							setActiveTopic={setActiveTopic} />
+							<UsersInfoGet
+							id='searchInfo' />
+
 							<Loader 
 							id='loader' />
 						</View>
@@ -163,7 +172,7 @@ const App = () => {
 					<SplitCol fixed width="280px" maxWidth="280px">
 						<Panel id='menu_epic'>
 							{hasHeader.current && <PanelHeader/>}
-							{isExpert === null ? <ScreenSpinner /> : isExpert &&
+							{isExpert === null ? <PanelSpinner /> : isExpert &&
 							<><Group>
 								<ProfileInfo
 								actsWeek={actsWeek}
@@ -177,6 +186,17 @@ const App = () => {
 								target="_blank" rel="noopener noreferrer"
 								before={<Icon28BrainOutline style={{color: '#99A2AD'}} />}>
 									Карточка эксперта
+								</SimpleCell>
+								<Spacing separator />
+								<SimpleCell
+								disabled={activePanel === 'searchInfo'}
+								style={activePanel === 'searchInfo' ? {
+									backgroundColor: "var(--button_secondary_background)",
+									borderRadius: 8,
+									color: '#626D7A'} : {color: '#626D7A'}}
+								onClick={() => setActivePanel('searchInfo')}
+								before={<Icon28SubtitlesOutline style={{color: '#99A2AD'}} />}>
+									Информация эксперта
 								</SimpleCell>
 							</Group></>}
 							<Group>
