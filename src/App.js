@@ -61,6 +61,7 @@ const App = () => {
 				setScheme(data.scheme ? data.scheme : 'client_light')
 			}
 		});
+		
 		bridge.send("VKWebAppInit");
 		async function fetchData() {
 			const user = await bridge.send('VKWebAppGetUserInfo');

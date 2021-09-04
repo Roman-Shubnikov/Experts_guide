@@ -39,6 +39,7 @@ export default props => {
 		setFetching(true);
 		setInfoUser(null);
 		setIsExpert(false);
+		
 		let new_user_info = [];
 		searchval = prepareQueryString(searchval)
 		resolveScreenName(searchval).then(search_user => {
@@ -52,12 +53,17 @@ export default props => {
 				}
 			})
 			.then(data => {
-				if(data.response[0].deactivated) {
+				if(data.response[0]?.deactivated) {
 					setPlaceholderText(placeholderTexts.blocked);
 					setInfoUser(null);
 					setFetching(false);
 					return;
 				};
+				if(data.response.length === 0) {
+					setPlaceholderText(placeholderTexts.link_error);
+					setFetching(false);
+					return;
+				}
 	
 				new_user_info.push(data.response[0]);
 				fetch(`https://c3po.ru/api/experts.getInfo?user_id=${search_user}&` + window.location.search.replace('?', ''))
@@ -80,6 +86,7 @@ export default props => {
 			.catch(e => {
 				setFetching(false);
 				setPlaceholderText(placeholderTexts.link_error)
+				console.log(e)
 			})
 		})
 		
@@ -95,7 +102,7 @@ export default props => {
             const timeDiff = typingTimer - lastTypingTime;
             if (timeDiff >= 600 && typing) {
                 typing = false;
-                if(searchval.length === 0) {setInfoUser(null); return;}
+                if(searchval.length === 0) {setInfoUser(null);setPlaceholderText(placeholderTexts.default); return;}
                 if(searchval.length <= 0) return;
                 fetchUser()
             }
@@ -126,7 +133,9 @@ export default props => {
 		let user_string = q;
 		if(isNaN(user_string)){
 			if(/vk\.com\/.+/.test(user_string)){
-				user_string = user_string.match(/(?<=vk\.com\/)[a-z0-9]+/ui)[0];
+				//На самом деле точка после \w нужна
+				// eslint-disable-next-line
+				user_string = user_string.match(/(?<=vk\.com\/)[\w\.]+/ui)[0];
 			}
 		}
 		return user_string;
@@ -163,7 +172,8 @@ export default props => {
 			<UserGradient 
 			placeHolderText={placeHolderText}
 			userSearchedInfo={userSearchedInfo}
-			isExpert={isExpert} />
+			isExpert={isExpert}
+			tokenSearch={tokenSearch} />
 			}
 			{(fetching || !userSearchedInfo) && <Group>
 				{fetching ? <PanelSpinner /> : 
