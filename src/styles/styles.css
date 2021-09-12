@@ -81,16 +81,13 @@ div,p{
     width: 90%;
     display: block;
 }
-.vkuiTabsItem .vkuiText{
+.vkuiTabsItem--vkcom .vkuiText{
     font-size: 16px;
 }
 .vkuiTabs--vkcom .vkuiTabsItem--vkcom {
     padding: 0;
-    margin: 0 10px;
+    margin-right: 20px;
     font-size: 16px;
-}
-.vkuiTabs--vkcom .vkuiTabsItem--vkcom:first-child {
-    margin-left: 0px;
 }
 .crown {
     color: #FFA000;
@@ -105,4 +102,35 @@ div,p{
 }
 .status-block {
     background: var(--field_background);
+}
+.blue_Group .vkuiGroup__inner {
+    background: #4C98EE;
+    box-shadow: none;
+}
+
+.blue_Group .vkuiText,
+.blue_Group .vkuiSimpleCell__description,
+.blue_Group .vkuiSimpleCell__children {
+    color: #FFF;
+}
+.avatar {
+    position: relative;
+}
+.avatar_online {
+    width: 8px;
+    height: 8px;
+    position: absolute;
+    right: 2%;
+    bottom: 2%;
+    border-radius: 50%;
+    background-color: #4BB34B;
+    border: 2px solid var(--white);
+}
+.card_image {
+    height: 100px;
+    border-radius: 8px;
+    /* margin-right: 10px; */
+}
+.card_image_cell .vkuiHorizontalCell__content {
+    padding: 0px;
 }

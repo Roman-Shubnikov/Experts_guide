@@ -1,245 +1,143 @@
-import React, { useEffect, useState } from 'react';
-import { 
-	Panel, 
-	Button, 
-	Group, 
-	SimpleCell, 
-	Placeholder,
-	RichCell,
-	Avatar,
-	Footer,
-	Div,
-	ScreenSpinner,
-	Counter,
-	usePlatform,
+import React from 'react';
+import {
+    Avatar,
 	VKCOM,
-	Link,
-	Tabs,
-	HorizontalScroll,
-	TabsItem,
-	PanelHeader,
-	PanelHeaderButton,
-	FixedLayout,
-	IconButton,
+	usePlatform,
+	Panel,
+	Group,
+	Button,
+	SimpleCell,
+	Text,
 	Spacing,
-
+    Title,
+    RichCell,
+    HorizontalScroll,
+    HorizontalCell,
 } from '@vkontakte/vkui';
 import {
-	Icon56NotebookCheckOutline,
-	Icon56ErrorTriangleOutline,
-	Icon56UsersOutline,
-	Icon16Verified,
-	Icon16Like,
-	Icon28BrainOutline,
-	Icon28VideoCircleOutline,
-	Icon28DoorArrowLeftOutline,
-	Icon16Crown,
+	Icon28DiamondOutline,
+    Icon28NewsfeedOutline,
+    Icon28NameTagOutline,
+
 } from '@vkontakte/icons'
-import experts_community from '../img/experts_community.png'
+import Gradient from '../components/Gradient';
+import Logo from '../img/logo_experts_color_28.svg'
+import Support_ava from '../img/Support_ava.svg'
 import fun_experts_community from '../img/fun_experts_community.png'
-import {
-	GENERAL_LINKS, 
-	GROUP_DESCRIPTIONS, 
-	SCORE_POSITION_COLORS, 
-	TOPICS 
-} from '../config';
-import {
-	enumerate, 
-	getKeyByValue,
-} from '../functions/tools';
-import { ExpertMenu, MenuArticles, ProfileInfo } from '../components';
-import easterEggMusic from '../music/riversolo.mp3'
-export default props => {
-	const [scoreData, setScoreData] = useState(null);
-	const [heartClicks, setHeartClicks] = useState(0);
-	const [showPlayer, setShowPlayer] = useState(false);
-	const [audio, setAudio] = useState(null);
-	const [audioPaused, setAudioPaused] = useState(true);
-	const platform = usePlatform();
-	const setActiveTopic = props.setActiveTopic;
-	const scoreGenerator = () => {
-		let render_score = [];
-		for(let i=0;i<scoreData[props.activeTopic].length;i++){
-			let user_info = scoreData[props.activeTopic][i];
-			let user_data = scoreData.users_data[user_info.user_id];
-			let name = user_data.first_name + " " + user_data.last_name;
-			let topic_name = user_info.topic_name;
-			let actions_current_week = user_info.actions_current_week;
-			render_score.push(
-				<SimpleCell
-				expandable
-				href={'https://vk.com/id' + user_info.user_id}
-				target="_blank" rel="noopener noreferrer"
-				key={user_info.user_id}
-				before={<Avatar src={user_data.photo_max_orig} />}
-				description={topic_name + ' · ' + actions_current_week.toLocaleString() + ' ' + enumerate(actions_current_week, ['пост', 'поста', 'постов'])}
-				after={<Counter style={{background: SCORE_POSITION_COLORS[i]}}>{i+1}</Counter>}>
-					<div style={{display: 'flex'}}>{name} {user_info.is_best && <Icon16Crown className='crown crown_profile' />}</div>
-				</SimpleCell>
-			)
-		}
-		return render_score;
-	}
-	const genTabs = () => {
-		let render_tabs = [];
-		let topics = props.getActualTopic();
-		for(let i=0;i<topics.length;i++){
-			let current_topic = getKeyByValue(TOPICS, topics[i].topic);
-			render_tabs.push(
-				<TabsItem
-				key={current_topic}
-				onClick={() => setActiveTopic(current_topic)}
-				selected={current_topic === props.activeTopic}>
-					{topics[i].topic}
-				</TabsItem>
-			)
-		}
-		return(<>
-			<div style={{height: 50}}></div>
-			<FixedLayout className='mobile_tabs' vertical="top" filled>
-				<Tabs mode='buttons'>
-					<HorizontalScroll>
-						{render_tabs}
-					</HorizontalScroll>
-				</Tabs>
-			</FixedLayout>
-			
-		</>)
-		
-	}
-	const playAudio = () => {
-		if(!audio.paused){
-			audio.pause()
-		} else {
-			audio.volume = 0.2;
-			const audioPromise = audio.play()
-			if (audioPromise !== undefined) {
-			audioPromise
-				.then(_ => {
-				// autoplay started
-				
-				})
-				.catch(err => {
-				// catch dom exception
-				console.info(err)
-				})
-			}
-		}
-		setAudioPaused(audio.paused);
-	}
-	
-	const easterEggCounter = () => {
-		if(heartClicks > 10) {setShowPlayer(true);return};
-		setHeartClicks(prev => prev+1)
-	}
-	useEffect(() => {
-		setAudio(new Audio(easterEggMusic));
-		if(props.isExpert){
-			fetch('https://c3po.ru/api/experts.getTop?' + window.location.search.replace('?', ''))
-			.then(data => data.json())
-			.then(data => {
-				let sliced_data = {}
-				for(let i =0; i<data.keys.length;i++) {
-					sliced_data[getKeyByValue(TOPICS, data.keys[i])] = data[data.keys[i]].slice(0,3);
-				}
-				sliced_data['users_data'] = data.users_data;
-				setScoreData(sliced_data)
-			})
-			.catch(err => console.log(err))
-		}
-		return () => {
-			setAudio(null)
-		}
-	}, [props.isExpert])
-	return(
-	<Panel id={props.id}>
-		{platform !== VKCOM && <PanelHeader
-		left={
-			props.isExpert ? <PanelHeaderButton
-			href={GENERAL_LINKS.experts_card}
-			target="_blank" rel="noopener noreferrer">
-				<Icon28BrainOutline />
-			</PanelHeaderButton>
-			: 
-			<PanelHeaderButton
-			href={GENERAL_LINKS.group_official_community}
-			target="_blank" rel="noopener noreferrer">
-				<Icon28DoorArrowLeftOutline />
-			</PanelHeaderButton>
-		}>{props.isExpert === null ? '...' : props.isExpert ? 'Тематики' : 'Доступ закрыт'}</PanelHeader>}
-		{props.isExpert === null ? <ScreenSpinner /> : props.isExpert || 
-		<Group>
-			<Placeholder
-			icon={<Icon56ErrorTriangleOutline />}
-			action={
-					<Button
-					size='m'
-					mode='tertiary'
-					href={GENERAL_LINKS.who_experts}
-					target="_blank" rel="noopener noreferrer">
-						Кто такие эксперты?
-					</Button>
-				
-			}>
-				Вы не являетесь экспертом ВКонтакте
-			</Placeholder>
-		</Group>
-		
-		}
-		{props.isExpert === null ? <ScreenSpinner /> : props.isExpert &&
-		<>
-		{platform !== VKCOM && 
-		<>
-		{genTabs()}
-		<Group>
-			<ProfileInfo 
-			vkInfoUser={props.vkInfoUser}
-			userInfo={props.userInfo}
-			actsWeek={props.actsWeek} />
-		</Group>
-		</>}
-		{getKeyByValue(TOPICS, props.userInfo.topic_name) === props.activeTopic ? <Group>
-			<Placeholder
-			icon={platform === VKCOM && <Icon56NotebookCheckOutline />}
-			action={<Button
-					size='m'
-					href={GENERAL_LINKS.group_fan_community}
-					target="_blank" rel="noopener noreferrer"
-					mode='primary'>
-						Да, хочу курировать тематику
-					</Button>}>
-				Вы представитель тематики: {props.userInfo.topic_name}? 
-			</Placeholder>
-			
-		</Group> :
-		<Group>
-			<Placeholder
-			icon={platform === VKCOM && <Icon56UsersOutline />}>
-					Если ваш знакомый хочет курировать данный раздел, попросите его подать заявку через сообщения сообщества
-			</Placeholder>
-		</Group>}
-		<ExpertMenu />
-		<Group header={<SimpleCell disabled description='Обновлен в течении недели'>Рейтинг</SimpleCell>}>
-			{scoreData === null ? <ScreenSpinner />:
-			scoreData && scoreGenerator()}
-			<Spacing separator />
-			<SimpleCell
-				disabled
-				before={<Avatar src={props.vkInfoUser.photo_max_orig} />}
-				description={props.userInfo.topic_name + ' · ' + 
-				props.userInfo.actions_current_week.toLocaleString() + 
-				' ' + enumerate(props.userInfo.actions_current_week, ['пост', 'поста', 'постов'])}
-				after={<Counter style={{background: '#70B2FF'}}>{props.userInfo.position}</Counter>}>
-					<div style={{display: 'flex'}}>
-						{`${props.vkInfoUser.first_name} ${props.vkInfoUser.last_name}`} {props.userInfo.is_best && <Icon16Crown className='crown crown_profile' />}
-					</div>
-			</SimpleCell>
-
-		</Group></>}
-
-		
-			{props.isExpert === null ? <ScreenSpinner /> : props.isExpert ?
-			<Group>
+import { BASE_LINKS_MENU, GENERAL_LINKS, GROUP_DESCRIPTIONS } from '../config';
+import Card_curators from '../img/cards/curators.svg'
+import Card_news from '../img/cards/news.svg'
+import Card_updates from '../img/cards/updates.svg'
+import Card_community from '../img/cards/experts_community.svg'
+const Home = props => {
+    const platform = usePlatform();
+    return(
+        <Panel id={props.id}>
+            <Group>
+                <Gradient>
+                    <img alt='Эксперты' src={Logo} style={{width: 96, height: 96, marginBottom: 10}} />
+                    <Title level="2" weight='bold' style={{marginBottom: 8}}>
+                        Справочник эксперта
+                    </Title>
+                    <Text weight='regular' style={{color: '#818C99', fontSize: 16}}>
+                        Ваш гид в мире контент-индустрии
+                    </Text>
+                </Gradient>
+                <Spacing size={11} />
+                <Group mode='plain'>
+                    <SimpleCell
+                    before={<Icon28DiamondOutline />}
+                    multiline
+                    disabled
+                    description="Сохранили всё самое важное в справочнике эксперта ВКонтакте,
+                    чтобы вы были в курсе всего важного из данной сферы">
+                        Ценность справочника
+                    </SimpleCell>
+                    <SimpleCell
+                    before={<Icon28NewsfeedOutline />}
+                    multiline
+                    disabled
+                    description="Читайте и узнавайте новое об контент-индустрии, 
+                    тематических лентах и о программе экспертов">
+                        Эксклюзивный контент
+                    </SimpleCell>
+                    <SimpleCell
+                    before={<Icon28NameTagOutline />}
+                    multiline
+                    disabled
+                    description="Без лишних кнопок и действий — переходите в служебный раздел
+                    экспертов ВКонтакте">
+                        Карточка эксперта
+                    </SimpleCell>
+                </Group>
+            </Group>
+            <Group className='blue_Group'>
+                <SimpleCell
+                disabled
+                multiline
+                href={platform === VKCOM ? undefined : GENERAL_LINKS.group_fan_community}
+                target="_blank" rel="noopener noreferrer"
+                after={platform === VKCOM && <Button size='m' style={{backgroundColor: '#93C1F5'}}
+                href={GENERAL_LINKS.group_fan_community}
+                target="_blank" rel="noopener noreferrer"
+                >Задать вопрос</Button>}
+                description="Наши кураторы на связи"
+                before={<Avatar shadow={false} className='avatar' size={48} src={Support_ava}>
+                    <div className='avatar_online'></div>
+                </Avatar>}
+                >
+                    Нужна помощь?
+                </SimpleCell>
+            </Group>
+            <Group>
+                <HorizontalScroll showArrows getScrollToLeft={i => i - 220} getScrollToRight={i => i + 220}>
+                    <div style={{display: 'flex'}}>
+                        <HorizontalCell size='l'
+                        className='card_image_cell'
+                        hasHover={false}
+                        hasActive={false}
+                        href={BASE_LINKS_MENU.news}
+                        target="_blank" rel="noopener noreferrer">
+                            <img src={Card_news}
+                            className='card_image'
+                            alt=':-(' />
+                        </HorizontalCell>
+                        <HorizontalCell size='l'
+                        className='card_image_cell'
+                        hasHover={false}
+                        hasActive={false}
+                        onClick={() => props.setActivePanel('curators')}>
+                            <img src={Card_curators} 
+                            className='card_image'
+                            alt=':-(' />
+                        </HorizontalCell>
+                        <HorizontalCell size='l'
+                        className='card_image_cell'
+                        hasHover={false}
+                        hasActive={false}
+                        href={GENERAL_LINKS.group_official}
+                        target="_blank" rel="noopener noreferrer">
+                            <img src={Card_community} 
+                            className='card_image'
+                            alt=':-(' />
+                        </HorizontalCell>
+                        <HorizontalCell size='l'
+                        className='card_image_cell'
+                        hasHover={false}
+                        hasActive={false}
+                        href={BASE_LINKS_MENU.updates}
+                        target="_blank" rel="noopener noreferrer">
+                            <img src={Card_updates}
+                            className='card_image' 
+                            alt=':-(' />
+                        </HorizontalCell>
+                        
+                        
+                    </div>
+                    
+                </HorizontalScroll>
+            </Group>
+            <Group>
 				<RichCell
 				disabled
 				multiline
@@ -248,7 +146,7 @@ export default props => {
 					<Button size='m'
 					href={GENERAL_LINKS.group_fan}
 					target="_blank" rel="noopener noreferrer">
-						Перейти в сообщество
+						{platform === VKCOM ? 'Перейти в сообщество' : 'Перейти'}
 					</Button>
 				}
 				caption={platform === VKCOM ? 
@@ -258,52 +156,9 @@ export default props => {
 					Клуб экспертов ВКонтакте
 				</RichCell>
 			</Group>
-			:
-			platform === VKCOM && <Group><RichCell
-			multiline
-			disabled
-			before={<Avatar size={72} src={experts_community}></Avatar>}
-			actions={
-				<Button size='m'
-				href={GENERAL_LINKS.group_official_community}
-				target="_blank" rel="noopener noreferrer"
-				>
-					Подать заявку в сообщество
-				</Button>
-			}
-			caption={GROUP_DESCRIPTIONS.pc.official}>
-				<div style={{display: 'flex'}}>Эксперты ВКонтакте <Icon16Verified className='verified' /></div>
-			</RichCell></Group>}
-		{props.isExpert === null ? <ScreenSpinner /> : props.isExpert &&
-		<Group>
-			<MenuArticles 
-			activeTopic={props.activeTopic} />
-			<Div>
-				<Footer style={{textAlign: 'left', margin: 0}}>
-					Если у вас появилась ошибка «Вы не можете просматривать стену этого сообщества» перейдите в клуб экспертов ВКонтакте и подайте заявку.
-				</Footer>
-			</Div>
-			
-			
-		</Group>}
-		<Group>
-			<Div style={{display: 'flex', justifyContent: 'center', position: 'relative'}}>
-				<Link>Клуб экспертов ВКонтакте</Link>
-				
-				{showPlayer ? <IconButton
-				onClick={() => playAudio()}>
-					<Icon28VideoCircleOutline
-						style={{color:'var(--accent)'}}
-						className={audio ? audioPaused ? '' : 'heart_anim' : ''} />
-				</IconButton>:
-				<Icon16Like 
-				onClick={() => easterEggCounter()}
-				style={heartClicks ? {transform: `scale(${1 + heartClicks/10})`} : {}} 
-				className={heartClicks === 0 ? 'heart_bottom heart_anim' : 'heart_bottom'} />}
-			</Div>
-		</Group>
-
-	</Panel>
-	);
+        </Panel>
+    )
 }
 
+
+export default Home;

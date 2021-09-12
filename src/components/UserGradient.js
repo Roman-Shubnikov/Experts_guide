@@ -7,9 +7,6 @@ import {
 	SimpleCell, 
 	Avatar,
 	Title,
-	Gradient,
-    SizeType,
-    useAdaptivity,
     Text,
     Placeholder,
     Header,
@@ -18,6 +15,7 @@ import {
     HorizontalCell,
     Tabs,
     TabsItem,
+    Spacing,
 } from '@vkontakte/vkui';	
 
 import {
@@ -30,11 +28,11 @@ import {
 } from '@vkontakte/icons'
 import { enumerate, getHumanyTime, recog_number } from '../functions/tools';
 import { ENUMERATE_VARIANTS } from '../config';
+import Gradient from '../components/Gradient'
 const UserGradient = props => {
     const {placeHolderText, userSearchedInfo, isExpert, tokenSearch} = props;
     const vkInfo = userSearchedInfo[0];
     const apiInfo = isExpert && userSearchedInfo[1];
-    const sizeX = useAdaptivity().sizeX
     const [userFriends, setUserFriends] = useState(null);
     const [activeTab, setActiveTab] = useState('general');
 
@@ -86,15 +84,7 @@ const UserGradient = props => {
     return(
         <>
         <Group>
-        <Gradient style={{
-            margin: sizeX === SizeType.REGULAR ? '-7px -7px 0 -7px' : 0,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            textAlign: 'center',
-            padding: 32,
-        }}>
+        <Gradient>
             <Avatar size={96} src={vkInfo.photo_100} alt='ava' />
             <Title style={{ marginBottom: 8, marginTop: 20, display: 'flex'}} level="2" weight="medium">
                 {vkInfo.first_name} {vkInfo.last_name}
@@ -110,24 +100,27 @@ const UserGradient = props => {
             mode="secondary">Перейти в профиль</Button>
         </Gradient>
             {isExpert ? 
-            <Group mode='plain' header={<Header>
+            <Group mode='plain'>
+                <Spacing size={5} />
                 <Tabs>
-                    <TabsItem
-                    hasHover={false}
-                    hasActive={false}
-                    onClick={() => setActiveTab('general')}
-                    selected={activeTab === 'general'}>
-                        Общая информация об эксперте
-                    </TabsItem>
-                    <TabsItem
-                    hasHover={false}
-                    hasActive={false}
-                    onClick={() => setActiveTab('addition')}
-                    selected={activeTab === 'addition'}>
-                        Дополнительная информация
-                    </TabsItem>
+                    <HorizontalScroll>
+                        <div style={{paddingLeft: 16}}></div>
+                        <TabsItem
+                        hasHover={false}
+                        hasActive={false}
+                        onClick={() => setActiveTab('general')}
+                        selected={activeTab === 'general'}>
+                            Информация
+                        </TabsItem>
+                        <TabsItem
+                        hasHover={false}
+                        hasActive={false}
+                        onClick={() => setActiveTab('addition')}
+                        selected={activeTab === 'addition'}>
+                            Дополнительно
+                        </TabsItem>
+                    </HorizontalScroll>
                 </Tabs>
-                </Header>}>
                 {activeTab === 'general' ? <>
                 <SimpleCell
                 disabled
@@ -147,13 +140,13 @@ const UserGradient = props => {
                 disabled
                 before={<Icon28NewsfeedOutline />}
                 after={apiInfo.actions_current_day + ' ' + enumerate(apiInfo.actions_current_day, ENUMERATE_VARIANTS.posts)}>
-                    Посты за сегодня
+                    За сегодня
                 </SimpleCell>
                 <SimpleCell
                 disabled
                 before={<Icon28ArchiveOutline />}
                 after={recog_number(apiInfo.actions_count) + ' ' + enumerate(apiInfo.actions_count, ENUMERATE_VARIANTS.posts)}>
-                    Посты за все время
+                    За все время
                 </SimpleCell>
                 </> : null}
                 

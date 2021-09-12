@@ -20,6 +20,7 @@ export const GROUP_FAN_EXPERTS_ID = 206651170;
 export const GENERAL_LINKS = {
     group_fan: 'https://vk.com/clubvkexperts',
     group_official_community: 'https://vk.me/vkexperts',
+    group_official: 'https://vk.com/vkexperts',
     group_fan_community: 'https://vk.me/clubvkexperts',
     scores: 'https://vk.com/@vkexperts-shop-and-incentive-points',
     experts_card: 'https://vk.com/app7171491',
@@ -32,15 +33,17 @@ export const GENERAL_LINKS = {
     who_experts: 'https://vk.com/faq18060',
     theme_feed: 'https://vk.com/blog/themefeeds',
     orders: 'https://vk.com/market?act=cart&owner_id=-182611749',
+    curators: 'https://vk.com/@clubvkexperts-kuratory',
 }
-
+const WALL_SEARCH_BASE = 'https://vk.com/wall-206651170?q=%23'
 export const BASE_LINKS_MENU = {
-    interactive: 'https://vk.com/wall-206651170?q=%23interactive.',
-    podcasts: 'https://vk.com/wall-206651170?q=%23podcast.',
-    materials: 'https://vk.com/wall-206651170?q=%23material.',
-    plots: 'https://vk.com/wall-206651170?q=%23plots.',
-    music: 'https://vk.com/wall-206651170?q=%23compilation.',
-    suffix: '%40clubvkexperts',
+    news: WALL_SEARCH_BASE + 'news',
+    updates: WALL_SEARCH_BASE + 'update',
+    interactive: WALL_SEARCH_BASE + 'interactive_',
+    podcasts: WALL_SEARCH_BASE + 'podcast_',
+    materials: WALL_SEARCH_BASE + 'material_',
+    plots: WALL_SEARCH_BASE + 'plots_',
+    music: WALL_SEARCH_BASE + 'compilation_',
 }
 export const TOPICS = {
     style: 'Стиль',
@@ -54,6 +57,20 @@ export const TOPICS = {
     science: 'Наука',
     photo: 'Фото',
     tourism: 'Туризм',
+}
+
+export const chatLinks = {
+    it: 'https://vk.me/join/AJQ1d1bzRhbFR/gROKii0Ezb',
+    art: 'https://vk.me/join/AJQ1d0RsHBYCRIR_PrZwO3PJ',
+    games: 'https://vk.cc/aaKiHP',
+    cinema: 'https://vk.me/join/AJQ1d1fmExYQcbY1Ia5AVpJq',
+    music: 'https://vk.me/join/AJQ1dzCvFRYKud924/6tMx82',
+    science: 'https://vk.me/join/AJQ1d90MORbY0Se9Ihv1hiRy',
+    sport : 'https://vk.me/join/AJQ1d_cTNBbIacntLjA9voly',
+    style: 'https://vk.me/join/AJQ1d_vtEhbpMd517XkoHstY',
+    tourism: 'https://vk.me/join/AJQ1d6ZHGxYiLKjYpj60/Zre',
+    photo: 'https://vk.me/join/AJQ1dzgdChY/3pP6bMVkwOvm',
+    humor: 'https://vk.me/join/AJQ1d2UFNRbztL2NrVDP/33/',
 }
 
 export const BASE_ARTICLE_TOPIC_LINK = 'https://vk.com/@clubvkexperts-';
@@ -81,10 +98,8 @@ export const SCORE_POSITION_COLORS = [
 
 export const GROUP_DESCRIPTIONS = {
     pc: {
-        fun: <span>Закрытый неофициальный клуб экспертов ВКонтакте. Здесь
-        происходит вся магия: мы публикуем информационный контент
-        для экспертов, чтобы улучшить ценность контент-индустрии
-        курируемой тематической ленты.</span>,
+        fun: <span>Неофициальное сообщество, где активисты рассказывать что-то
+        новое для экспертов о контент-индустрии и тематических лентах.</span>,
 
     official: <span>
             Вступите в ряды экспертов ВКонтакте и отмечайте лучшие публикации
@@ -99,3 +114,4 @@ export const GROUP_DESCRIPTIONS = {
 export const ENUMERATE_VARIANTS = {
     posts: ['пост', 'поста', 'постов'],
 }
+export const CURATOR_PATTERN = 'Куратор тематики ';

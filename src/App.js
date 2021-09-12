@@ -22,10 +22,15 @@ import { View,
 	Link,
 	Spacing,
 	PanelSpinner,
+	Epic,
+	Tabbar,
+	TabbarItem,
 } from '@vkontakte/vkui';
 import {
 	Icon28BrainOutline,
-	Icon28SubtitlesOutline,
+	Icon28HomeOutline,
+	Icon28UserCardOutline,
+	Icon28ListOutline,
 } from '@vkontakte/icons'
 import {
 	EpicMenuCell,
@@ -34,14 +39,18 @@ import {
 import '@vkontakte/vkui/dist/vkui.css';
 import './styles/styles.css';
 import { calculateAdaptivity } from './functions/calcAdaptivity';
+import Topics from './panels/Topics';
+import Curators from './panels/Curators';
 import Home from './panels/Home';
 import Loader from './panels/Loader';
 import UsersInfoGet from './panels/UsersInfoGet';
 import { ACTIONS_NORM, GENERAL_LINKS, ICON_TOPICS, TOPICS } from './config';
 import { getKeyByValue } from './functions/tools';
+
 const platformname = (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
 const App = () => {
 	const [activePanel, setActivePanel] = useState('loader');
+	const [need_epic, setNeedEpic] = useState(true);
 	const [vkInfoUser, setVkInfoUser] = useState(null);
 	const [userInfo, setUserInfo] = useState(null);
 	const [isExpert, setIsExpert] = useState(null);
@@ -49,12 +58,20 @@ const App = () => {
 	const [scheme, setScheme] = useState('bright_light');
 	const [actsWeek, setActsWeek] = useState(0);
 	const [activeTopic, setActiveTopic] = useState('art')
+	const [tokenSearch, setTokenSearch] = useState('');
 	const platformvkui = usePlatform();
 	const platform = useRef();
 	const viewWidthVk = useAdaptivity().viewWidth;
 	const isDesktop = useRef();
 	const hasHeader = useRef()
 	
+	
+	useEffect(() => {
+		bridge.send("VKWebAppGetAuthToken", {"app_id": 7934508, "scope": ""})
+			.then(data => {
+				setTokenSearch(data.access_token);
+			})
+	}, [])
 	useEffect(() => {
 		bridge.subscribe(({ detail: { type, data }}) => {
 			if (type === 'VKWebAppUpdateConfig') {
@@ -82,7 +99,12 @@ const App = () => {
 				}
 				if(info['is_expert']) setActiveTopic(getKeyByValue(TOPICS, user.topic_name));
 				setUserInfo(user)
-				setActivePanel('home')
+				if(info['is_expert']) {
+					setActivePanel('home')
+				}else {
+					setNeedEpic(false)
+					setActivePanel('topics')
+				}
 				
 				setPopout(null);
 				
@@ -140,7 +162,43 @@ const App = () => {
 		})
 		return menu_render
 	}
-	
+	const onEpicTap = (e) => {
+		setActivePanel(e.currentTarget.dataset.story);
+	}
+	const Views = [
+		<View id='home' activePanel='home'>
+			<Home
+			id='home'
+			setActivePanel={setActivePanel}
+			/>
+		</View>,
+		<View id='topics' activePanel='home'>
+			<Topics id='home'
+			activeTopic={activeTopic}
+			vkInfoUser={vkInfoUser} 
+			isExpert={isExpert}
+			userInfo={userInfo}
+			actsWeek={actsWeek}
+			setActivePanel={setActivePanel}
+			getActualTopic={getActualTopic}
+			setActiveTopic={setActiveTopic} />
+		</View>,
+		<View id='curators' activePanel='home'>
+			<Curators
+			id='home'
+			tokenSearch={tokenSearch}
+			setActivePanel={setActivePanel} />
+		</View>,
+		<View id='searchInfo' activePanel='home'>
+			<UsersInfoGet
+			id='home'
+			tokenSearch={tokenSearch} />
+		</View>,
+		<View id='loader' activePanel='home'>
+			<Loader 
+			id='home' />
+		</View>,
+	];
 	return (
 		<ConfigProvider scheme={scheme} platform={platform.current}>
 			<AppRoot>
@@ -153,21 +211,35 @@ const App = () => {
 					spaced={isDesktop.current}
 					width={isDesktop.current ? '704px' : '100%'}
 					maxWidth={isDesktop.current ? '704px' : '100%'}>
-						<View activePanel={activePanel}>
-							<Home id='home' 
-							activeTopic={activeTopic}
-							vkInfoUser={vkInfoUser} 
-							isExpert={isExpert}
-							userInfo={userInfo}
-							actsWeek={actsWeek}
-							getActualTopic={getActualTopic}
-							setActiveTopic={setActiveTopic} />
-							<UsersInfoGet
-							id='searchInfo' />
-
-							<Loader 
-							id='loader' />
-						</View>
+						<Epic activeStory={activePanel}
+						tabbar={!isDesktop.current && need_epic && 
+							<Tabbar>
+								<TabbarItem
+								data-story='home'
+								selected={activePanel === 'home'}
+								onClick={onEpicTap}
+								text='Главная'>
+									<Icon28HomeOutline />
+								</TabbarItem>
+								<TabbarItem
+								data-story='searchInfo'
+								selected={activePanel === 'searchInfo'}
+								onClick={onEpicTap}
+								text='Участники'>
+									<Icon28UserCardOutline />
+								</TabbarItem>
+								<TabbarItem
+								data-story='topics'
+								selected={activePanel === 'topics'}
+								onClick={onEpicTap}
+								text='Тематики'>
+									<Icon28ListOutline />
+								</TabbarItem>
+							</Tabbar>
+						}>
+							{Views}
+						</Epic>
+						
 					</SplitCol>
 					{isDesktop.current && userInfo &&
 					<SplitCol fixed width="280px" maxWidth="280px">
@@ -196,8 +268,8 @@ const App = () => {
 									borderRadius: 8,
 									color: '#626D7A'} : {color: '#626D7A'}}
 								onClick={() => setActivePanel('searchInfo')}
-								before={<Icon28SubtitlesOutline style={{color: '#99A2AD'}} />}>
-									Информация эксперта
+								before={<Icon28UserCardOutline style={{color: '#99A2AD'}} />}>
+									Участники
 								</SimpleCell>
 							</Group></>}
 							<Group>

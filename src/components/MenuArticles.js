@@ -57,7 +57,7 @@ const closedMenu = [
 ]
 export default ({activeTopic}) => {
     const linksConstructor = (base_link) => {
-		return base_link + activeTopic + BASE_LINKS_MENU.suffix;
+		return base_link + activeTopic;
 	}
     return(
             <>

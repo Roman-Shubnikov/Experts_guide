@@ -4,7 +4,7 @@ import {
 } from '@vkontakte/vkui';
 
 export default ({activePanel, activeTopic, topic, setActiveTopic, setActivePanel, icon, disabled, children}) => {
-    const selected = activeTopic === topic && activePanel !== 'searchInfo';
+    const selected = activeTopic === topic && activePanel === 'topics';
     return(
         <SimpleCell
         disabled={selected || disabled}
@@ -13,7 +13,7 @@ export default ({activePanel, activeTopic, topic, setActiveTopic, setActivePanel
             borderRadius: 8
         } : disabled ? {opacity: '0.4'} : {}}
         onClick={() => {
-            if(activePanel !== 'home') setActivePanel('home');
+            if(activePanel !== 'topics') setActivePanel('topics');
             setActiveTopic(topic);
         }}
         before={icon}>

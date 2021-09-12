@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import bridge from '@vkontakte/vk-bridge';
 import { 
 	Panel,
@@ -9,6 +9,9 @@ import {
 	FormItem,
 	Input,
 	PanelSpinner,
+	VKCOM,
+	usePlatform,
+	PanelHeader,
 
 } from '@vkontakte/vkui';
 import {
@@ -32,9 +35,10 @@ export default props => {
 	const [searchQuery, setSearchQuery] = useState('');
 	const [userSearchedInfo, setInfoUser] = useState(null);
 	const [fetching, setFetching] = useState(false);
-	const [tokenSearch, setTokenSearch] = useState('');
 	const [isExpert, setIsExpert] = useState(false);
+	const platform = usePlatform();
 	const [placeHolderText,setPlaceholderText] = useState(placeholderTexts.default);
+	const { tokenSearch } = props;
 	const fetchUser = () => {
 		setFetching(true);
 		setInfoUser(null);
@@ -140,14 +144,10 @@ export default props => {
 		}
 		return user_string;
 	}
-	useEffect(() => {
-		bridge.send("VKWebAppGetAuthToken", {"app_id": 7934508, "scope": ""})
-			.then(data => {
-				setTokenSearch(data.access_token);
-			})
-	}, [])
     return(
         <Panel id={props.id}>
+			{platform !== VKCOM && 
+            <PanelHeader>Участники</PanelHeader>}
             <Group>
 				<FormLayout>
 					<FormItem>
