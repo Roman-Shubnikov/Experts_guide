@@ -22,6 +22,8 @@ import {
 
 } from '@vkontakte/icons'
 import { UserGradient } from '../components';
+import { API_URL } from '../config';
+import { prepareQueryString, resolveScreenName } from '../functions/tools';
 let lastTypingTime;
 let typing = false;
 let searchval = '';
@@ -46,7 +48,7 @@ export default props => {
 		
 		let new_user_info = [];
 		searchval = prepareQueryString(searchval)
-		resolveScreenName(searchval).then(search_user => {
+		resolveScreenName(searchval, tokenSearch).then(search_user => {
 			bridge.send('VKWebAppCallAPIMethod', {
 				method: 'users.get',
 				params: {
@@ -70,13 +72,21 @@ export default props => {
 				}
 	
 				new_user_info.push(data.response[0]);
-				fetch(`https://c3po.ru/api/experts.getInfo?user_id=${search_user}&` + window.location.search.replace('?', ''))
+				fetch(API_URL + 'method=experts.getInfo&' + window.location.search.replace('?', ''),
+				{
+					method: 'post',
+					headers: { "Content-type": "application/json; charset=UTF-8" },
+					body: JSON.stringify({
+						'user_ids': String(search_user),
+					})
+				})
 				.then(data => data.json())
 				.then(data => {
-					if(data.items.length !== 0 && data.items[0]['is_expert']){
-						let info = data.items[0];
+					data = data.response[0]
+					console.log(data)
+					if(data.is_expert){
 						setIsExpert(true)
-						let user = info['info'];
+						let user = data.info;
 						new_user_info.push(user);
 					} else {
 						setPlaceholderText(placeholderTexts.not_found)
@@ -117,32 +127,6 @@ export default props => {
 		if(placeHolderText === placeholderTexts.link_error) return <Icon56CancelCircleOutline />
 		if(placeHolderText === placeholderTexts.default) return <Icon56MentionOutline />
 		if(placeHolderText === placeholderTexts.blocked) return <Icon56BlockOutline />
-	}
-	const resolveScreenName = async (q) => {
-		if(!isNaN(q)) return q; 
-		let data = await bridge.send("VKWebAppCallAPIMethod", {
-			method: 'utils.resolveScreenName',
-			params: {
-				screen_name: q,
-				v: "5.131", 
-				access_token: tokenSearch,
-			}
-		})
-		let user;
-		if(data.response.type !== 'user') return '';
-		user = data.response.object_id;
-		return user;
-	}
-	const prepareQueryString = (q) => {
-		let user_string = q;
-		if(isNaN(user_string)){
-			if(/vk\.com\/.+/.test(user_string)){
-				//На самом деле точка после \w нужна
-				// eslint-disable-next-line
-				user_string = user_string.match(/(?<=vk\.com\/)[\w\.]+/ui)[0];
-			}
-		}
-		return user_string;
 	}
     return(
         <Panel id={props.id}>

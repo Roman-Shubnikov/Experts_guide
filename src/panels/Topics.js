@@ -36,6 +36,7 @@ import {
 } from '@vkontakte/icons'
 import experts_community from '../img/experts_community.png'
 import {
+	API_URL,
 	GENERAL_LINKS, 
 	GROUP_DESCRIPTIONS, 
 	SCORE_POSITION_COLORS, 
@@ -133,9 +134,10 @@ export default props => {
 	useEffect(() => {
 		setAudio(new Audio(easterEggMusic));
 		if(props.isExpert){
-			fetch('https://c3po.ru/api/experts.getTop?' + window.location.search.replace('?', ''))
+			fetch(API_URL + 'method=experts.getTop&' + window.location.search.replace('?', ''))
 			.then(data => data.json())
 			.then(data => {
+				data = data.response
 				let sliced_data = {}
 				for(let i =0; i<data.keys.length;i++) {
 					sliced_data[getKeyByValue(TOPICS, data.keys[i])] = data[data.keys[i]].slice(0,3);

@@ -12,7 +12,6 @@ import {
     Title,
     RichCell,
     HorizontalScroll,
-    HorizontalCell,
 } from '@vkontakte/vkui';
 import {
 	Icon28DiamondOutline,
@@ -23,12 +22,15 @@ import {
 import Gradient from '../components/Gradient';
 import Logo from '../img/logo_experts_color_28.svg'
 import Support_ava from '../img/Support_ava.svg'
-import fun_experts_community from '../img/fun_experts_community.png'
+import fun_experts_community from '../img/fun_experts_community.jpg'
 import { BASE_LINKS_MENU, GENERAL_LINKS, GROUP_DESCRIPTIONS } from '../config';
 import Card_curators from '../img/cards/curators.svg'
 import Card_news from '../img/cards/news.svg'
 import Card_updates from '../img/cards/updates.svg'
 import Card_community from '../img/cards/experts_community.svg'
+import Card_achievements from '../img/cards/achievements.svg'
+import Card_reports from '../img/cards/reports.svg'
+import CardGalery from '../components/CardGalery';
 const Home = props => {
     const platform = usePlatform();
     return(
@@ -90,47 +92,32 @@ const Home = props => {
                 </SimpleCell>
             </Group>
             <Group>
-                <HorizontalScroll showArrows getScrollToLeft={i => i - 220} getScrollToRight={i => i + 220}>
+                <HorizontalScroll showArrows getScrollToLeft={i => i - 230} getScrollToRight={i => i + 230}>
                     <div style={{display: 'flex'}}>
-                        <HorizontalCell size='l'
-                        className='card_image_cell'
-                        hasHover={false}
-                        hasActive={false}
+                        <CardGalery 
+                        img={Card_news}
                         href={BASE_LINKS_MENU.news}
-                        target="_blank" rel="noopener noreferrer">
-                            <img src={Card_news}
-                            className='card_image'
-                            alt=':-(' />
-                        </HorizontalCell>
-                        <HorizontalCell size='l'
-                        className='card_image_cell'
-                        hasHover={false}
-                        hasActive={false}
-                        onClick={() => props.setActivePanel('curators')}>
-                            <img src={Card_curators} 
-                            className='card_image'
-                            alt=':-(' />
-                        </HorizontalCell>
-                        <HorizontalCell size='l'
-                        className='card_image_cell'
-                        hasHover={false}
-                        hasActive={false}
+                        type='link' />
+                        <CardGalery 
+                        img={Card_curators}
+                        onClick={() => props.setActivePanel('curators')}
+                        type='button' />
+                        <CardGalery 
+                        img={Card_achievements}
+                        href={BASE_LINKS_MENU.achievements}
+                        type='link' />
+                        <CardGalery 
+                        img={Card_reports}
+                        href={BASE_LINKS_MENU.reports_info}
+                        type='link' />
+                        <CardGalery 
+                        img={Card_community}
                         href={GENERAL_LINKS.group_official}
-                        target="_blank" rel="noopener noreferrer">
-                            <img src={Card_community} 
-                            className='card_image'
-                            alt=':-(' />
-                        </HorizontalCell>
-                        <HorizontalCell size='l'
-                        className='card_image_cell'
-                        hasHover={false}
-                        hasActive={false}
+                        type='link' />
+                        <CardGalery 
+                        img={Card_updates}
                         href={BASE_LINKS_MENU.updates}
-                        target="_blank" rel="noopener noreferrer">
-                            <img src={Card_updates}
-                            className='card_image' 
-                            alt=':-(' />
-                        </HorizontalCell>
+                        type='link' />
                         
                         
                     </div>

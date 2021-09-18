@@ -25,12 +25,16 @@ import { View,
 	Epic,
 	Tabbar,
 	TabbarItem,
+	CellButton,
 } from '@vkontakte/vkui';
 import {
 	Icon28BrainOutline,
 	Icon28HomeOutline,
 	Icon28UserCardOutline,
 	Icon28ListOutline,
+	Icon16ChevronOutline,
+	Icon28DonateOutline,
+	Icon28ReportOutline,
 } from '@vkontakte/icons'
 import {
 	EpicMenuCell,
@@ -44,15 +48,17 @@ import Curators from './panels/Curators';
 import Home from './panels/Home';
 import Loader from './panels/Loader';
 import UsersInfoGet from './panels/UsersInfoGet';
-import { ACTIONS_NORM, GENERAL_LINKS, ICON_TOPICS, TOPICS } from './config';
-import { getKeyByValue } from './functions/tools';
-
+import Achievements from './panels/Achievements';
+import Reports from './panels/Reports';
+import { ACTIONS_NORM, API_URL, GENERAL_LINKS, ICON_TOPICS, TOPICS } from './config';
+import { errorAlertCreator, getKeyByValue } from './functions/tools';
 const platformname = (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
 const App = () => {
 	const [activePanel, setActivePanel] = useState('loader');
 	const [need_epic, setNeedEpic] = useState(true);
 	const [vkInfoUser, setVkInfoUser] = useState(null);
 	const [userInfo, setUserInfo] = useState(null);
+	const [achievements, setAchievements] = useState(null);
 	const [isExpert, setIsExpert] = useState(null);
 	const [popout, setPopout] = useState(<ScreenSpinner size='large' />);
 	const [scheme, setScheme] = useState('bright_light');
@@ -65,7 +71,9 @@ const App = () => {
 	const isDesktop = useRef();
 	const hasHeader = useRef()
 	
-	
+	const showErrorAlert = (error = null, action = null) => {
+		errorAlertCreator(setPopout, error, action)
+	}
 	useEffect(() => {
 		bridge.send("VKWebAppGetAuthToken", {"app_id": 7934508, "scope": ""})
 			.then(data => {
@@ -83,13 +91,14 @@ const App = () => {
 		async function fetchData() {
 			const user = await bridge.send('VKWebAppGetUserInfo');
 			setVkInfoUser(user);
-			// fetch(`https://c3po.ru/api/experts.getInfo?user_id=526444378&` + window.location.search.replace('?', ''))
-			fetch(`https://c3po.ru/api/experts.getInfo?user_id=${user.id}&` + window.location.search.replace('?', ''))
+			fetch(API_URL + 'method=account.get&' + window.location.search.replace('?', ''))
 			.then(data => data.json())
 			.then(data => {
-				let info = data.items[0];
+				if(!data.result) throw Error('no data')
+				let info = data.response['expert_info'];
 				setIsExpert(info['is_expert'])
 				let user = info['info'];
+				setAchievements(data.response.achievements)
 				if(user.actions_current_week >= ACTIONS_NORM) {
 					setActsWeek(700);
 				}else{
@@ -114,6 +123,13 @@ const App = () => {
 			
 		}
 		fetchData();
+		// bridge.send("VKWebAppStorageSet", {
+		// 	key: 'ex1',
+		// 	value: '1',
+		// })
+		// bridge.send("VKWebAppStorageGet", {
+		// 	keys: ['ex1'],
+		// }).then(data => console.log(data))
 	}, []);
 	
 	
@@ -141,6 +157,7 @@ const App = () => {
 		}
 		return iconTopics_actual;
 	}
+
 	const genRightMenu = () => {
 		let menu_render = [];
 		let iconTopics_actual = getActualTopic();
@@ -166,13 +183,13 @@ const App = () => {
 		setActivePanel(e.currentTarget.dataset.story);
 	}
 	const Views = [
-		<View id='home' activePanel='home'>
+		<View id='home' activePanel='home' key='home'>
 			<Home
 			id='home'
 			setActivePanel={setActivePanel}
 			/>
 		</View>,
-		<View id='topics' activePanel='home'>
+		<View id='topics' activePanel='home' key='topics'>
 			<Topics id='home'
 			activeTopic={activeTopic}
 			vkInfoUser={vkInfoUser} 
@@ -183,18 +200,30 @@ const App = () => {
 			getActualTopic={getActualTopic}
 			setActiveTopic={setActiveTopic} />
 		</View>,
-		<View id='curators' activePanel='home'>
+		<View id='curators' activePanel='home' key='curators'>
 			<Curators
 			id='home'
 			tokenSearch={tokenSearch}
 			setActivePanel={setActivePanel} />
 		</View>,
-		<View id='searchInfo' activePanel='home'>
+		<View id='searchInfo' activePanel='home'key='searchInfo'>
 			<UsersInfoGet
 			id='home'
 			tokenSearch={tokenSearch} />
 		</View>,
-		<View id='loader' activePanel='home'>
+		<View id='achievements' activePanel='home'key='achievements'>
+			<Achievements 
+			id='home'
+			setActivePanel={setActivePanel}
+			achievements={achievements} />
+		</View>,
+		<View id='reports' activePanel='home' key='reports'>
+			<Reports 
+			tokenSearch={tokenSearch}
+			showErrorAlert={showErrorAlert}
+			id='home' />
+		</View>,
+		<View id='loader' activePanel='home' key='loader'>
 			<Loader 
 			id='home' />
 		</View>,
@@ -235,6 +264,20 @@ const App = () => {
 								text='Тематики'>
 									<Icon28ListOutline />
 								</TabbarItem>
+								<TabbarItem
+								data-story='achievements'
+								selected={activePanel === 'achievements'}
+								onClick={onEpicTap}
+								text='Достижения'>
+									<Icon28DonateOutline />
+								</TabbarItem>
+								<TabbarItem
+								data-story='reports'
+								selected={activePanel === 'reports'}
+								onClick={onEpicTap}
+								text='Репорты'>
+									<Icon28ReportOutline />
+								</TabbarItem>
 							</Tabbar>
 						}>
 							{Views}
@@ -250,7 +293,16 @@ const App = () => {
 								<ProfileInfo
 								actsWeek={actsWeek}
 								vkInfoUser={vkInfoUser}
-								userInfo={userInfo} />								
+								userInfo={userInfo} />
+								<Spacing separator />
+								<CellButton 
+								centered
+								onClick={() => setActivePanel('achievements')}
+								>
+									<div style={{display: 'flex'}}>
+										Достижения <Icon16ChevronOutline style={{marginTop: 2, marginLeft: 2}} />
+									</div>
+								</CellButton>
 							</Group>
 							<Group>
 								<SimpleCell
@@ -270,6 +322,16 @@ const App = () => {
 								onClick={() => setActivePanel('searchInfo')}
 								before={<Icon28UserCardOutline style={{color: '#99A2AD'}} />}>
 									Участники
+								</SimpleCell>
+								<SimpleCell
+								disabled={activePanel === 'reports'}
+								style={activePanel === 'reports' ? {
+									backgroundColor: "var(--button_secondary_background)",
+									borderRadius: 8,
+									color: '#626D7A'} : {color: '#626D7A'}}
+								onClick={() => setActivePanel('reports')}
+								before={<Icon28ReportOutline style={{color: '#99A2AD'}} />}>
+									Пожаловаться
 								</SimpleCell>
 							</Group></>}
 							<Group>

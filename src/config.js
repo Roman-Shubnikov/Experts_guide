@@ -16,7 +16,7 @@ import {
 
 export const GROUP_EXPERTS_ID = 182611749;
 export const GROUP_FAN_EXPERTS_ID = 206651170;
-
+export const API_URL = 'https://xelene.ru/experts_guide/php/index.php?';
 export const GENERAL_LINKS = {
     group_fan: 'https://vk.com/clubvkexperts',
     group_official_community: 'https://vk.me/vkexperts',
@@ -34,9 +34,14 @@ export const GENERAL_LINKS = {
     theme_feed: 'https://vk.com/blog/themefeeds',
     orders: 'https://vk.com/market?act=cart&owner_id=-182611749',
     curators: 'https://vk.com/@clubvkexperts-kuratory',
+    achievements: 'https://vk.com/topic-206651170_48253467',
+    premoderation: 'https://vk.com/pages?oid=-206651170&p=Премодерация',
+    expert_rules: 'https://vk.com/@vkexperts-rules',
 }
 const WALL_SEARCH_BASE = 'https://vk.com/wall-206651170?q=%23'
 export const BASE_LINKS_MENU = {
+    reports_info: 'https://vk.com/clubvkexperts?w=wall-206651170_190',
+    achievements: 'https://vk.com/@clubvkexperts-achievements',
     news: WALL_SEARCH_BASE + 'news',
     updates: WALL_SEARCH_BASE + 'update',
     interactive: WALL_SEARCH_BASE + 'interactive_',

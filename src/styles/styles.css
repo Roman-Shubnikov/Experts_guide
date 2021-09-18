@@ -134,3 +134,22 @@ div,p{
 .card_image_cell .vkuiHorizontalCell__content {
     padding: 0px;
 }
+.achievements {
+    display: flex;
+    flex-wrap: wrap;
+    padding-bottom: 0;
+}
+.achievements-mobile {
+    margin: 0 auto;
+}
+.achievements-vkcom {
+    margin: 0 -13px;
+}
+.achievements_item {
+    margin: 0 8px;
+    padding: 4px;
+    margin-bottom: 16px;
+}
+.vkuiTitle--w-medium {
+    font-weight: 600;
+}

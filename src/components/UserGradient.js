@@ -27,7 +27,7 @@ import {
     Icon28LockOutline,
 } from '@vkontakte/icons'
 import { enumerate, getHumanyTime, recog_number } from '../functions/tools';
-import { ENUMERATE_VARIANTS } from '../config';
+import { API_URL, ENUMERATE_VARIANTS } from '../config';
 import Gradient from '../components/Gradient'
 const UserGradient = props => {
     const {placeHolderText, userSearchedInfo, isExpert, tokenSearch} = props;
@@ -53,9 +53,16 @@ const UserGradient = props => {
                 for(let i=0;i<friends.length;i+=100){
                     sliced_friend = friends.slice(i, i+100);
                     friend_ids = sliced_friend.map(item => (item.id))
-                    curr_users = await fetch(`https://c3po.ru/api/experts.getInfo?user_id=${friend_ids.join(',')}&` + window.location.search.replace('?', ''))
+                    curr_users = await fetch(API_URL + 'method=experts.getInfo&' + window.location.search.replace('?', ''),
+                    {
+                        method: 'post',
+                        headers: { "Content-type": "application/json; charset=UTF-8" },
+                        body: JSON.stringify({
+                            'user_ids': friend_ids.join(','),
+                        })
+                    })
                     curr_users = await curr_users.json()
-                    curr_users = curr_users.items;
+                    curr_users = curr_users.response;
                     for(let j=0;j<curr_users.length;j++) {
                         if(curr_users[j].is_expert) {
                             let full_user = {...curr_users[j].info};

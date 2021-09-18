@@ -18,8 +18,7 @@ import {
 } from '@vkontakte/vkui';
 import {
     Icon28HomeOutline,
-    Icon16ChevronLeft,
-    Icon12ChevronOutline,
+    Icon16ChevronOutline,
 } from '@vkontakte/icons';
 import { enumerate } from '../functions/tools';
 import Curators_ava from '../img/Curators_ava.svg';
@@ -109,7 +108,7 @@ const Curators = props => {
                     href={GENERAL_LINKS.curators}
                     target="_blank" rel="noopener noreferrer"
                     style={{color: '#818C99', fontSize: 16}}>
-                        Подробнее {<Icon12ChevronOutline width={16} height={16} style={{marginTop: 1, marginLeft: 2, color: '#818C99'}} />}
+                        Подробнее {<Icon16ChevronOutline style={{marginTop: 1, marginLeft: 2, color: '#818C99'}} />}
                     </Link>}
                 >
                 Как им стать?
@@ -126,7 +125,7 @@ const Curators = props => {
                 href={GENERAL_LINKS.curators}
                 target="_blank" rel="noopener noreferrer"
                 multiline
-                after={<Icon16ChevronLeft style={{transform: 'rotate(180deg)'}} />}
+                after={<Icon16ChevronOutline />}
                 description='Стать самостоятельно им нельзя. Отныне отбором занимается наша команда. 
                 Если вы зарекомендуете себя в 
                 оценивании постов своей тематической ленты, то, возможно, вас пригласят к нам.'
