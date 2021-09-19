@@ -18,6 +18,10 @@ div,p{
     -ms-user-select: none;       /* Internet Explorer/Edge */
     user-select: none;        
 }
+a {
+    text-decoration: none;
+    color: var(--dynamic_gray);
+}
 ::-webkit-scrollbar {
     width: 3px;
     background-color: var(--background_page);
@@ -35,7 +39,7 @@ div,p{
     margin-left: 0px;
 }
 .profile-chevron {
-    margin-top: 2px;
+    margin-top: 4px;
     transition: all 0.5s ;
 }
 .green_progressbar .vkuiProgress__in {
@@ -54,12 +58,22 @@ div,p{
     color: #818C99;
 }
 .infoblock {
-    margin-bottom: 14px;
+    display: flex;
+    justify-content: space-between;
+}
+.infoblock_item {
+    margin-bottom: 20px;
     line-height: 18px;
     color: var(--subtext);
     font-weight: 400;
     line-height: 18px;
     font-size: 14px;
+}
+.infoblock_item-bottom {
+    margin-top: 22px;
+}
+.infoblock_item:last-child {
+    margin-bottom: 0;
 }
 .score_expert {
     display: flex;
@@ -76,10 +90,6 @@ div,p{
 }
 .heart_anim {
     animation: pulse_heart 3s linear infinite;
-}
-.child_90 .vkuiSimpleCell__main .vkuiSimpleCell__content {
-    width: 90%;
-    display: block;
 }
 .vkuiTabsItem--vkcom .vkuiText{
     font-size: 16px;

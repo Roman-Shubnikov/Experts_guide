@@ -49,6 +49,7 @@ export const BASE_LINKS_MENU = {
     materials: WALL_SEARCH_BASE + 'material_',
     plots: WALL_SEARCH_BASE + 'plots_',
     music: WALL_SEARCH_BASE + 'compilation_',
+    authors: WALL_SEARCH_BASE + 'authors_'
 }
 export const TOPICS = {
     style: 'Стиль',

@@ -25,16 +25,14 @@ import { View,
 	Epic,
 	Tabbar,
 	TabbarItem,
-	CellButton,
 } from '@vkontakte/vkui';
 import {
 	Icon28BrainOutline,
 	Icon28HomeOutline,
 	Icon28UserCardOutline,
 	Icon28ListOutline,
-	Icon16ChevronOutline,
-	Icon28DonateOutline,
 	Icon28ReportOutline,
+	Icon28UserCircleOutline,
 } from '@vkontakte/icons'
 import {
 	EpicMenuCell,
@@ -48,7 +46,7 @@ import Curators from './panels/Curators';
 import Home from './panels/Home';
 import Loader from './panels/Loader';
 import UsersInfoGet from './panels/UsersInfoGet';
-import Achievements from './panels/Achievements';
+import Profile from './panels/Profile';
 import Reports from './panels/Reports';
 import { ACTIONS_NORM, API_URL, GENERAL_LINKS, ICON_TOPICS, TOPICS } from './config';
 import { errorAlertCreator, getKeyByValue } from './functions/tools';
@@ -211,9 +209,11 @@ const App = () => {
 			id='home'
 			tokenSearch={tokenSearch} />
 		</View>,
-		<View id='achievements' activePanel='home'key='achievements'>
-			<Achievements 
+		<View id='profile' activePanel='home'key='profile'>
+			<Profile 
 			id='home'
+			userInfo={userInfo}
+			vkInfoUser={vkInfoUser}
 			setActivePanel={setActivePanel}
 			achievements={achievements} />
 		</View>,
@@ -265,18 +265,18 @@ const App = () => {
 									<Icon28ListOutline />
 								</TabbarItem>
 								<TabbarItem
-								data-story='achievements'
-								selected={activePanel === 'achievements'}
-								onClick={onEpicTap}
-								text='Достижения'>
-									<Icon28DonateOutline />
-								</TabbarItem>
-								<TabbarItem
 								data-story='reports'
 								selected={activePanel === 'reports'}
 								onClick={onEpicTap}
 								text='Репорты'>
 									<Icon28ReportOutline />
+								</TabbarItem>
+								<TabbarItem
+								data-story='profile'
+								selected={activePanel === 'profile'}
+								onClick={onEpicTap}
+								text='Профиль'>
+									<Icon28UserCircleOutline />
 								</TabbarItem>
 							</Tabbar>
 						}>
@@ -291,18 +291,11 @@ const App = () => {
 							{isExpert === null ? <PanelSpinner /> : isExpert &&
 							<><Group>
 								<ProfileInfo
+								activePanel={activePanel}
 								actsWeek={actsWeek}
 								vkInfoUser={vkInfoUser}
-								userInfo={userInfo} />
-								<Spacing separator />
-								<CellButton 
-								centered
-								onClick={() => setActivePanel('achievements')}
-								>
-									<div style={{display: 'flex'}}>
-										Достижения <Icon16ChevronOutline style={{marginTop: 2, marginLeft: 2}} />
-									</div>
-								</CellButton>
+								userInfo={userInfo}
+								setActivePanel={setActivePanel} />
 							</Group>
 							<Group>
 								<SimpleCell

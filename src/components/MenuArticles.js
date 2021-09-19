@@ -10,6 +10,7 @@ import {
 	Icon28TextLiveOutline,
     Icon28ThumbsUpOutline,
     Icon28SongOutline,
+    Icon28UserStarBadgeOutline,
 } from '@vkontakte/icons'
 import {
     BASE_LINKS_MENU,
@@ -41,6 +42,11 @@ const menu = [
         title: 'Музыкальные подборки', 
         icon: Icon28SongOutline,
         link: BASE_LINKS_MENU.music,
+    },
+    {
+        title: 'Интересные авторы', 
+        icon: Icon28UserStarBadgeOutline,
+        link: BASE_LINKS_MENU.authors,
     },
 ]
 

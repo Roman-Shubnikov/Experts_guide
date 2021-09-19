@@ -46,7 +46,7 @@ import {
 	enumerate, 
 	getKeyByValue,
 } from '../functions/tools';
-import { ExpertMenu, MenuArticles, ProfileInfo } from '../components';
+import { ExpertMenu, MenuArticles } from '../components';
 import easterEggMusic from '../music/riversolo.mp3'
 export default props => {
 	const [scoreData, setScoreData] = useState(null);
@@ -188,16 +188,7 @@ export default props => {
 		}
 		{props.isExpert === null ? <ScreenSpinner /> : props.isExpert &&
 		<>
-		{platform !== VKCOM && 
-		<>
-		{genTabs()}
-		<Group>
-			<ProfileInfo 
-			vkInfoUser={props.vkInfoUser}
-			userInfo={props.userInfo}
-			actsWeek={props.actsWeek} />
-		</Group>
-		</>}
+		{platform !== VKCOM && genTabs()}
 		{platform === VKCOM && <Group>
 			<CellButton
 			centered
@@ -208,7 +199,7 @@ export default props => {
 		</Group>}
 		<ExpertMenu
 		activeTopic={props.activeTopic} />
-		<Group header={<SimpleCell disabled description='Обновлен в течении недели'>Рейтинг</SimpleCell>}>
+		<Group header={<SimpleCell disabled description='Обновлен в течение недели'>Рейтинг</SimpleCell>}>
 			{scoreData === null ? <ScreenSpinner />:
 			scoreData && scoreGenerator()}
 			<Spacing separator />
