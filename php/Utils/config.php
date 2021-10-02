@@ -5,8 +5,8 @@ ini_set( 'date.timezone', 'UTC' ); // Время по гринвичу
 class CONFIG {
 	const DB_HOST = '188.225.45.112';
 	const DB_NAME = 'experts_guide';
-	const DB_USER = 'jedi';
-	const DB_PASS = 'RTJ2fa2041';
+	const DB_USER = 'sergey';
+	const DB_PASS = '1experptgiude';
 	const DEV = false;
 	
 	const ONLINE_TIME = 300;
@@ -21,6 +21,9 @@ class CONFIG {
 	const API_EXPERTS_ADDRESS = 'https://c3po.ru/api';
 	const API_EXPERTS_TOKEN = '9h3d83h8r8ehe9xehd93u';
 
+	const MAX_FAQ_CATEGORY_LEN = 30;
+	const MAX_FAQ_QUESTION_LEN = 100;
+	const MAX_FAQ_ANSWER_LEN = 5000;
 
 	const APP_ID = 7409818;
 	const SECRET_KEY = 'oArcb3ehkuKVix2VIhrL';
@@ -39,12 +42,12 @@ class CONFIG {
 	const TIMES = [
 		'month' => 2592000
 	];
-
-	const ADMINS = [
-		526444378,
-		413636725,
+	//Permissions
+	const PERMISSIONS = [
+		"expert" => 0,
+		"moderator" => 1,
+		"admin" => 20,
 	];
-	
 	const ERRORS = [
 
 		// System

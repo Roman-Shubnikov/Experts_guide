@@ -62,7 +62,8 @@ class Users {
 		$sql = "SELECT 
 				vk_id,
 				registration,
-				last_activity
+				last_activity,
+				permissions
 				FROM users
 				WHERE users.vk_id=?";
 		$res = $this->Connect->db_get( $sql, [$user_id] )[0];
@@ -94,6 +95,7 @@ class Users {
 					'last_seen' => (int) $data['last_activity']
 				],
 				'registration' => (int) $data['registration'],
+				'permissions' => (int) $data['permissions'],
 				
 			];	
 		}

@@ -10,14 +10,12 @@ import {
 	Div,
 	Link,
 	PanelSpinner,
-    CellButton,
     RichCell,
     Avatar,
     Subhead,
     Header,
 } from '@vkontakte/vkui';
 import {
-    Icon28HomeOutline,
     Icon16ChevronOutline,
 } from '@vkontakte/icons';
 import { enumerate } from '../functions/tools';
@@ -65,14 +63,6 @@ const Curators = props => {
         <Panel id={props.id}>
             {platform !== VKCOM && 
             <PanelHeader>Кураторы</PanelHeader>}
-            {platform === VKCOM && <Group>
-                <CellButton
-                centered
-                onClick={() => props.setActivePanel('home')}
-                before={<Icon28HomeOutline />}>
-                    Главная
-                </CellButton>
-            </Group>}
             <Group>
                 <RichCell
                 multiline

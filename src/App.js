@@ -1,6 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import bridge from '@vkontakte/vk-bridge';
-import { View, 
+import { SkeletonTheme } from "react-loading-skeleton";
+import {
+	View, 
 	ScreenSpinner, 
 	AdaptivityProvider, 
 	AppRoot, 
@@ -33,6 +35,7 @@ import {
 	Icon28ListOutline,
 	Icon28ReportOutline,
 	Icon28UserCircleOutline,
+	Icon28HelpCircleOutline,
 } from '@vkontakte/icons'
 import {
 	EpicMenuCell,
@@ -48,40 +51,117 @@ import Loader from './panels/Loader';
 import UsersInfoGet from './panels/UsersInfoGet';
 import Profile from './panels/Profile';
 import Reports from './panels/Reports';
+import Help from './panels/faq/main';
+import HelpCC from './panels/faq/createCategory';
+import HelpCQ from './panels/faq/createQuestion';
+import HelpQ from './panels/faq/question';
+import HelpQL from './panels/faq/questionsList';
+import Disconnect from './panels/Disconnect/main'
 import { ACTIONS_NORM, API_URL, GENERAL_LINKS, ICON_TOPICS, TOPICS } from './config';
 import { errorAlertCreator, getKeyByValue } from './functions/tools';
+import { useDispatch, useSelector } from 'react-redux';
+import { accountActions, viewsActions } from './store/main';
+const scheme_params = {
+
+	bright_light: { "status_bar_style": "dark", "action_bar_color": "#FFFFFF", 'navigation_bar_color': "#FFFFFF" },
+	space_gray: { "status_bar_style": "light", "action_bar_color": "#19191A", 'navigation_bar_color': "#19191A" }
+  }
+var backTimeout = false;
 const platformname = (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
 const App = () => {
-	const [activePanel, setActivePanel] = useState('loader');
-	const [need_epic, setNeedEpic] = useState(true);
+	const dispatch = useDispatch();
+	const { user: userInfo, schemeSettings: {scheme}} = useSelector((state) => state.account)
+	const { activeStory, historyPanels, snackbar, activePanel, need_epic } = useSelector((state) => state.views)
+	const setHistoryPanels = useCallback((history) => dispatch(viewsActions.setHistory(history)), [dispatch]);
+  	const setActiveScene = useCallback((story, panel) => dispatch(viewsActions.setActiveScene(story, panel)), [dispatch]);
 	const [vkInfoUser, setVkInfoUser] = useState(null);
-	const [userInfo, setUserInfo] = useState(null);
 	const [achievements, setAchievements] = useState(null);
 	const [isExpert, setIsExpert] = useState(null);
 	const [popout, setPopout] = useState(<ScreenSpinner size='large' />);
-	const [scheme, setScheme] = useState('bright_light');
 	const [actsWeek, setActsWeek] = useState(0);
 	const [activeTopic, setActiveTopic] = useState('art')
 	const [tokenSearch, setTokenSearch] = useState('');
+	
 	const platformvkui = usePlatform();
 	const platform = useRef();
 	const viewWidthVk = useAdaptivity().viewWidth;
 	const isDesktop = useRef();
 	const hasHeader = useRef()
-	
+
+	const setHash = (hash) => {
+	  if(window.location.hash !== ''){
+		bridge.send("VKWebAppSetLocation", {"location": hash});
+		window.location.hash = hash
+	  }
+	}
+	const goPanel = useCallback((view, panel, forcePanel=false, replaceState=false) => {
+    
+		const checkVisitedView = (view) => {
+		  let history = [...historyPanels];
+		  history.reverse();
+		  let index = history.findIndex(item => item.view === view)
+		  if(index !== -1) {
+		   return history.length - index
+		  } else {
+			return null;
+		  }
+		}
+		const historyChange = (history, view, panel, replaceState) => {
+		  if(replaceState){
+			history.pop();
+			history.push({view, panel });
+			window.history.replaceState({ view, panel }, panel);
+		  } else {
+			history.push({view, panel });
+			window.history.pushState({ view, panel }, panel);
+		  }
+		  return history;
+		}
+		let history = [...historyPanels];
+		if(forcePanel){
+		  history = historyChange(history, view, panel, replaceState)
+		}else{
+		  let index = checkVisitedView(view);
+		  if(index !== null){
+			let new_history = history.slice(0, index);
+			history = new_history
+			window.history.pushState({ view, panel }, panel);
+			({view, panel} = history[history.length - 1])
+		  } else {
+			history = historyChange(history, view, panel, replaceState)
+		  }
+		}
+		setHistoryPanels(history);
+		setActiveScene(view, panel)
+		bridge.send('VKWebAppEnableSwipeBack');
+	  }, [setActiveScene, historyPanels, setHistoryPanels])
+	const goDisconnect = () => {
+		goPanel('disconnect', 'disconnect');
+	}
 	const showErrorAlert = (error = null, action = null) => {
 		errorAlertCreator(setPopout, error, action)
 	}
-	useEffect(() => {
-		bridge.send("VKWebAppGetAuthToken", {"app_id": 7934508, "scope": ""})
-			.then(data => {
-				setTokenSearch(data.access_token);
-			})
-	}, [])
-	useEffect(() => {
+	const Init = useCallback(() => {
+		const brigeSchemeChange = (params) => {
+			bridge.send("VKWebAppSetViewSettings", params);
+		  }
 		bridge.subscribe(({ detail: { type, data }}) => {
 			if (type === 'VKWebAppUpdateConfig') {
-				setScheme(data.scheme ? data.scheme : 'client_light')
+				let new_scheme = data.scheme ? data.scheme : 'client_light';
+				dispatch(accountActions.setScheme({ scheme: new_scheme}))
+				if(platformname){
+					switch (new_scheme) {
+						case 'bright_light':
+						  brigeSchemeChange(scheme_params.bright_light)
+						  break;
+						case 'space_gray':
+						  brigeSchemeChange(scheme_params.space_gray)
+						  break;
+						default:
+						  brigeSchemeChange(scheme_params.bright_light)
+					}
+				}
+				
 			}
 		});
 		
@@ -105,32 +185,63 @@ const App = () => {
 					},500)
 				}
 				if(info['is_expert']) setActiveTopic(getKeyByValue(TOPICS, user.topic_name));
-				setUserInfo(user)
+				let finalUser = data.response;
+				finalUser.expert_info = user
+				dispatch(accountActions.setUser(finalUser))
 				if(info['is_expert']) {
-					setActivePanel('home')
+					goPanel('home', 'home', true, true)
 				}else {
-					setNeedEpic(false)
-					setActivePanel('topics')
+					dispatch(viewsActions.setNeedEpic(false))
+					goPanel('topics', 'topics', true, true)
 				}
 				
 				setPopout(null);
 				
 				bridge.send("VKWebAppSendPayload", {"group_id": 206651170, "payload": {'action': 'openapp', "is_expert": info['is_expert'], 'poshil_naher': 'kozel'}});
 			})
-			.catch(err => console.log(err))
+			.catch(err => {setPopout(null);goDisconnect()})
 			
 		}
 		fetchData();
-		// bridge.send("VKWebAppStorageSet", {
-		// 	key: 'ex1',
-		// 	value: '1',
-		// })
-		// bridge.send("VKWebAppStorageGet", {
-		// 	keys: ['ex1'],
-		// }).then(data => console.log(data))
-	}, []);
-	
-	
+		bridge.send("VKWebAppGetAuthToken", {"app_id": 7934508, "scope": ""})
+			.then(data => {
+				setTokenSearch(data.access_token);
+			})
+			// eslint-disable-next-line
+	}, [])
+	useEffect(() => {
+		Init()
+	}, [Init]);
+	const goBack = useCallback(() => {
+		let history = [...historyPanels]
+		if(!backTimeout) {
+		  backTimeout = true;
+		  if (history.length <= 1) {
+			  bridge.send("VKWebAppClose", {"status": "success"});
+		  } else {
+			if(history[history.length] >= 2) {
+			  bridge.send('VKWebAppDisableSwipeBack');
+			}
+			setHash('');
+			history.pop()
+			let {view, panel} = history[history.length - 1];
+			setActiveScene(view, panel)
+			setPopout(<ScreenSpinner />)
+			setTimeout(() => {
+				setPopout(null)
+			  }, 500)
+		  }
+		  setHistoryPanels(history)
+		  setTimeout(() => {backTimeout = false;}, 500)
+		  
+		}else{
+		  window.history.pushState({ ...history[history.length - 1] }, history[history.length - 1].panel );
+		}
+	  }, [historyPanels, setHistoryPanels, setActiveScene])
+	const handlePopstate = useCallback((e) => {
+		e.preventDefault();
+		goBack();
+	  }, [goBack]);
 	useEffect(() => {
 	  if (platformname) {
 		platform.current = platformvkui;
@@ -138,7 +249,13 @@ const App = () => {
 		platform.current = Platform.VKCOM;
 	  }
 	}, [platformvkui])
-  
+
+	useEffect(() => {
+		window.addEventListener('popstate', handlePopstate);
+		return () => {
+		  window.removeEventListener('popstate', handlePopstate)
+		}
+	  }, [handlePopstate])
 	
 	useEffect(() => {
 	  hasHeader.current = platform.current !== VKCOM;
@@ -147,9 +264,9 @@ const App = () => {
 
 	
 	const getActualTopic = () => {
-		let my_topic_index = ICON_TOPICS.findIndex((val, i) => val.topic === userInfo.topic_name)
+		let my_topic_index = ICON_TOPICS.findIndex((val, i) => val.topic === userInfo.expert_info.topic_name)
 		let iconTopics_actual = ICON_TOPICS.slice();
-		if(isExpert){
+		if(isExpert && my_topic_index !== -1){
 			let my_topic = iconTopics_actual.splice(my_topic_index, my_topic_index+1);
 			iconTopics_actual.unshift(my_topic[0])
 		}
@@ -169,7 +286,7 @@ const App = () => {
 				activeTopic={activeTopic}
 				topic={getKeyByValue(TOPICS, val.topic)}
 				icon={<Icon style={{color: val.color}} />}
-				setActivePanel={setActivePanel}
+				goPanel={goPanel}
 				setActiveTopic={setActiveTopic}>
 					{val.topic}
 				</EpicMenuCell>
@@ -178,58 +295,86 @@ const App = () => {
 		return menu_render
 	}
 	const onEpicTap = (e) => {
-		setActivePanel(e.currentTarget.dataset.story);
+		setActiveScene(e.currentTarget.dataset.story, e.currentTarget.dataset.story);
 	}
+	const callbacks = {showErrorAlert, goPanel}
+	const navigation = {goDisconnect}
 	const Views = [
-		<View id='home' activePanel='home' key='home'>
+		<View id='home' activePanel={activePanel} key='home'>
 			<Home
 			id='home'
-			setActivePanel={setActivePanel}
+			goPanel={goPanel}
 			/>
 		</View>,
-		<View id='topics' activePanel='home' key='topics'>
-			<Topics id='home'
+		<View id='topics' activePanel={activePanel} key='topics'>
+			<Topics id='topics'
 			activeTopic={activeTopic}
 			vkInfoUser={vkInfoUser} 
 			isExpert={isExpert}
-			userInfo={userInfo}
+			userInfo={userInfo.expert_info}
 			actsWeek={actsWeek}
-			setActivePanel={setActivePanel}
 			getActualTopic={getActualTopic}
 			setActiveTopic={setActiveTopic} />
 		</View>,
-		<View id='curators' activePanel='home' key='curators'>
+		<View id='curators' activePanel={activePanel} key='curators'>
 			<Curators
-			id='home'
-			tokenSearch={tokenSearch}
-			setActivePanel={setActivePanel} />
-		</View>,
-		<View id='searchInfo' activePanel='home'key='searchInfo'>
-			<UsersInfoGet
-			id='home'
+			id='curators'
 			tokenSearch={tokenSearch} />
 		</View>,
-		<View id='profile' activePanel='home'key='profile'>
+		<View id='searchInfo' activePanel={activePanel} key='searchInfo'>
+			<UsersInfoGet
+			id='searchInfo'
+			tokenSearch={tokenSearch} />
+		</View>,
+		<View id='profile' activePanel={activePanel} key='profile'>
 			<Profile 
-			id='home'
-			userInfo={userInfo}
+			id='profile'
+			userInfo={userInfo.expert_info}
 			vkInfoUser={vkInfoUser}
-			setActivePanel={setActivePanel}
+			goPanel={goPanel}
 			achievements={achievements} />
 		</View>,
-		<View id='reports' activePanel='home' key='reports'>
-			<Reports 
+		<View id='reports' activePanel={activePanel} key='reports'>
+			<Reports
+			userInfo={userInfo.expert_info}
 			tokenSearch={tokenSearch}
 			showErrorAlert={showErrorAlert}
-			id='home' />
+			id='reports' />
 		</View>,
-		<View id='loader' activePanel='home' key='loader'>
+		<View id='help' activePanel={activePanel} key='help'>
+			<Help
+			navigation={navigation}
+			callbacks={callbacks}
+			id='help' />
+			<HelpCC
+			id='faqCreateCategory'
+			navigation={navigation}
+			callbacks={callbacks} />
+			<HelpCQ
+			id='faqCreateQuestion'
+			navigation={navigation}
+			callbacks={callbacks} />
+			<HelpQ
+			id='faqQuestion'
+			navigation={navigation}
+			callbacks={callbacks} />
+			<HelpQL
+			id='faqQuestions'
+			navigation={navigation}
+			callbacks={callbacks} />
+
+		</View>,
+		<Disconnect id='disconnect' restart={Init} key='disconnect' />,
+		<View id='loader' activePanel={activePanel} key='loader'>
 			<Loader 
-			id='home' />
+			id='load' />
 		</View>,
 	];
+	
 	return (
+		
 		<ConfigProvider scheme={scheme} platform={platform.current}>
+			
 			<AppRoot>
 				<SplitLayout
 					style={{ justifyContent: "center" }}
@@ -240,51 +385,61 @@ const App = () => {
 					spaced={isDesktop.current}
 					width={isDesktop.current ? '704px' : '100%'}
 					maxWidth={isDesktop.current ? '704px' : '100%'}>
-						<Epic activeStory={activePanel}
+						<SkeletonTheme color={scheme === 'bright_light' ? undefined : '#232323'} highlightColor={scheme === 'bright_light' ? undefined : '#6B6B6B'}>
+						<Epic activeStory={activeStory}
 						tabbar={!isDesktop.current && need_epic && 
 							<Tabbar>
 								<TabbarItem
 								data-story='home'
-								selected={activePanel === 'home'}
+								selected={activeStory === 'home'}
 								onClick={onEpicTap}
 								text='Главная'>
 									<Icon28HomeOutline />
 								</TabbarItem>
 								<TabbarItem
 								data-story='searchInfo'
-								selected={activePanel === 'searchInfo'}
+								selected={activeStory === 'searchInfo'}
 								onClick={onEpicTap}
 								text='Участники'>
 									<Icon28UserCardOutline />
 								</TabbarItem>
 								<TabbarItem
 								data-story='topics'
-								selected={activePanel === 'topics'}
+								selected={activeStory === 'topics'}
 								onClick={onEpicTap}
 								text='Тематики'>
 									<Icon28ListOutline />
 								</TabbarItem>
 								<TabbarItem
 								data-story='reports'
-								selected={activePanel === 'reports'}
+								selected={activeStory === 'reports'}
 								onClick={onEpicTap}
 								text='Репорты'>
 									<Icon28ReportOutline />
 								</TabbarItem>
 								<TabbarItem
+								data-story='help'
+								selected={activeStory === 'help'}
+								onClick={onEpicTap}
+								text='Помощь'>
+									<Icon28HelpCircleOutline />
+								</TabbarItem>
+								<TabbarItem
 								data-story='profile'
-								selected={activePanel === 'profile'}
+								selected={activeStory === 'profile'}
 								onClick={onEpicTap}
 								text='Профиль'>
 									<Icon28UserCircleOutline />
 								</TabbarItem>
 							</Tabbar>
 						}>
+							
 							{Views}
+							
 						</Epic>
-						
+						</SkeletonTheme>
 					</SplitCol>
-					{isDesktop.current && userInfo &&
+					{isDesktop.current && userInfo.expert_info &&
 					<SplitCol fixed width="280px" maxWidth="280px">
 						<Panel id='menu_epic'>
 							{hasHeader.current && <PanelHeader/>}
@@ -294,8 +449,8 @@ const App = () => {
 								activePanel={activePanel}
 								actsWeek={actsWeek}
 								vkInfoUser={vkInfoUser}
-								userInfo={userInfo}
-								setActivePanel={setActivePanel} />
+								userInfo={userInfo.expert_info}
+								goPanel={goPanel} />
 							</Group>
 							<Group>
 								<SimpleCell
@@ -307,24 +462,44 @@ const App = () => {
 								</SimpleCell>
 								<Spacing separator />
 								<SimpleCell
-								disabled={activePanel === 'searchInfo'}
-								style={activePanel === 'searchInfo' ? {
+								disabled={activeStory === 'home'}
+								style={activeStory === 'home' ? {
 									backgroundColor: "var(--button_secondary_background)",
 									borderRadius: 8,
 									color: '#626D7A'} : {color: '#626D7A'}}
-								onClick={() => setActivePanel('searchInfo')}
+								onClick={() => goPanel('home', 'home')}
+								before={<Icon28HomeOutline style={{color: '#99A2AD'}} />}>
+									Главная
+								</SimpleCell>
+								<SimpleCell
+								disabled={activeStory === 'searchInfo'}
+								style={activeStory === 'searchInfo' ? {
+									backgroundColor: "var(--button_secondary_background)",
+									borderRadius: 8,
+									color: '#626D7A'} : {color: '#626D7A'}}
+								onClick={() => goPanel('searchInfo', 'searchInfo')}
 								before={<Icon28UserCardOutline style={{color: '#99A2AD'}} />}>
 									Участники
 								</SimpleCell>
 								<SimpleCell
-								disabled={activePanel === 'reports'}
-								style={activePanel === 'reports' ? {
+								disabled={activeStory === 'reports'}
+								style={activeStory === 'reports' ? {
 									backgroundColor: "var(--button_secondary_background)",
 									borderRadius: 8,
 									color: '#626D7A'} : {color: '#626D7A'}}
-								onClick={() => setActivePanel('reports')}
+								onClick={() => goPanel('reports', 'reports')}
 								before={<Icon28ReportOutline style={{color: '#99A2AD'}} />}>
 									Пожаловаться
+								</SimpleCell>
+								<SimpleCell
+								disabled={activeStory === 'help'}
+								style={activeStory === 'help' ? {
+									backgroundColor: "var(--button_secondary_background)",
+									borderRadius: 8,
+									color: '#626D7A'} : {color: '#626D7A'}}
+								onClick={() => goPanel('help', 'help')}
+								before={<Icon28HelpCircleOutline style={{color: '#99A2AD'}} />}>
+									Помощь
 								</SimpleCell>
 							</Group></>}
 							<Group>
@@ -370,9 +545,12 @@ const App = () => {
 							</Group>}
 						</Panel>
 					</SplitCol>}
+					{snackbar}
 				</SplitLayout>
 			</AppRoot>
+		
 		</ConfigProvider>
+		
 	);
 }
 export default () => (

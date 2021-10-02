@@ -18,6 +18,7 @@ import {
     Progress,
     Spacing,
     Footer,
+    useAppearance,
 
 } from "@vkontakte/vkui"
 import {
@@ -33,6 +34,7 @@ import { enumerate, getKeyByValue } from '../functions/tools';
 const Achievements = props => {
     const { achievements, vkInfoUser, userInfo } = props; 
     const platform = usePlatform();
+    const appearence = useAppearance();
     const [tooltipShow, setToolTipState] = useState(false);
     const [actsWeekReal, setActsWeekReal] = useState(0);
     const [mouseOndescr, setMouseOndescr] = useState(false);
@@ -69,7 +71,7 @@ const Achievements = props => {
             <Div>
                 <div className='infoblock'>
                     <div className='infoblock_item'>
-                        Вы оценили <span style={{color: 'black', fontWeight: 550}}>{userInfo.actions_current_week} {enumerate(userInfo.actions_current_week, ['запись', 'записи', 'записей'])}</span> на этой неделе
+                        Вы оценили <span style={{color: appearence === 'light' ? 'black' : 'var(--white)' ,fontWeight: 500}}>{userInfo.actions_current_week} {enumerate(userInfo.actions_current_week, ['запись', 'записи', 'записей'])}</span> на этой неделе
                     </div>
                     <div className='infoblock_item'>
                         {ACTIONS_NORM}
@@ -81,7 +83,9 @@ const Achievements = props => {
                 value={actsWeekReal / ACTIONS_NORM *100}
                 />
                 <div className='infoblock_item infoblock_item-bottom'>
-                    Для преодоления порога необходимо оценить еще {ACTIONS_NORM - userInfo.actions_current_week} {enumerate(ACTIONS_NORM - userInfo.actions_current_week, ['запись', 'записи', 'записей'])}
+                    {ACTIONS_NORM - userInfo.actions_current_week > 0 ?('Для преодоления порога необходимо оценить ещё ' + (ACTIONS_NORM - userInfo.actions_current_week) + ' ' + 
+                    enumerate(ACTIONS_NORM - userInfo.actions_current_week, ['запись', 'записи', 'записей'])): 
+                    "Вы достигли порога, не сбавляйте темп"}
                 </div>
                 
             </Div>
@@ -166,7 +170,6 @@ const Achievements = props => {
     )
 }
 Achievements.propTypes = {
-    setActivePanel: PropTypes.func.isRequired,
     achievements: PropTypes.array,
 }
 export default Achievements;

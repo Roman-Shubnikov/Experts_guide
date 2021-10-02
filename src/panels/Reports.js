@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
+import Skeleton from "react-loading-skeleton";
+import bridge from '@vkontakte/vk-bridge';
 import { 
     Panel,
     Group,
     Placeholder,
-    PanelSpinner,
     Div,
     Link,
     Subhead,
@@ -26,6 +27,7 @@ import { API_URL, GENERAL_LINKS } from '../config';
 import { getIdByLink } from '../functions/tools';
 const Reports = props => {
     const [reasons, setReasons] = useState(null);
+    const [isLoading, setLoading] = useState(false);
     const [reason, setReason] = useState(1);
     const [link_vk, setLinkVk] = useState('');
     const [comment, setComment] = useState('');
@@ -46,6 +48,7 @@ const Reports = props => {
         })
     }, [])
     const sendReport = () => {
+        setLoading(true)
         getIdByLink(link_vk, props.tokenSearch)
         .then(uid => {
             fetch(API_URL + 'method=reports.send&' + window.location.search.replace('?', ''), 
@@ -62,13 +65,27 @@ const Reports = props => {
             .then(data => data.json())
             .then(data => {
                 if(data.result){
+                    bridge.send(
+                        "VKWebAppSendPayload", 
+                        {group_id: 206651170, 
+                        payload: {
+                            action: 'send_report',
+                            reporter_id: props.userInfo.id,
+                            user_id: uid,
+                            comment: comment,
+                            reason: reason,
+                            content: content,
+                        }
+                    });
                     setIsDone(true)
                 } else {
                     props.showErrorAlert(data.error.message)
                 }
+                setLoading(false)
             })
             .catch(e => {
                 props.showErrorAlert('Пользователь не найден')
+                setLoading(false)
             })
         })
     }
@@ -136,7 +153,11 @@ const Reports = props => {
                         </Subhead>
                     </Div>
                     
-                    {reasons === null ? <PanelSpinner /> :
+                    {reasons === null ? 
+                    <Div style={{display: 'flex', flexDirection: 'column', paddingBottom:0, paddingTop: 0}}>
+                        {Array(6).fill().map((e, i)=><Skeleton key={i} style={{padding: '0 16px', margin: '8px 0'}} height={20} width={120} />)}
+                    </Div>
+                    :
                     reasons.map((val, i) => 
                     <Radio key={val.id}
                     checked={reason === val.id}
@@ -166,7 +187,8 @@ const Reports = props => {
                         >премодерацией жалоб</Link>
                     </Checkbox>
                     <FormItem style={{display:'flex', justifyContent: 'center'}}>
-                        <Button 
+                        <Button
+                        loading={isLoading}
                         onClick={() => sendReport()}
                         size='l' disabled={!(check2 && check1 && 
                         validateLinkVk(link_vk)[0] === 'valid' && 

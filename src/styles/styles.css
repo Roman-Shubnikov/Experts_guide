@@ -163,3 +163,17 @@ a {
 .vkuiTitle--w-medium {
     font-weight: 600;
 }
+.topics_skeleton {
+    display: flex;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+.topics_skeleton_items {
+    padding: 7px 0;
+    margin-left: 12px;
+    display: flex;
+    flex-direction: column;
+}
+.topics_avatar {
+    border-radius: 50%;
+}

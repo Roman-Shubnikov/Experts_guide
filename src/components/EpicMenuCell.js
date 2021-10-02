@@ -3,7 +3,7 @@ import {
 	SimpleCell,
 } from '@vkontakte/vkui';
 
-export default ({activePanel, activeTopic, topic, setActiveTopic, setActivePanel, icon, disabled, children}) => {
+export default ({activePanel, activeTopic, topic, setActiveTopic, goPanel, icon, disabled, children}) => {
     const selected = activeTopic === topic && activePanel === 'topics';
     return(
         <SimpleCell
@@ -13,7 +13,7 @@ export default ({activePanel, activeTopic, topic, setActiveTopic, setActivePanel
             borderRadius: 8
         } : disabled ? {opacity: '0.4'} : {}}
         onClick={() => {
-            if(activePanel !== 'topics') setActivePanel('topics');
+            if(activePanel !== 'topics') goPanel('topics', 'topics', true);
             setActiveTopic(topic);
         }}
         before={icon}>

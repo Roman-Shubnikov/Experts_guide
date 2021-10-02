@@ -12,6 +12,31 @@ import {
     Icon28GameOutline,
     Icon28AccessibilityOutline,
     Icon28LaptopOutline,
+    Icon28CancelCircleOutline,
+    Icon28KeyboardOutline,
+    Icon28BugOutline,
+    Icon28DonateOutline,
+    Icon28PincodeLockOutline,
+    Icon28BoxHeartOutline,
+    Icon28UserSquareOutline,
+    Icon28MoneyWadOutline,
+    Icon28BuildingOutline,
+    Icon28WorkOutline,
+    Icon28LocationMapOutline,
+    Icon28WarningTriangleOutline,
+    Icon28ReportOutline,
+    Icon28BrainOutline,
+    Icon28FavoriteOutline,
+    Icon28CoinsOutline,
+    Icon28FireOutline,
+    Icon28EducationOutline,
+    Icon28DiamondOutline,
+    Icon28StorefrontOutline,
+    Icon28LightbulbStarOutline,
+    Icon28DiscountOutline,
+    Icon28StarsOutline,
+    Icon28StickerOutline,
+
 } from '@vkontakte/icons'
 
 export const GROUP_EXPERTS_ID = 182611749;
@@ -19,6 +44,7 @@ export const GROUP_FAN_EXPERTS_ID = 206651170;
 export const API_URL = 'https://xelene.ru/experts_guide/php/index.php?';
 export const GENERAL_LINKS = {
     group_fan: 'https://vk.com/clubvkexperts',
+    fan_website: 'https://vk.link/clubvkexperts',
     group_official_community: 'https://vk.me/vkexperts',
     group_official: 'https://vk.com/vkexperts',
     group_fan_community: 'https://vk.me/clubvkexperts',
@@ -40,7 +66,7 @@ export const GENERAL_LINKS = {
 }
 const WALL_SEARCH_BASE = 'https://vk.com/wall-206651170?q=%23'
 export const BASE_LINKS_MENU = {
-    reports_info: 'https://vk.com/clubvkexperts?w=wall-206651170_190',
+    reports_info: 'https://vk.com/clubvkexperts?w=wall-206651170_191',
     achievements: 'https://vk.com/@clubvkexperts-achievements',
     news: WALL_SEARCH_BASE + 'news',
     updates: WALL_SEARCH_BASE + 'update',
@@ -49,7 +75,6 @@ export const BASE_LINKS_MENU = {
     materials: WALL_SEARCH_BASE + 'material_',
     plots: WALL_SEARCH_BASE + 'plots_',
     music: WALL_SEARCH_BASE + 'compilation_',
-    authors: WALL_SEARCH_BASE + 'authors_'
 }
 export const TOPICS = {
     style: 'Стиль',
@@ -121,3 +146,36 @@ export const ENUMERATE_VARIANTS = {
     posts: ['пост', 'поста', 'постов'],
 }
 export const CURATOR_PATTERN = 'Куратор тематики ';
+
+export const ExpertsIcons28 = {
+    0: Icon28CancelCircleOutline,
+    1: Icon28BoxHeartOutline,
+    2: Icon28KeyboardOutline,
+    3: Icon28BuildingOutline,
+    4: Icon28LocationMapOutline,
+    5: Icon28UserSquareOutline,
+    6: Icon28BugOutline,
+    7: Icon28DonateOutline,
+    8: Icon28MoneyWadOutline,
+    9: Icon28LaptopOutline,
+    10: Icon28PincodeLockOutline,
+    11: Icon28WorkOutline,
+    12: Icon28WarningTriangleOutline,
+    13: Icon28ReportOutline,
+    14: Icon28BrainOutline,
+    15: Icon28FavoriteOutline,
+    16: Icon28CoinsOutline,
+    17: Icon28FireOutline,
+    18: Icon28EducationOutline,
+    19: Icon28DiamondOutline,
+    20: Icon28StorefrontOutline,
+    21: Icon28LightbulbStarOutline,
+    22: Icon28DiscountOutline,
+    23: Icon28StarsOutline,
+    24: Icon28StickerOutline,
+}
+export const PERMISSIONS = {
+    expert: 0,
+    moderator: 1,
+    admin: 20,
+};

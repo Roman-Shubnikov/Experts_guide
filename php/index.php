@@ -31,6 +31,7 @@ require('vkapi.php');
 require('api/users.php');
 require('api/achievements.php');
 require('api/reports.php');
+require('api/faq.php');
 
 session_id($_GET['vk_user_id']);
 session_start();
@@ -113,6 +114,107 @@ $params = [
 	'experts.getTop' => [
 		'parameters' => [],
 	],
+	'faq.addCategory' => [
+		'parameters' => [
+			'title' => [
+				'type' => 'string',
+				'required' => true
+			],
+			'icon_id' => [
+				'type' => 'int',
+				'required' => true
+			],
+			'color' => [
+				'type' => 'string',
+				'required' => true
+			],
+		],
+		'perms' => CONFIG::PERMISSIONS['admin'],
+	],
+	'faq.delCategory' => [
+		'parameters' => [
+			'category_id' => [
+				'type' => 'int',
+				'required' => true
+			],
+		],
+		'perms' => CONFIG::PERMISSIONS['admin'],
+	],
+	'faq.addQuestion' => [
+		'parameters' => [
+			'category_id' => [
+				'type' => 'int',
+				'required' => true
+			],
+			'question' => [
+				'type' => 'string',
+				'required' => true
+			],
+			'answer' => [
+				'type' => 'string',
+				'required' => true
+			],
+			'ismarkable' => [
+				'type' => 'bool',
+				'required' => true
+			],
+			'support_need' => [
+				'type' => 'bool',
+				'required' => true
+			],
+			'curators_need' => [
+				'type' => 'bool',
+				'required' => true
+			]
+		],
+		'perms' => CONFIG::PERMISSIONS['admin'],
+	],
+	'faq.delQuestion' => [
+		'parameters' => [
+			'question_id' => [
+				'type' => 'int',
+				'required' => true
+			],
+		],
+		'perms' => CONFIG::PERMISSIONS['admin'],
+	],
+	'faq.getCategories' => [
+		'parameters' => [],
+	],
+	'faq.getQuestionsByCategory' => [
+		'parameters' => [
+			'category_id' => [
+				'type' => 'int',
+				'required' => true
+			],
+			'offset' => [
+				'type' => 'int',
+				'required' => false,
+				'default' => 0,
+			],
+			'count' => [
+				'type' => 'int',
+				'required' => false,
+				'default' => 200,
+			],
+		],
+	],
+	'faq.getQuestionById' => [
+		'parameters' => [
+			'id' => [
+				'type' => 'int',
+				'required' => true
+			],
+		],
+	],
+	'faq.getQuestionByName' => [
+		'parameters' => [
+			'name' => [
+				'type' => 'string',
+				'required' => true
+			],
+		],
+	],
 ];
 $user_id = (int) $_GET['vk_user_id'];
 $method = $_GET['method'];
@@ -132,14 +234,17 @@ $data = Utils::checkParams($params[$method]['parameters'], $data);
 $Connect = new DB();
 if(CONFIG::DEV) $user_id = 526444378;
 $users = new Users($user_id, $Connect);
+$faq = new Faq($Connect);
 
-
-function getBalance()
-{
-	global $Connect, $user_id;
-	return $Connect->db_get("SELECT money FROM users WHERE vk_user_id=?", [$user_id])[0]['money'];
+$perms_need = CONFIG::PERMISSIONS['expert'];
+if(isset($params[$method]['perms'])) {
+	$perms_need = $params[$method]['perms'];
 }
-if(in_array($users->id, CONFIG::ADMINS)) {
+if ($users->info['permissions'] < $perms_need) {
+	Show::error(403);
+}
+
+if($users->info['permissions'] < CONFIG::PERMISSIONS['moderator']) {
 	error_reporting(E_ALL);
 	ini_set('display_errors', 1);
 	ini_set('display_startup_errors', 1);
@@ -187,4 +292,46 @@ switch ($method) {
 		$content = (string)$data['content'];
 		$reports = new Reports($Connect);
 		Show::response($reports->send($user_id, $vk_id, $comment, $reason, $content));
+	
+	case 'faq.addCategory':
+		$title =  (string) $data['title'];
+		$icon_id = (int) $data['icon_id'];
+		$color = mb_strtolower((string) $data['color']);
+		Show::response($faq->addCategory($title, $icon_id, $color));
+
+	case 'faq.delCategory':
+		$category_id = (int) $data['category_id'];
+		Show::response($faq->delCategory($category_id));
+
+	case 'faq.addQuestion':
+		$category_id = (int) $data['category_id'];
+		$question = (string) $data['question'];
+		$answer = (string) $data['answer'];
+		$ismarkable = (int) $data['ismarkable'];
+		$support_need = (int) $data['support_need'];
+		$curators_need = (int) $data['curators_need'];
+
+		Show::response($faq->addQuestion($category_id, $question, $answer, $ismarkable, $support_need, $curators_need));
+
+	case 'faq.delQuestion':
+		$question_id = (int) $data['question_id'];
+		Show::response($faq->delQuestion($question_id));
+
+	case 'faq.getCategories':
+		Show::response($faq->getCategories()[0]);
+
+	case 'faq.getQuestionsByCategory':
+		$count = (int) $data['count'];
+		if ($count > CONFIG::ITEMS_PER_PAGE) $count = CONFIG::ITEMS_PER_PAGE;
+		$offset = (int) $data['offset'];
+		$category = (int) $data['category_id'];
+		Show::response($faq->getQuestionsByCategory($category, $offset, $count));
+
+	case 'faq.getQuestionById':
+		$question_id = (int) $data['id'];
+		Show::response($faq->getQuestionById($question_id));
+	
+	case 'faq.getQuestionByName':
+		$name = (string) $data['name'];
+		Show::response($faq->getQuestionsByName($name));
 }

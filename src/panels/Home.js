@@ -7,20 +7,19 @@ import {
 	Group,
 	Button,
 	SimpleCell,
-	Text,
 	Spacing,
-    Title,
     RichCell,
     HorizontalScroll,
+    Placeholder
 } from '@vkontakte/vkui';
 import {
 	Icon28DiamondOutline,
     Icon28NewsfeedOutline,
     Icon28NameTagOutline,
-
+    Icon28GlobeOutline,
+    Icon16Chevron,
+    Icon56CompassCircleFillPurple,
 } from '@vkontakte/icons'
-import Gradient from '../components/Gradient';
-import Logo from '../img/logo_experts_color_28.svg'
 import Support_ava from '../img/Support_ava.svg'
 import fun_experts_community from '../img/fun_experts_community.jpg'
 import { BASE_LINKS_MENU, GENERAL_LINKS, GROUP_DESCRIPTIONS } from '../config';
@@ -36,16 +35,12 @@ const Home = props => {
     return(
         <Panel id={props.id}>
             <Group>
-                <Gradient>
-                    <img alt='Эксперты' src={Logo} style={{width: 96, height: 96, marginBottom: 10}} />
-                    <Title level="2" weight='bold' style={{marginBottom: 8}}>
-                        Справочник эксперта
-                    </Title>
-                    <Text weight='regular' style={{color: '#818C99', fontSize: 16}}>
-                        Ваш гид в мире контент-индустрии
-                    </Text>
-                </Gradient>
-                <Spacing size={11} />
+                <Placeholder
+                icon={<Icon56CompassCircleFillPurple />}
+                header='Справочник эксперта'>
+                    Ваш гид в мире контент-индустрии
+                </Placeholder>
+                <Spacing size={11} separator='top' />
                 <Group mode='plain'>
                     <SimpleCell
                     before={<Icon28DiamondOutline />}
@@ -93,6 +88,7 @@ const Home = props => {
             </Group>
             <Group>
                 <HorizontalScroll showArrows getScrollToLeft={i => i - 230} getScrollToRight={i => i + 230}>
+                
                     <div style={{display: 'flex'}}>
                         <CardGalery 
                         img={Card_news}
@@ -100,7 +96,7 @@ const Home = props => {
                         type='link' />
                         <CardGalery 
                         img={Card_curators}
-                        onClick={() => props.setActivePanel('curators')}
+                        onClick={() => props.goPanel('curators', 'curators', true)}
                         type='button' />
                         <CardGalery 
                         img={Card_achievements}
@@ -123,6 +119,15 @@ const Home = props => {
                     </div>
                     
                 </HorizontalScroll>
+            </Group>
+            <Group>
+                <SimpleCell
+                before={<Icon28GlobeOutline />}
+                after={<Icon16Chevron />}
+                href={GENERAL_LINKS.fan_website}
+                target="_blank" rel="noopener noreferrer">
+                    Сайт
+                </SimpleCell>
             </Group>
             <Group>
 				<RichCell

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import Skeleton from "react-loading-skeleton";
 import { 
 	Panel, 
 	Button, 
@@ -21,8 +22,6 @@ import {
 	FixedLayout,
 	IconButton,
 	Spacing,
-	CellButton,
-
 } from '@vkontakte/vkui';
 import {
 	Icon56ErrorTriangleOutline,
@@ -32,7 +31,6 @@ import {
 	Icon28VideoCircleOutline,
 	Icon28DoorArrowLeftOutline,
 	Icon16Crown,
-	Icon28HomeOutline,
 } from '@vkontakte/icons'
 import experts_community from '../img/experts_community.png'
 import {
@@ -48,6 +46,7 @@ import {
 } from '../functions/tools';
 import { ExpertMenu, MenuArticles } from '../components';
 import easterEggMusic from '../music/riversolo.mp3'
+import Logo from '../img/logo.svg'
 export default props => {
 	const [scoreData, setScoreData] = useState(null);
 	const [heartClicks, setHeartClicks] = useState(0);
@@ -153,9 +152,9 @@ export default props => {
 	}, [props.isExpert])
 	return(
 	<Panel id={props.id}>
-		{platform !== VKCOM && <PanelHeader
-		left={
-			props.isExpert ? <PanelHeaderButton
+		<PanelHeader
+		left={platform !== VKCOM &&
+			(props.isExpert ? <PanelHeaderButton
 			href={GENERAL_LINKS.experts_card}
 			target="_blank" rel="noopener noreferrer">
 				<Icon28BrainOutline />
@@ -165,8 +164,8 @@ export default props => {
 			href={GENERAL_LINKS.group_official_community}
 			target="_blank" rel="noopener noreferrer">
 				<Icon28DoorArrowLeftOutline />
-			</PanelHeaderButton>
-		}>{props.isExpert === null ? '...' : props.isExpert ? 'Тематики' : 'Доступ закрыт'}</PanelHeader>}
+			</PanelHeaderButton>)
+		}>{props.isExpert === null ? '...' : props.isExpert ? <img src={Logo} width={platform === VKCOM ? 200 : document.documentElement.clientWidth - 200} alt='Experts Guide' /> : 'Доступ закрыт'}</PanelHeader>
 		{props.isExpert === null ? <ScreenSpinner /> : props.isExpert || 
 		<Group>
 			<Placeholder
@@ -189,18 +188,26 @@ export default props => {
 		{props.isExpert === null ? <ScreenSpinner /> : props.isExpert &&
 		<>
 		{platform !== VKCOM && genTabs()}
-		{platform === VKCOM && <Group>
-			<CellButton
-			centered
-			onClick={() => props.setActivePanel('home')}
-			before={<Icon28HomeOutline />}>
-				Главная
-			</CellButton>
-		</Group>}
 		<ExpertMenu
 		activeTopic={props.activeTopic} />
 		<Group header={<SimpleCell disabled description='Обновлен в течение недели'>Рейтинг</SimpleCell>}>
-			{scoreData === null ? <ScreenSpinner />:
+			{scoreData === null ? 
+			<Div style={{paddingTop: 0, paddingBottom: 0}}>
+				{Array(3).fill().map(
+				(e,i) => 
+				<div className='topics_skeleton' key={i}>
+					<Skeleton circle={true} height={48} width={48} />
+					<div className='topics_skeleton_items'>
+						<Skeleton width={120} height={15} />
+						<Skeleton width={100} height={10} />
+					</div>
+					
+				</div>
+				)}
+				
+			</Div>
+			
+			:
 			scoreData && scoreGenerator()}
 			<Spacing separator />
 			<SimpleCell
@@ -214,7 +221,6 @@ export default props => {
 						{`${props.vkInfoUser.first_name} ${props.vkInfoUser.last_name}`} {props.userInfo.is_best && <Icon16Crown className='crown crown_profile' />}
 					</div>
 			</SimpleCell>
-
 		</Group></>}
 
 		
