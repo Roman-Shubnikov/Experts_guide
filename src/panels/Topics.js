@@ -245,7 +245,7 @@ export default props => {
 			<MenuArticles 
 			activeTopic={props.activeTopic} />
 		</Group>}
-		<Group>
+		{props.isExpert && <Group>
 			<Div style={{display: 'flex', justifyContent: 'center', position: 'relative'}}>
 				<Link>Клуб экспертов ВКонтакте</Link>
 				
@@ -260,7 +260,7 @@ export default props => {
 				style={heartClicks ? {transform: `scale(${1 + heartClicks/10})`} : {}} 
 				className={heartClicks === 0 ? 'heart_bottom heart_anim' : 'heart_bottom'} />}
 			</Div>
-		</Group>
+		</Group>}
 
 	</Panel>
 	);

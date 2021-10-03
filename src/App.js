@@ -173,9 +173,9 @@ const App = () => {
 			.then(data => data.json())
 			.then(data => {
 				if(!data.result) throw Error('no data')
-				let info = data.response['expert_info'];
-				setIsExpert(info['is_expert'])
-				let user = info['info'];
+				let info = data.response.expert_info;
+				setIsExpert(info.is_expert)
+				let user = info.info;
 				setAchievements(data.response.achievements)
 				if(user.actions_current_week >= ACTIONS_NORM) {
 					setActsWeek(700);
@@ -184,11 +184,11 @@ const App = () => {
 						setActsWeek(user.actions_current_week)
 					},500)
 				}
-				if(info['is_expert']) setActiveTopic(getKeyByValue(TOPICS, user.topic_name));
+				if(info.is_expert) setActiveTopic(getKeyByValue(TOPICS, user.topic_name));
 				let finalUser = data.response;
 				finalUser.expert_info = user
 				dispatch(accountActions.setUser(finalUser))
-				if(info['is_expert']) {
+				if(info.is_expert) {
 					goPanel('home', 'home', true, true)
 				}else {
 					dispatch(viewsActions.setNeedEpic(false))

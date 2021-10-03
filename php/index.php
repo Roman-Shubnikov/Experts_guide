@@ -1,10 +1,5 @@
 <?php
 
-// error_reporting(E_ALL);
-// ini_set('display_errors', 1);
-// ini_set('display_startup_errors', 1);
-// mysqli_report(MYSQLI_REPORT_STRICT); 
-
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 	header('Access-Control-Allow-Origin: *');
@@ -261,8 +256,11 @@ switch ($method) {
 		if(empty($apiinfo)) Show::error(404);
 		$res['expert_info'] = $apiinfo['items'][0];
 		$achiev = new Achievements($Connect);
-		$Connect->query("UPDATE users set actions=? WHERE vk_id=?", 
-		[$res['expert_info']['info']['actions_count'], $user_id]);
+		if($res['expert_info']['is_expert']) {
+			$Connect->query("UPDATE users set actions=? WHERE vk_id=?", 
+			[$res['expert_info']['info']['actions_count'], $user_id]);
+		}
+		
 		$res['achievements'] = $achiev->getAchievements($user_id);
 		Show::response($res);
 

@@ -71,12 +71,12 @@ export default props => {
                 </Div>
                 <Div style={{paddingTop: 0}}>
                     <Text style={{whiteSpace: "pre-wrap"}} weight='regular'>
-                        <Anchorme onClick={(e) => {e.stopPropagation()}} target="_blank" rel="noreferrer noopener">
+                        <Anchorme onClick={(e) => {e.stopPropagation()}} style={{color: 'var(--dynamic_blue)'}} target="_blank" rel="noreferrer noopener">
                             {question.answer}
                         </Anchorme>
                     </Text>
                 </Div>
-                <Div style={{display: 'flex'}}>
+                {(question.support_need || question.curators_need) ? <Div style={{display: 'flex'}}>
                  {question.support_need && 
                     <Button href={GENERAL_LINKS.group_fan_community}
                     style={{marginRight: 4}}
@@ -95,7 +95,7 @@ export default props => {
                     rel="noopener noreferrer">
                         Кураторы
                     </Button>}
-                </Div>
+                </Div> : null}
                 {/* <Div style={{display: 'flex', justifyContent: 'space-around'}}>
                     <Div>
                         <Icon28ThumbsUpOutline style={{color: liked ? '#FFB73D' : 'var(--content_placeholder_icon)'}} onClick={(e) => {setLike(pv => !pv)}} width={56} height={56} />

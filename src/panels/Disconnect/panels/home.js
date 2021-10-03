@@ -8,7 +8,7 @@ import {
     usePlatform,
     VKCOM,
     } from '@vkontakte/vkui';
-import Icon56CheckCircleDeviceOutline from '@vkontakte/icons/dist/56/check_circle_device_outline';
+    import { Icon56LockOutline } from '@vkontakte/icons';
 import { GENERAL_LINKS } from '../../../config';
 
 export default props => {
@@ -20,7 +20,7 @@ export default props => {
             </PanelHeader>}
             <Group>
                 <Placeholder
-                    icon={<Icon56CheckCircleDeviceOutline style={{ color: 'var(--dynamic_orange)' }} />}
+                    icon={<Icon56LockOutline style={{ color: 'var(--dynamic_orange)' }} />}
                     header='Упс, кажется, при запросе возникла ошибка'
                     action={<>
                         <Button size='m'
