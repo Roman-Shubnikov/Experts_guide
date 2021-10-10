@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Skeleton from "react-loading-skeleton";
+import bridge from '@vkontakte/vk-bridge';
 import { 
 	Panel, 
 	Button, 
@@ -45,8 +46,8 @@ import {
 	getKeyByValue,
 } from '../functions/tools';
 import { ExpertMenu, MenuArticles } from '../components';
-import easterEggMusic from '../music/riversolo.mp3'
-import Logo from '../img/logo.svg'
+import Logo from '../img/logo'
+const easterEggMusic = new Audio('https://xelene.ru/experts_guide/music/riversolo.mp3')
 export default props => {
 	const [scoreData, setScoreData] = useState(null);
 	const [heartClicks, setHeartClicks] = useState(0);
@@ -131,7 +132,7 @@ export default props => {
 		setHeartClicks(prev => prev+1)
 	}
 	useEffect(() => {
-		setAudio(new Audio(easterEggMusic));
+		setAudio(easterEggMusic);
 		if(props.isExpert){
 			fetch(API_URL + 'method=experts.getTop&' + window.location.search.replace('?', ''))
 			.then(data => data.json())
@@ -155,8 +156,13 @@ export default props => {
 		<PanelHeader
 		left={platform !== VKCOM &&
 			(props.isExpert ? <PanelHeaderButton
-			href={GENERAL_LINKS.experts_card}
-			target="_blank" rel="noopener noreferrer">
+			onClick={() => bridge.send(
+				'VKWebAppOpenApp',
+				{
+					app_id: 7171491,
+					location: ''
+				}
+			)}>
 				<Icon28BrainOutline />
 			</PanelHeaderButton>
 			: 
@@ -165,7 +171,7 @@ export default props => {
 			target="_blank" rel="noopener noreferrer">
 				<Icon28DoorArrowLeftOutline />
 			</PanelHeaderButton>)
-		}>{props.isExpert === null ? '...' : props.isExpert ? <img src={Logo} width={platform === VKCOM ? 200 : document.documentElement.clientWidth - 200} alt='Experts Guide' /> : 'Доступ закрыт'}</PanelHeader>
+		}>{props.isExpert === null ? '...' : props.isExpert ? <Logo width={platform === VKCOM ? 200 : document.documentElement.clientWidth - 200} alt='Experts Guide' /> : 'Доступ закрыт'}</PanelHeader>
 		{props.isExpert === null ? <ScreenSpinner /> : props.isExpert || 
 		<Group>
 			<Placeholder

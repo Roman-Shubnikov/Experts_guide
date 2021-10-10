@@ -6,8 +6,8 @@
   "scripts": {
     "start": "set \"GENERATE_SOURCEMAP=false\" && cross-env PORT=10888 HTTPS=true react-scripts start",
     "build": "set \"GENERATE_SOURCEMAP=false\" && react-scripts build",
-    "predeploy": "npm run build",
-    "deploy": "scp -r ./build/* root@188.225.45.112:/var/www/xelene.ru/experts_guide"
+    "tunnel": "vk-tunnel --insecure=1 --http-protocol=https --ws-protocol=wss --host=localhost --port=10888",
+    "deploy": "vk-miniapps-deploy"
   },
   "homepage": "./",
   "keywords": [],

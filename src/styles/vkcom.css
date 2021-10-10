@@ -2,4 +2,7 @@ body[scheme="vkcom"] {
     --scrollbar: #C1C1C1;
     --hover_scrollbar: #aeb7c2;
     --subtext: #818C99;
+    --gray: #626D7A;
+    --my-topic-width: 59px;
+    --topic-width: 48px;
 }

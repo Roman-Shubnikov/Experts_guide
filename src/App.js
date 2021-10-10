@@ -36,6 +36,7 @@ import {
 	Icon28ReportOutline,
 	Icon28UserCircleOutline,
 	Icon28HelpCircleOutline,
+	Icon28ChevronDownOutline
 } from '@vkontakte/icons'
 import {
 	EpicMenuCell,
@@ -67,6 +68,7 @@ const scheme_params = {
 	space_gray: { "status_bar_style": "light", "action_bar_color": "#19191A", 'navigation_bar_color': "#19191A" }
   }
 var backTimeout = false;
+var right_timer_setter = null;
 const platformname = (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
 const App = () => {
 	const dispatch = useDispatch();
@@ -81,6 +83,8 @@ const App = () => {
 	const [actsWeek, setActsWeek] = useState(0);
 	const [activeTopic, setActiveTopic] = useState('art')
 	const [tokenSearch, setTokenSearch] = useState('');
+	const [rightMenuHide, setRightMenuHide] = useState(true);
+	const [rightTimer, setRightTimer] = useState(false);
 	
 	const platformvkui = usePlatform();
 	const platform = useRef();
@@ -266,8 +270,10 @@ const App = () => {
 	const getActualTopic = () => {
 		let my_topic_index = ICON_TOPICS.findIndex((val, i) => val.topic === userInfo.expert_info.topic_name)
 		let iconTopics_actual = ICON_TOPICS.slice();
+		console.log(iconTopics_actual)
 		if(isExpert && my_topic_index !== -1){
-			let my_topic = iconTopics_actual.splice(my_topic_index, my_topic_index+1);
+			let my_topic = iconTopics_actual.splice(my_topic_index, 1);
+			console.log(my_topic, my_topic_index)
 			iconTopics_actual.unshift(my_topic[0])
 		}
 		return iconTopics_actual;
@@ -276,10 +282,15 @@ const App = () => {
 	const genRightMenu = () => {
 		let menu_render = [];
 		let iconTopics_actual = getActualTopic();
-		iconTopics_actual.forEach((val, i) => {
-			let Icon = val.icon
-			menu_render.push(
-				<EpicMenuCell
+		console.log(iconTopics_actual)
+		menu_render.push(<div
+		className={
+			'right-menu_topic '+ (!rightTimer ? 'right-menu_topic-hidden':'right-menu_topic-show')
+			}>
+			{iconTopics_actual.map((val, i) => {
+				let Icon = val.icon
+				return <EpicMenuCell
+				description={i===0 && 'Ваша тематика'}
 				activePanel={activePanel}
 				key={val.topic}
 				disabled={!isExpert}
@@ -290,8 +301,35 @@ const App = () => {
 				setActiveTopic={setActiveTopic}>
 					{val.topic}
 				</EpicMenuCell>
-			)
-		})
+			})}
+		</div>)
+		menu_render.push(
+			<SimpleCell
+			className='gray'
+			key={'menu'}
+			onClick={() => {
+				if(right_timer_setter) clearTimeout(right_timer_setter);
+				if(rightMenuHide) {
+					setRightMenuHide(false)
+					right_timer_setter = setTimeout(() => {
+						setRightTimer(true)
+					}, 100)
+				} else {
+					setActiveTopic(getKeyByValue(TOPICS, iconTopics_actual[0].topic))
+					setRightTimer(false)
+					right_timer_setter = setTimeout(() => {
+						setRightMenuHide(true)
+					}, 100)
+				}
+			}}
+			before={<div style={{marginRight: 5}}>
+					<Icon28ChevronDownOutline 
+					className='right-menu_chevron' 
+					style={{transform: (rightMenuHide || !rightTimer) ? '' : 'rotate(180deg)'}} />
+				</div>}>
+				Остальные тематики
+			</SimpleCell>
+		)
 		return menu_render
 	}
 	const onEpicTap = (e) => {
@@ -455,8 +493,13 @@ const App = () => {
 							<Group>
 								<SimpleCell
 								style={{color: '#626D7A'}}
-								href={GENERAL_LINKS.experts_card}
-								target="_blank" rel="noopener noreferrer"
+								onClick={() => bridge.send(
+									'VKWebAppOpenApp',
+									{
+										app_id: 7171491,
+										location: ''
+									}
+								)}
 								before={<Icon28BrainOutline style={{color: '#99A2AD'}} />}>
 									Карточка эксперта
 								</SimpleCell>

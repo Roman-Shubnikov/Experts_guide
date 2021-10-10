@@ -138,7 +138,7 @@ const UserGradient = props => {
                 <SimpleCell
                 disabled
                 before={<Icon28StatisticsOutline />}
-                after={apiInfo.position}>
+                after={apiInfo.position === -1 ? "Изучаем" : apiInfo.position}>
                     Позиция в рейтинге
                 </SimpleCell>
                 </> : 

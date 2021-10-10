@@ -27,7 +27,7 @@ import {
     Icon28StatisticsOutline,
     Icon28ArchiveOutline,
     Icon16Crown,
-
+    Icon28Favorite,
 } from '@vkontakte/icons';
 import { ACTIONS_NORM, BASE_ARTICLE_TOPIC_LINK, TOPICS } from '../config';
 import { enumerate, getKeyByValue } from '../functions/tools';
@@ -60,7 +60,7 @@ const Achievements = props => {
                         style={{display:'flex'}}>
                             Подробнее о тематике <Icon12Chevron className='profile-chevron' style={mouseOndescr ? { transform: 'translateX(2px)'} : {}} />
                         </div>}
-                before={<Avatar size={72} src={vkInfoUser.photo_max_orig} />}>
+                before={<Icon28Favorite width={56} height={56} style={{color: userInfo.actions_current_week >= ACTIONS_NORM ? '#FFB230' : '#CCD0D6', marginRight: 12}} />}>
                     <div style={{display: 'flex'}}>
                         {`${vkInfoUser.first_name} ${vkInfoUser.last_name}`} {userInfo.is_best && <Icon16Crown className='crown crown_profile' />}
                     </div>

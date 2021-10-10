@@ -1,16 +1,10 @@
 import React from 'react';
 import {
+    Avatar,
     SimpleCell,
 
 } from "@vkontakte/vkui"
-import {
-    Icon28Favorite,
-} from "@vkontakte/icons";
-import {
-    ACTIONS_NORM, 
-} from "../config"
-
-export default ({userInfo, goPanel, activePanel}) => {
+export default ({vkInfoUser, userInfo, goPanel, activePanel}) => {
     const genMainChild = () => {
         return(
             <div style={{display: 'flex'}}>
@@ -25,7 +19,7 @@ export default ({userInfo, goPanel, activePanel}) => {
             borderRadius: 8
         } : {}}
         before={
-            <Icon28Favorite width={32} height={32} style={{color: userInfo.actions_current_week >= ACTIONS_NORM ? '#FFB230' : '#CCD0D6'}} />
+            <Avatar size={48} src={vkInfoUser.photo_max_orig} alt='ava' />
         }
         onClick={() => goPanel('profile', 'profile')}
         description={"В тематике «" + userInfo.topic_name + "»"}>

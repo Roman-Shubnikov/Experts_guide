@@ -3,10 +3,12 @@ import {
 	SimpleCell,
 } from '@vkontakte/vkui';
 
-export default ({activePanel, activeTopic, topic, setActiveTopic, goPanel, icon, disabled, children}) => {
+export default ({activePanel, description, activeTopic, topic, setActiveTopic, goPanel, icon, disabled, children}) => {
     const selected = activeTopic === topic && activePanel === 'topics';
     return(
         <SimpleCell
+        description={description}
+        className='gray'
         disabled={selected || disabled}
         style={selected && !disabled ? {
             backgroundColor: "var(--button_secondary_background)",

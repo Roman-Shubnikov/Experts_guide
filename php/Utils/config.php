@@ -22,7 +22,7 @@ class CONFIG {
 	const API_EXPERTS_TOKEN = '9h3d83h8r8ehe9xehd93u';
 
 	const MAX_FAQ_CATEGORY_LEN = 30;
-	const MAX_FAQ_QUESTION_LEN = 100;
+	const MAX_FAQ_QUESTION_LEN = 130;
 	const MAX_FAQ_ANSWER_LEN = 5000;
 
 	const APP_ID = 7409818;
@@ -68,6 +68,15 @@ class CONFIG {
 		101 => 'Вы привысили лимит подачи жалоб ('. CONFIG::MAX_REPORTS_NOT_MODERATE .'), дождитесь их рассмотрения',
 		102 => 'Неизвестная причяина жалобы',
 		103 => 'Недопустимая длина контента (не более'.CONFIG::MAX_TEXT_LENGTH.' и не менее '.CONFIG::MIN_TEXT_LENGTH.')',
+
+
+		// FAQ
+		1600 => "Неверно введён цвет",
+		1601 => "Превышена максимально допустимая длина категории",
+		1602 => "Такой категории не существует",
+		1603 => "Превышена максимально допустимая длина ответа",
+		1604 => "Превышена максимально допустимая длина вопроса",
+		1605 => "Поля не могут быть пустыми",
 
 		// Server
 

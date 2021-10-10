@@ -1,4 +1,5 @@
 import React from 'react';
+import bridge from '@vkontakte/vk-bridge';
 import {
     Avatar,
 	VKCOM,
@@ -19,11 +20,12 @@ import {
     Icon28GlobeOutline,
     Icon16Chevron,
     Icon56CompassCircleFillPurple,
+    Icon28EmployeeOutline,
+    Icon28BookOutline,
 } from '@vkontakte/icons'
 import Support_ava from '../img/Support_ava.svg'
 import fun_experts_community from '../img/fun_experts_community.jpg'
 import { BASE_LINKS_MENU, GENERAL_LINKS, GROUP_DESCRIPTIONS } from '../config';
-import Card_curators from '../img/cards/curators.svg'
 import Card_news from '../img/cards/news.svg'
 import Card_updates from '../img/cards/updates.svg'
 import Card_community from '../img/cards/experts_community.svg'
@@ -95,10 +97,6 @@ const Home = props => {
                         href={BASE_LINKS_MENU.news}
                         type='link' />
                         <CardGalery 
-                        img={Card_curators}
-                        onClick={() => props.goPanel('curators', 'curators', true)}
-                        type='button' />
-                        <CardGalery 
                         img={Card_achievements}
                         href={BASE_LINKS_MENU.achievements}
                         type='link' />
@@ -127,6 +125,25 @@ const Home = props => {
                 href={GENERAL_LINKS.fan_website}
                 target="_blank" rel="noopener noreferrer">
                     Сайт
+                </SimpleCell>
+                <SimpleCell
+                before={<Icon28EmployeeOutline />}
+                after={<Icon16Chevron />}
+                onClick={() => props.goPanel('curators', 'curators', true)}
+                >
+                    Кураторы
+                </SimpleCell>
+                <SimpleCell
+                before={<Icon28BookOutline />}
+                after={<Icon16Chevron />}
+                onClick={() => bridge.send(
+                    'VKWebAppOpenApp',
+                    {
+                        app_id: 7971136,
+                        location: ''
+                    }
+                )}>
+                    Правила программы
                 </SimpleCell>
             </Group>
             <Group>

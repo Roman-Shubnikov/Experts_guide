@@ -177,3 +177,20 @@ a {
 .topics_avatar {
     border-radius: 50%;
 }
+.right-menu_chevron {
+    color: var(--gray);
+    transition: all 0.5s;
+}
+.right-menu_topic {
+    transition: all .5s ease-out;
+    overflow: hidden;
+}
+.right-menu_topic-hidden {
+    height: var(--my-topic-width);
+}
+.right-menu_topic-show {
+    height: calc(var(--topic-width) * 10 + var(--my-topic-width));
+}
+.gray {
+    color: var(--gray);
+}
