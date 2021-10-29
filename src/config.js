@@ -10,7 +10,6 @@ import {
     Icon28Smiles2Outline,
     Icon28TshirtOutline,
     Icon28GameOutline,
-    Icon28AccessibilityOutline,
     Icon28LaptopOutline,
     Icon28CancelCircleOutline,
     Icon28KeyboardOutline,
@@ -38,6 +37,7 @@ import {
     Icon28StickerOutline,
 
 } from '@vkontakte/icons'
+import { It_28, Sience_28 } from './img/icons';
 
 export const GROUP_EXPERTS_ID = 182611749;
 export const GROUP_FAN_EXPERTS_ID = 206651170;
@@ -45,6 +45,7 @@ export const API_URL = 'https://xelene.ru/experts_guide/php/index.php?';
 export const GENERAL_LINKS = {
     group_fan: 'https://vk.com/clubvkexperts',
     fan_website: 'https://vk.link/clubvkexperts',
+    bingo_game: 'https://vk.com/wall-206651170?q=%23bingo',
     group_official_community: 'https://vk.me/vkexperts',
     group_official: 'https://vk.com/vkexperts',
     group_fan_community: 'https://vk.me/clubvkexperts',
@@ -110,7 +111,7 @@ export const ACTIONS_NORM = 700;
 export const ICON_TOPICS = [
     {icon: Icon28PaletteOutline, topic: 'Арт', color: '#FF3347'},
     {icon: Icon28BasketballBallOutline, topic: 'Спорт', color: '#FFA000'},
-    {icon: Icon28LaptopOutline, topic: 'IT', color: '#3F8AE0'},
+    {icon: It_28, topic: 'IT', color: '#3F8AE0'},
     {icon: Icon28CameraOutline, topic: 'Фото', color: '#3F8AE0'},
     {icon: Icon28MusicOutline, topic: 'Музыка', color: '#AA65F0'},
     {icon: Icon28PlaneOutline, topic: 'Туризм', color: '#FF3347'},
@@ -118,7 +119,7 @@ export const ICON_TOPICS = [
     {icon: Icon28Smiles2Outline, topic: 'Юмор', color: '#FFA000'},
     {icon: Icon28TshirtOutline, topic: 'Стиль', color: '#3F8AE0'},
     {icon: Icon28GameOutline, topic: 'Игры', color: '#4BB34B'},
-    {icon: Icon28AccessibilityOutline, topic: 'Наука', color: '#76787A'},
+    {icon: Sience_28, topic: 'Наука', color: '#76787A'},
 ]
 
 export const SCORE_POSITION_COLORS = [

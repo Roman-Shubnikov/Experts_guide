@@ -136,6 +136,19 @@ a {
     background-color: #4BB34B;
     border: 2px solid var(--white);
 }
+.avatar_star-container {
+    width: 21px;
+    height: 13px;
+    position: absolute;
+    bottom: -10%;
+    border-radius: 8px;
+    background-color: var(--white);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+}
+.avatar_star-icon {
+    margin: 1.5px 5.5px;
+    position: relative;
+}
 .card_image {
     height: 100px;
     border-radius: 8px;

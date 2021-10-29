@@ -22,6 +22,7 @@ import {
     Icon56CompassCircleFillPurple,
     Icon28EmployeeOutline,
     Icon28BookOutline,
+    Icon28GameOutline,
 } from '@vkontakte/icons'
 import Support_ava from '../img/Support_ava.svg'
 import fun_experts_community from '../img/fun_experts_community.jpg'
@@ -125,6 +126,13 @@ const Home = props => {
                 href={GENERAL_LINKS.fan_website}
                 target="_blank" rel="noopener noreferrer">
                     Сайт
+                </SimpleCell>
+                <SimpleCell
+                before={<Icon28GameOutline />}
+                after={<Icon16Chevron />}
+                href={GENERAL_LINKS.bingo_game}
+                target="_blank" rel="noopener noreferrer">
+                    Бинго
                 </SimpleCell>
                 <SimpleCell
                 before={<Icon28EmployeeOutline />}

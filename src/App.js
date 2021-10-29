@@ -270,10 +270,8 @@ const App = () => {
 	const getActualTopic = () => {
 		let my_topic_index = ICON_TOPICS.findIndex((val, i) => val.topic === userInfo.expert_info.topic_name)
 		let iconTopics_actual = ICON_TOPICS.slice();
-		console.log(iconTopics_actual)
 		if(isExpert && my_topic_index !== -1){
 			let my_topic = iconTopics_actual.splice(my_topic_index, 1);
-			console.log(my_topic, my_topic_index)
 			iconTopics_actual.unshift(my_topic[0])
 		}
 		return iconTopics_actual;
@@ -282,8 +280,8 @@ const App = () => {
 	const genRightMenu = () => {
 		let menu_render = [];
 		let iconTopics_actual = getActualTopic();
-		console.log(iconTopics_actual)
 		menu_render.push(<div
+		key={'menu_container'}
 		className={
 			'right-menu_topic '+ (!rightTimer ? 'right-menu_topic-hidden':'right-menu_topic-show')
 			}>

@@ -8,7 +8,6 @@ export default ({activePanel, description, activeTopic, topic, setActiveTopic, g
     return(
         <SimpleCell
         description={description}
-        className='gray'
         disabled={selected || disabled}
         style={selected && !disabled ? {
             backgroundColor: "var(--button_secondary_background)",

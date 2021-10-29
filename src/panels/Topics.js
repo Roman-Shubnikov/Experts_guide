@@ -23,6 +23,7 @@ import {
 	FixedLayout,
 	IconButton,
 	Spacing,
+	useAppearance,
 } from '@vkontakte/vkui';
 import {
 	Icon56ErrorTriangleOutline,
@@ -55,6 +56,7 @@ export default props => {
 	const [audio, setAudio] = useState(null);
 	const [audioPaused, setAudioPaused] = useState(true);
 	const platform = usePlatform();
+	const appearence = useAppearance();
 	const setActiveTopic = props.setActiveTopic;
 	const scoreGenerator = () => {
 		let render_score = [];
@@ -171,7 +173,10 @@ export default props => {
 			target="_blank" rel="noopener noreferrer">
 				<Icon28DoorArrowLeftOutline />
 			</PanelHeaderButton>)
-		}>{props.isExpert === null ? '...' : props.isExpert ? <Logo width={platform === VKCOM ? 200 : document.documentElement.clientWidth - 200} alt='Experts Guide' /> : 'Доступ закрыт'}</PanelHeader>
+		}>{props.isExpert === null ? '...' : 
+		props.isExpert ? <Logo 
+						theme={appearence}
+						width={platform === VKCOM ? 200 : document.documentElement.clientWidth - 200} alt='Experts Guide' /> : 'Доступ закрыт'}</PanelHeader>
 		{props.isExpert === null ? <ScreenSpinner /> : props.isExpert || 
 		<Group>
 			<Placeholder
