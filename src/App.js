@@ -27,6 +27,7 @@ import {
 	Epic,
 	Tabbar,
 	TabbarItem,
+
 } from '@vkontakte/vkui';
 import {
 	Icon28BrainOutline,
@@ -36,7 +37,7 @@ import {
 	Icon28ReportOutline,
 	Icon28UserCircleOutline,
 	Icon28HelpCircleOutline,
-	Icon28ChevronDownOutline
+	Icon28ChevronDownOutline,
 } from '@vkontakte/icons'
 import {
 	EpicMenuCell,
@@ -53,10 +54,10 @@ import UsersInfoGet from './panels/UsersInfoGet';
 import Profile from './panels/Profile';
 import Reports from './panels/Reports';
 import Help from './panels/faq/main';
+import HelpCategories from './panels/faq/categories';
 import HelpCC from './panels/faq/createCategory';
 import HelpCQ from './panels/faq/createQuestion';
 import HelpQ from './panels/faq/question';
-import HelpQL from './panels/faq/questionsList';
 import Disconnect from './panels/Disconnect/main'
 import { ACTIONS_NORM, API_URL, GENERAL_LINKS, ICON_TOPICS, TOPICS } from './config';
 import { errorAlertCreator, getKeyByValue } from './functions/tools';
@@ -72,6 +73,7 @@ var right_timer_setter = null;
 const platformname = (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
 const App = () => {
 	const dispatch = useDispatch();
+	const { activeTab: faqActiveTab } = useSelector((state) => state.Faq)
 	const { user: userInfo, schemeSettings: {scheme}} = useSelector((state) => state.account)
 	const { activeStory, historyPanels, snackbar, activePanel, need_epic } = useSelector((state) => state.views)
 	const setHistoryPanels = useCallback((history) => dispatch(viewsActions.setHistory(history)), [dispatch]);
@@ -394,10 +396,6 @@ const App = () => {
 			id='faqQuestion'
 			navigation={navigation}
 			callbacks={callbacks} />
-			<HelpQL
-			id='faqQuestions'
-			navigation={navigation}
-			callbacks={callbacks} />
 
 		</View>,
 		<Disconnect id='disconnect' restart={Init} key='disconnect' />,
@@ -490,7 +488,6 @@ const App = () => {
 							</Group>
 							<Group>
 								<SimpleCell
-								style={{color: '#626D7A'}}
 								onClick={() => bridge.send(
 									'VKWebAppOpenApp',
 									{
@@ -498,55 +495,58 @@ const App = () => {
 										location: ''
 									}
 								)}
-								before={<Icon28BrainOutline style={{color: '#99A2AD'}} />}>
+								before={<Icon28BrainOutline style={{color: '#5181b8'}} />}>
 									Карточка эксперта
 								</SimpleCell>
 								<Spacing separator />
+								{/* Вынести это дерьмо в отдельный компонент */}
 								<SimpleCell
 								disabled={activeStory === 'home'}
 								style={activeStory === 'home' ? {
 									backgroundColor: "var(--button_secondary_background)",
-									borderRadius: 8,
-									color: '#626D7A'} : {color: '#626D7A'}}
+									borderRadius: 8} : {}}
 								onClick={() => goPanel('home', 'home')}
-								before={<Icon28HomeOutline style={{color: '#99A2AD'}} />}>
+								before={<Icon28HomeOutline style={{color: '#5181b8'}} />}>
 									Главная
 								</SimpleCell>
 								<SimpleCell
 								disabled={activeStory === 'searchInfo'}
 								style={activeStory === 'searchInfo' ? {
 									backgroundColor: "var(--button_secondary_background)",
-									borderRadius: 8,
-									color: '#626D7A'} : {color: '#626D7A'}}
+									borderRadius: 8} : {}}
 								onClick={() => goPanel('searchInfo', 'searchInfo')}
-								before={<Icon28UserCardOutline style={{color: '#99A2AD'}} />}>
+								before={<Icon28UserCardOutline style={{color: '#5181b8'}} />}>
 									Участники
 								</SimpleCell>
 								<SimpleCell
 								disabled={activeStory === 'reports'}
 								style={activeStory === 'reports' ? {
 									backgroundColor: "var(--button_secondary_background)",
-									borderRadius: 8,
-									color: '#626D7A'} : {color: '#626D7A'}}
+									borderRadius: 8} : {}}
 								onClick={() => goPanel('reports', 'reports')}
-								before={<Icon28ReportOutline style={{color: '#99A2AD'}} />}>
+								before={<Icon28ReportOutline style={{color: '#5181b8'}} />}>
 									Пожаловаться
 								</SimpleCell>
 								<SimpleCell
 								disabled={activeStory === 'help'}
 								style={activeStory === 'help' ? {
 									backgroundColor: "var(--button_secondary_background)",
-									borderRadius: 8,
-									color: '#626D7A'} : {color: '#626D7A'}}
+									borderRadius: 8} : {}}
 								onClick={() => goPanel('help', 'help')}
-								before={<Icon28HelpCircleOutline style={{color: '#99A2AD'}} />}>
+								before={<Icon28HelpCircleOutline style={{color: '#5181b8'}} />}>
 									Помощь
 								</SimpleCell>
 							</Group></>}
-							<Group>
+							{activeStory === "help" && faqActiveTab === "list" && 
+							<HelpCategories
+							navigation={navigation}
+							callbacks={callbacks}
+							id='help' />
+							}
+							{activeStory === "home" && <Group>
 								{genRightMenu()}
-							</Group>
-							{isExpert ? <Group>
+							</Group>}
+							{activeStory === "home" && (isExpert ? <Group>
 								<Div>
 									<Text style={{color: 'var(--subtext)'}}>
 										Какие тематики вы хотели бы видеть в ленте <Link
@@ -583,7 +583,7 @@ const App = () => {
 										Узнать подробнее
 									</Button>
 								</Div>
-							</Group>}
+							</Group>)}
 						</Panel>
 					</SplitCol>}
 					{snackbar}

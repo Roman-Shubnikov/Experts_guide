@@ -46,9 +46,9 @@ export const GENERAL_LINKS = {
     group_fan: 'https://vk.com/clubvkexperts',
     fan_website: 'https://vk.link/clubvkexperts',
     bingo_game: 'https://vk.com/wall-206651170?q=%23bingo',
-    group_official_community: 'https://vk.me/vkexperts',
+    group_official_community: 'https://vk.com/write-182611749',
     group_official: 'https://vk.com/vkexperts',
-    group_fan_community: 'https://vk.me/clubvkexperts',
+    group_fan_community: 'https://vk.com/write-206651170',
     scores: 'https://vk.com/@vkexperts-shop-and-incentive-points',
     experts_card: 'https://vk.com/app7171491',
     market: 'https://vk.com/market-182611749',
@@ -178,5 +178,6 @@ export const ExpertsIcons28 = {
 export const PERMISSIONS = {
     expert: 0,
     moderator: 1,
+    activist: 2,
     admin: 20,
 };

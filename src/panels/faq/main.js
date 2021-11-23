@@ -1,30 +1,31 @@
 import React, {useEffect, useState} from 'react';
 import { 
-    Icon28AddOutline,
-    Icon56AdvertisingOutline,
-    Icon28EditOutline,
-    Icon56DocumentOutline,
 
 } from '@vkontakte/icons';
 import {
     Button,
-    Cell,
-    CellButton,
     Group,
+    Header,
+    Link,
     Panel,
     PanelHeader,
     PanelSpinner,
     Placeholder,
     Search,
     SimpleCell,
+    Tabs,
+    TabsItem,
     usePlatform,
     VKCOM,
+    Div,
+    Subhead,
 
 } from '@vkontakte/vkui';
-
 import { useDispatch, useSelector } from 'react-redux';
-import { API_URL, ExpertsIcons28, PERMISSIONS, GENERAL_LINKS} from '../../config';
+import { API_URL, GENERAL_LINKS} from '../../config';
 import { faqActions } from '../../store/main';
+import { NotePen28, SadlyEmoji } from '../../img/icons';
+import QuestionList from './questionsList';
 let lastTypingTime;
 let typing = false;
 let searchval = '';
@@ -32,49 +33,14 @@ let searchval = '';
 export default props => {
     const dispatch = useDispatch();
     const [search, setSearch] = useState('');
-    const [editing, setEditing] = useState(false);
-    const { categories, searchResult } = useSelector((state) => state.Faq)
-    const setCategories = (categories) => dispatch(faqActions.setCategories(categories))
+    const { activeCategory, searchResult, activeTab } = useSelector((state) => state.Faq)
+    const setActiveTab = (tab) => dispatch(faqActions.setActiveTab(tab))
     const setSearchResult = (questions) => dispatch(faqActions.setSearchResultQuestions(questions))
     const { showErrorAlert, goPanel } = props.callbacks;
-    const { user } = useSelector((state) => state.account)
     const { goDisconnect } = props.navigation;
     const { activeStory } = useSelector((state) => state.views)
-    const permissions = user.permissions;
-    const moderator_permission = permissions >= PERMISSIONS.admin;
     const platform = usePlatform();
 
-    const getCategories = () => {
-        fetch(API_URL + "method=faq.getCategories&" + window.location.search.replace('?', ''))
-            .then(res => res.json())
-            .then(data => {
-            if (data.result) {
-                setCategories(data.response)
-            } else {
-                showErrorAlert(data.error.message)
-            }
-            })
-            .catch(goDisconnect)
-    }
-    const delCategory = (id) => {
-        fetch(API_URL + "method=faq.delCategory&" + window.location.search.replace('?', ''),
-        {
-            method: 'post',
-            headers: { "Content-type": "application/json; charset=UTF-8" },
-            body: JSON.stringify({
-              'category_id': id
-            })
-          })
-        .then(res => res.json())
-        .then(data => {
-        if (data.result) {
-            getCategories()
-        } else {
-            showErrorAlert(data.error.message)
-        }
-        })
-        .catch(goDisconnect)
-    }
     const getSearchQuestions = () => {
         if(searchval.length <= 0) return;
         fetch(API_URL + "method=faq.getQuestionByName&" + window.location.search.replace('?', ''),
@@ -95,6 +61,9 @@ export default props => {
             })
             .catch(goDisconnect)
     }
+    useEffect(() => {
+        console.log(activeCategory)
+    }, [activeCategory])
     const updateTyping = () => {
         if(!typing){
             typing = true;
@@ -111,11 +80,6 @@ export default props => {
                 getSearchQuestions()
             }
         }, 600)
-
-    }
-    const goCategory = (id) => {
-        dispatch(faqActions.setActiveCategory(id))
-        goPanel(activeStory, 'faqQuestions', true)
 
     }
     const goQuestion = (id) => {
@@ -136,7 +100,7 @@ export default props => {
             </SimpleCell>)
         }else{
             return <Placeholder
-            icon={<Icon56DocumentOutline />}
+            icon={<SadlyEmoji size={56} />}
             header="Вопрос не найден"
             action={
             <Button href={GENERAL_LINKS.group_fan_community} 
@@ -148,69 +112,80 @@ export default props => {
             </Placeholder>
         }
     }
-
-    const Categories = () => {
-        if(!categories) return <PanelSpinner/>
-        if(categories.length > 0){
-            let category_render = [];
-            categories.forEach((item, i) => {
-                let Icon = ExpertsIcons28[item.icon_id]
-                category_render.push(
-                    <Cell
-                    expandable
-                    multiline
-                    removable={editing}
-                    onRemove={() => {
-                        delCategory(item.id)
-                    }}
-                    key={item.id}
-                    onClick={() => goCategory(item.id)}
-                    before={<Icon style={{color: item.color}} />}
-                    >
-                        {item.title}
-                    </Cell>
+    const setTab = (e) => {
+        let tab = e.currentTarget.dataset.tab;
+        setActiveTab(tab);
+    }
+    const isActiveTab = (tab) => {
+        return activeTab === tab;
+    }
+    const content = () => {
+        switch(activeTab) {
+            case 'list':
+                if(search.length > 0) return <Group>{Searched()}</Group>;
+                return <QuestionList navigation={props.navigation} callbacks={props.callbacks} />;
+            case 'question_curators':
+                return (<>
+                    <Group>
+                        <Placeholder
+                        icon={<NotePen28 size={56} />}
+                        action={
+                            <Button
+                            href={GENERAL_LINKS.group_official_community}
+                            target="_blank"
+                            size='m'
+                            rel="noopener noreferrer">
+                                Задать вопрос
+                            </Button>
+                        }>
+                            Чтобы задать вопрос кураторам программы экспертов ВКонтакте,
+                            необходимо нажать на кнопку ниже и рассказать подробнее 
+                            о вашей проблеме.
+                        </Placeholder>
+                    </Group>
+                    <Group header={<Header>Рекомендация</Header>}>
+                        <Div style={{paddingTop: 0}}>
+                            <Subhead size={13} style={{color: '#818C99'}} weight='medium'>Чтобы ваш вопрос не затерялся в личных сообщениях рабочего сообщества,
+                            рекомендуем написать <Link>#вопрос</Link> в чате своей тематики.</Subhead>
+                        </Div>
+                    </Group>
+                    </>
                 )
-            });
-            return category_render;
-        }else{
-            return <Placeholder
-            icon={<Icon56AdvertisingOutline />}>
-                Пока данный раздел пустует. Мы уверены, скоро тут появятся вопросы.
-            </Placeholder>
+            default:
+                return <QuestionList navigation={props.navigation} callbacks={props.callbacks} />;
         }
     }
 
-    useEffect(() => {
-        getCategories()
-        // eslint-disable-next-line
-    },[])
-
     return(
         <Panel id={props.id}>
-            {platform !== VKCOM && <PanelHeader>
-                Помощь
-            </PanelHeader>}
-            <Group>
-                <Search value={search} placeholder='Введите ваш вопрос'
+            <PanelHeader>
+                {platform === VKCOM ? <Search value={search} placeholder='Введите ваш вопрос'
                 onChange={(e) => {updateTyping();
                             searchval = e.currentTarget.value
-                            setSearch(e.currentTarget.value)}} />
-                {moderator_permission && <><CellButton before={<Icon28AddOutline />}
-                    onClick={() => goPanel(activeStory, 'faqCreateCategory', true)}>
-                        Добавить категорию
-                </CellButton>
-                
-                <CellButton before={<Icon28AddOutline />}
-                onClick={() => goPanel(activeStory, 'faqCreateQuestion', true)}>
-                    Добавить вопрос
-                </CellButton>
-                <CellButton before={<Icon28EditOutline />}
-                    onClick={() => setEditing(pv => !pv)}>
-                        {editing ? "Готово" : "Редактировать"}
-                </CellButton></>}
-                {search.length > 0 ? Searched() : Categories()}
+                            setSearch(e.currentTarget.value)}} /> : "Помощь"}
+            </PanelHeader>
+            <Group>
+                {platform !== VKCOM && <Search value={search} placeholder='Введите ваш вопрос'
+                onChange={(e) => {updateTyping();
+                            searchval = e.currentTarget.value
+                            setSearch(e.currentTarget.value)}} />}
+                <Tabs>
+                    <TabsItem
+                    selected={isActiveTab('list')}
+                    data-tab='list'
+                    onClick={setTab}>
+                        Список вопросов
+                    </TabsItem>
+                    <TabsItem
+                    selected={isActiveTab('question_curators')}
+                    data-tab='question_curators'
+                    onClick={setTab}>
+                        Вопрос кураторам
+                    </TabsItem>
+                </Tabs>
                 
             </Group>
+            {content()}
             
         </Panel>
     )

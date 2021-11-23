@@ -21,6 +21,7 @@ export const viewsActions = {
 }
 
 export const faqActions = {
+    setActiveTab: (payload) => ({type: faqActionTypes.SET_ACTIVE_TAB, payload}),
     setCategories: (payload) => ({type: faqActionTypes.SET_CATEGORIES, payload}),
     setActiveCategory: (payload) => ({type: faqActionTypes.SET_ACTIVE_CATEGORY, payload}),
     setActiveQuestion: (payload) => ({type: faqActionTypes.SET_ACTIVE_QUESTION, payload}),

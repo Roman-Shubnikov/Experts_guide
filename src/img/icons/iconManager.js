@@ -9,7 +9,7 @@ function iconClass(fragments) {
   }
 
 export const IconManager = props => {
-    const {style, size, width, height, viewBox} = props.settings
+    const {style, size=28, width=size, height=size, viewBox} = props.settings
     const styles = {width, height, ...style}
     const Classes = iconClass(['vkuiIcon', `vkuiIcon--${size}`, `Icon--w-${width}`, `Icon--h-${height}`])
     return(

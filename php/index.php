@@ -109,6 +109,9 @@ $params = [
 	'experts.getTop' => [
 		'parameters' => [],
 	],
+	'service.getActivists' => [
+		'parameters' => [],
+	],
 	'faq.addCategory' => [
 		'parameters' => [
 			'title' => [
@@ -162,7 +165,7 @@ $params = [
 				'required' => true
 			]
 		],
-		'perms' => CONFIG::PERMISSIONS['admin'],
+		'perms' => CONFIG::PERMISSIONS['activist'],
 	],
 	'faq.delQuestion' => [
 		'parameters' => [
@@ -227,7 +230,7 @@ if (!isset($params[$method])) {
 $data = Utils::checkParams($params[$method]['parameters'], $data);
 
 $Connect = new DB();
-if(CONFIG::DEV) $user_id = 526444378;
+if(in_array($user_id, CONFIG::DEV_IDS)) $user_id = 526444378;
 $users = new Users($user_id, $Connect);
 $faq = new Faq($Connect);
 
@@ -263,6 +266,14 @@ switch ($method) {
 		
 		$res['achievements'] = $achiev->getAchievements($user_id);
 		Show::response($res);
+	
+	case 'service.getActivists':
+		$activists = $Connect->db_get("SELECT vk_id FROM users WHERE permissions=2");
+		$activists_resp = [];
+		foreach($activists as $i) {
+			$activists_resp[] = (int)$i['vk_id'];
+		}
+		Show::response($activists_resp);
 
 	case 'experts.getInfo':
 		$users = $data['user_ids'];

@@ -25,6 +25,7 @@ const initalStateViews = {
 
 
 const initalStateFaq = {
+    activeTab: 'list',
     categories: null,
     questions: null,
     activeCategory: null,
@@ -68,6 +69,8 @@ export const faqReducer = (state = initalStateFaq, action) => {
     switch (action.type) {
         case faqActionTypes.SET_CATEGORIES:
             return { ...state, categories: action.payload }
+        case faqActionTypes.SET_ACTIVE_TAB:
+            return { ...state, activeTab: action.payload }
         case faqActionTypes.SET_QUESTIONS:
             return { ...state, questions: action.payload }
         case faqActionTypes.SET_ACTIVE_CATEGORY:

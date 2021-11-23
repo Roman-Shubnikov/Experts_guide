@@ -7,7 +7,6 @@ import {
 	Icon28PodcastOutline,
 	Icon28LikeOutline,
 	Icon28Square4Outline,
-	Icon28TextLiveOutline,
     Icon28ThumbsUpOutline,
     Icon28SongOutline,
 } from '@vkontakte/icons'
@@ -45,10 +44,6 @@ const menu = [
 ]
 
 const closedMenu = [
-    {
-        title: 'Репортажи', 
-        icon: Icon28TextLiveOutline,
-    },
     {
         title: 'Дебаты', 
         icon: Icon28ThumbsUpOutline, 

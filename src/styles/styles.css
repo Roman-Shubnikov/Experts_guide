@@ -28,7 +28,7 @@ a {
 }
 ::-webkit-scrollbar-thumb {
     background-color:var(--scrollbar);
-    border-radius: 10%;
+    border-radius: 8px;
     box-shadow: inset 1px 1px 10px var(--scrollbar);
 }
 ::-webkit-scrollbar-thumb:hover {
@@ -90,14 +90,6 @@ a {
 }
 .heart_anim {
     animation: pulse_heart 3s linear infinite;
-}
-.vkuiTabsItem--vkcom .vkuiText{
-    font-size: 16px;
-}
-.vkuiTabs--vkcom .vkuiTabsItem--vkcom {
-    padding: 0;
-    margin-right: 20px;
-    font-size: 16px;
 }
 .crown {
     color: #FFA000;

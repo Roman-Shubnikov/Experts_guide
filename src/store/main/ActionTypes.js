@@ -12,6 +12,7 @@ export const viewsActionTypes = {
 }
 
 export const faqActionTypes = {
+    SET_ACTIVE_TAB: 'FAQ.SET_ACTIVE_TAB',
     SET_CATEGORIES: 'FAQ.SET_CATEGORIES',
     SET_QUESTIONS: 'FAQ.SET_QUESTIONS',
     SET_ACTIVE_CATEGORY: 'FAQ.SET_ACTIVE_CATEGORY',

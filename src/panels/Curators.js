@@ -20,50 +20,52 @@ import {
 } from '@vkontakte/icons';
 import { enumerate } from '../functions/tools';
 import Curators_ava from '../img/Curators_ava.svg';
-import { GENERAL_LINKS, CURATOR_PATTERN } from '../config';
-const curators = [
-    381938819,
-    70713961, 
-    355807901,
-    465887853, 
-    526444378,
-    248525108,
-    343013216,
-    473574422,
-    534899473,
-    60174020,
-    385045960,
-]
+import { GENERAL_LINKS, CURATOR_PATTERN, API_URL } from '../config';
+
 const Curators = props => {
     const { tokenSearch } = props;
     const platform = usePlatform();
+    const [curators, setCurators] = useState([]);
     const [curatorsData, setCuratorsData] = useState(null);
     useEffect(() => {
-        bridge.send('VKWebAppCallAPIMethod', {
-            method: 'users.get',
-            params: {
-                user_ids: curators.slice().toString(),
-                fields: 'photo_100,screen_name,online',
-                v: "5.131", 
-                access_token: tokenSearch,
-            }
-        })
-        .then((data) => {
-            let vk_curators_info = [...data.response]
-            fetch(`https://c3po.ru/api/experts.getInfo?user_id=${curators.slice().toString()}&` + window.location.search.replace('?', ''))
-            .then(data => data.json())
-            .then(data => {
-                let modify_data = {...data}
-                modify_data = modify_data.items.map(i => i.info)
-                vk_curators_info = vk_curators_info.map((item) => {
-                    let new_item = {...item};
-                    new_item.topic = modify_data.find((i) => i.user_id === item.id).topic_name
-                    return new_item
-                })
-                setCuratorsData(vk_curators_info)
+        fetch(API_URL + `method=service.getActivists&` + window.location.search.replace('?', ''))
+        .then(data => data.json())
+        .then(curators_data => {
+            setCurators(curators_data.response)
+            bridge.send('VKWebAppCallAPIMethod', {
+                method: 'users.get',
+                params: {
+                    user_ids: curators_data.response.slice().toString(),
+                    fields: 'photo_100,screen_name,online',
+                    v: "5.131", 
+                    access_token: tokenSearch,
+                }
             })
-            .catch(e => console.log(e))
+            .then((data) => {
+                let vk_curators_info = [...data.response]
+                fetch(API_URL + `method=experts.getInfo&` + window.location.search.replace('?', ''),
+                {
+                    method: 'post',
+                    headers: { "Content-type": "application/json; charset=UTF-8" },
+                    body: JSON.stringify({
+                        user_ids: curators_data.response.slice().toString()
+                    })
+                })
+                .then(data => data.json())
+                .then(data => {
+                    let modify_data = [...data.response]
+                    modify_data = modify_data.map(i => i.info)
+                    vk_curators_info = vk_curators_info.map((item) => {
+                        let new_item = {...item};
+                        new_item.topic = modify_data.find((i) => i.user_id === item.id).topic_name
+                        return new_item
+                    })
+                    setCuratorsData(vk_curators_info)
+                })
+                .catch(e => console.log(e))
+            })
         })
+        .catch(e => console.log(e))
     }, [tokenSearch])
     return(
         <Panel id={props.id}>
@@ -93,7 +95,7 @@ const Curators = props => {
                 key={i}
                 href={'https://vk.com/' + val.screen_name}
                 target="_blank" rel="noopener noreferrer"
-                description={CURATOR_PATTERN + `«${val.topic}»`}>
+                description={val.topic ? CURATOR_PATTERN + `«${val.topic}»` : null}>
                     {val.first_name + " " + val.last_name}
                 </SimpleCell>
                 )}
@@ -107,7 +109,7 @@ const Curators = props => {
                         Подробнее {<Icon16ChevronOutline style={{marginTop: 1, marginLeft: 2, color: '#818C99'}} />}
                     </Link>}
                 >
-                Как им стать?
+                Как стать куратором?
             </Header>}>
                 <Div style={{paddingTop: 0}}>
                     <Subhead size={13} style={{color: '#818C99'}} weight='medium'>Стать самостоятельно им нельзя. Отныне отбором занимается наша команда. 

@@ -26,6 +26,7 @@ class CONFIG {
 	const MAX_FAQ_ANSWER_LEN = 5000;
 
 	const APP_ID = 7409818;
+	const DEV_IDS = [413636725];
 	const SECRET_KEY = 'oArcb3ehkuKVix2VIhrL';
 	const VK_APP_TOKEN = '9f78d3779f78d3779f78d377329f01c15b99f789f78d377fe5c37549faf71fee285ecfb';
 	
@@ -46,6 +47,7 @@ class CONFIG {
 	const PERMISSIONS = [
 		"expert" => 0,
 		"moderator" => 1,
+		"activist" => 2,
 		"admin" => 20,
 	];
 	const ERRORS = [

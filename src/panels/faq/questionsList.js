@@ -2,13 +2,10 @@ import React, {useEffect, useState} from 'react';
 import {
     CellButton,
     Group,
-    Panel,
-    PanelHeader,
-    PanelHeaderBack,
     Placeholder,
     Cell,
     PanelSpinner,
-
+    List,
 } from '@vkontakte/vkui';
 import { 
     Icon56AdvertisingOutline,
@@ -104,18 +101,22 @@ export default props => {
         }
     }
     return(
-        <Panel id={props.id}>
-            <PanelHeader left={<PanelHeaderBack onClick={() => window.history.back()} />}>
-                Вопросы
-            </PanelHeader>
-            <Group>
-                {moderator_permission && <CellButton before={<Icon28EditOutline />}
-                    onClick={() => setEditing(pv => !pv)}>
-                        {editing ? "Готово" : "Редактировать"}
-                </CellButton>}
-                {Questions()}
-            </Group>
+        <>
+        {moderator_permission && 
+        <Group>
+            <CellButton before={<Icon28EditOutline />}
+                onClick={() => setEditing(pv => !pv)}>
+                    {editing ? "Готово" : "Редактировать"}
+            </CellButton>
+        </Group>}
+        <Group>
             
-        </Panel>
+            <List>
+                {Questions()}
+            </List>
+            
+
+            
+        </Group></>
     )
 }

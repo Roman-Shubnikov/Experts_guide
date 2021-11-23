@@ -80,7 +80,7 @@ const Achievements = props => {
                 
                 <Progress 
                 className={(actsWeekReal >= ACTIONS_NORM) ? 'progressbar_big_height green_progressbar' : 'progressbar_big_height blue_progressbar'}
-                value={actsWeekReal / ACTIONS_NORM *100}
+                value={Math.min(actsWeekReal / ACTIONS_NORM *100, 100)}
                 />
                 <div className='infoblock_item infoblock_item-bottom'>
                     {ACTIONS_NORM - userInfo.actions_current_week > 0 ?('Для преодоления порога необходимо оценить ещё ' + (ACTIONS_NORM - userInfo.actions_current_week) + ' ' + 

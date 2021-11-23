@@ -8,9 +8,8 @@ import {
     usePlatform,
     VKCOM,
     } from '@vkontakte/vkui';
-    import { Icon56LockOutline } from '@vkontakte/icons';
 import { GENERAL_LINKS } from '../../../config';
-
+import { SadlyEmoji } from '../../../img/icons';
 export default props => {
     const platform = usePlatform()
     return (
@@ -20,7 +19,7 @@ export default props => {
             </PanelHeader>}
             <Group>
                 <Placeholder
-                    icon={<Icon56LockOutline style={{ color: 'var(--dynamic_orange)' }} />}
+                    icon={<SadlyEmoji size={56} style={{ color: 'var(--dynamic_orange)' }} />}
                     header='Упс, кажется, при запросе возникла ошибка'
                     action={<>
                         <Button size='m'
