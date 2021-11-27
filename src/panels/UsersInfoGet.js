@@ -33,7 +33,7 @@ const placeholderTexts = {
 	not_found: 'Данный пользователь не состоит или был исключен из программы экспертов',
 	blocked: 'Данный пользователь удалён или заблокирован'
 }
-export default props => {
+export const UsersInfoGet = props => {
 	const [searchQuery, setSearchQuery] = useState('');
 	const [userSearchedInfo, setInfoUser] = useState(null);
 	const [fetching, setFetching] = useState(false);

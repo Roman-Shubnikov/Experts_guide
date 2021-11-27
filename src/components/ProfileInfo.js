@@ -4,38 +4,42 @@ import {
     SimpleCell,
 
 } from "@vkontakte/vkui"
-import { 
-    Icon12Favorite
-} from '@vkontakte/icons';
-import { ACTIONS_NORM } from '../config';
+import { Cards } from '.';
 export default ({vkInfoUser, userInfo, goPanel, activePanel}) => {
     const genMainChild = () => {
         return(
             <div style={{display: 'flex'}}>
-                Вы эксперт
+                {vkInfoUser.first_name + ' ' + vkInfoUser.last_name}
             </div>
         )
     }
     return(
-        <SimpleCell
-        style={activePanel === 'profile' ? {
-            backgroundColor: "var(--button_secondary_background)",
-            borderRadius: 8
-        } : {}}
-        before={
-            <Avatar className='avatar' shadow={false} size={48} src={vkInfoUser.photo_max_orig} alt='ava'>
-                <div className='avatar_star-container'>
-                    <Icon12Favorite 
-                    width={11} 
-                    height={11}
-                    className='avatar_star-icon' 
-                    style={{color: userInfo.actions_current_week >= ACTIONS_NORM ? '#FFB230' : '#CCD0D6', marginRight: 12}} />
-                </div>
-            </Avatar>
-        }
-        onClick={() => goPanel('profile', 'profile')}
-        description={"В тематике «" + userInfo.topic_name + "»"}>
-            {genMainChild()}
-        </SimpleCell>
+        <div style={{display: 'flex', 
+        justifyContent: 'space-between', }}>
+            <div style={{width: '50%', height: 65}}>
+                <SimpleCell
+                style={activePanel === 'profile' ? {
+                    width: '50%',
+                    height: '100%',
+                    backgroundColor: "var(--button_secondary_background)",
+                    borderRadius: 8
+                } : {
+                    width: '50%',
+                height: '100%',}}
+                before={
+                    <Avatar className='avatar' 
+                    shadow={false} 
+                    size={48} 
+                    src={vkInfoUser.photo_max_orig} 
+                    alt='ava' />
+                }
+                onClick={() => goPanel('profile', 'profile')}
+                description={"Ваша тематика: " + userInfo.topic_name}>
+                    {genMainChild()}
+                </SimpleCell>
+            </div>
+            
+            <Cards />
+        </div>
     )
 }

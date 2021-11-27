@@ -83,7 +83,7 @@ export default props => {
             <Cell
             multiline
             expandable
-            removable={editing}
+            mode={editing && "removable"}
             onRemove={() => {
                 delQuestion(res.id)
             }}

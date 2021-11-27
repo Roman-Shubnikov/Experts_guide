@@ -10,7 +10,7 @@ import Startov from './panels/home';
 import { useDispatch } from 'react-redux';
 import { viewsActions } from '../../store/main';
 
-export default props => {
+export const Disconnect = props => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(viewsActions.setNeedEpic(false))

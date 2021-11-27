@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useState} from 'react';
 import { 
 
 } from '@vkontakte/icons';
@@ -30,10 +30,10 @@ let lastTypingTime;
 let typing = false;
 let searchval = '';
 
-export default props => {
+export const Help = props => {
     const dispatch = useDispatch();
     const [search, setSearch] = useState('');
-    const { activeCategory, searchResult, activeTab } = useSelector((state) => state.Faq)
+    const { searchResult, activeTab } = useSelector((state) => state.Faq)
     const setActiveTab = (tab) => dispatch(faqActions.setActiveTab(tab))
     const setSearchResult = (questions) => dispatch(faqActions.setSearchResultQuestions(questions))
     const { showErrorAlert, goPanel } = props.callbacks;
@@ -61,9 +61,6 @@ export default props => {
             })
             .catch(goDisconnect)
     }
-    useEffect(() => {
-        console.log(activeCategory)
-    }, [activeCategory])
     const updateTyping = () => {
         if(!typing){
             typing = true;

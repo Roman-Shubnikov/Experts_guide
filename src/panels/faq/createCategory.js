@@ -19,7 +19,7 @@ import { API_URL, ExpertsIcons28 } from '../../config';
 const blueBackground = {
     backgroundColor: 'var(--accent)'
   };
-export default props => {
+export const HelpCreateCategory = props => {
     const [color, setColor] = useState('');
     const [category, setCategory] = useState('');
     const [icon_select, setIcon] = useState('');

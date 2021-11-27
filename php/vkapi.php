@@ -16,7 +16,7 @@ class VKApi {
 		$this->token = $token;
 	}
 
-	protected function _request( string $method, array $data ) {
+	public function _request( string $method, array $data ) {
 		$url = self::ENDPOINT . '/' . $method;
 
 		$data['access_token'] = $this->token;
@@ -25,12 +25,11 @@ class VKApi {
 
 		$query_string = http_build_query( $data );
 
-		$curl = curl_init();
+		$curl = curl_init($url);
 		curl_setopt_array( $curl, [
-			CURLOPT_URL => $url,
 			CURLOPT_RETURNTRANSFER => true,
 			CURLOPT_POST => true,
-			CURLOPT_POSTFIELDS => $query_string
+			CURLOPT_POSTFIELDS => $query_string,
 		] );
 
 		$response = curl_exec( $curl );
@@ -41,7 +40,6 @@ class VKApi {
 		if ( isset( $result['error'] ) ) {
 			throw new Exception( $result['error']['error_msg'], $result['error']['error_code'] );
 		}
-
 		return $result['response'];
 	}
 

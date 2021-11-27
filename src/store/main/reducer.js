@@ -1,3 +1,4 @@
+import { appStorageActionTypes } from ".";
 import {
     accountActionTypes, 
     viewsActionTypes, 
@@ -10,7 +11,10 @@ const initalStateAccount = {
         scheme: "bright_light",
         default_scheme: "bright_light",
     },
-
+    curators_data: null,
+    activeTopic: 'art',
+    tokenSearch: '',
+    friends_topics: {},
 }
 const initalStateViews = {
     scheme: "bright_light",
@@ -21,6 +25,7 @@ const initalStateViews = {
     snackbar: null,
     need_epic: true,
     historyPanelsView: ['home'],
+    
 }
 
 
@@ -33,6 +38,12 @@ const initalStateFaq = {
     searchResult: null,
 
 }
+const initalStateAppStore = {
+    score: null,
+    topics: null,
+    formats: null,
+
+}
 
 export const accountReducer = (state = initalStateAccount, action) => {
     switch(action.type) {
@@ -40,6 +51,14 @@ export const accountReducer = (state = initalStateAccount, action) => {
             return {...state, user: action.payload}
         case accountActionTypes.SET_SCHEME:
             return { ...state, schemeSettings: {...state.schemeSettings, ...action.payload}}
+        case accountActionTypes.SET_CURATORS:
+            return { ...state, curators_data: action.payload}
+        case accountActionTypes.SET_ACTIVE_TOPIC:
+            return { ...state, activeTopic: action.payload}
+        case accountActionTypes.SET_TOKEN_SEARCH:
+            return { ...state, tokenSearch: action.payload}
+        case accountActionTypes.SET_FRIENDS_TOPICS:
+            return { ...state, friends_topics: action.payload}
         default: 
             return state
 
@@ -79,6 +98,18 @@ export const faqReducer = (state = initalStateFaq, action) => {
             return { ...state, activeQuestion: action.payload }
         case faqActionTypes.SET_SEARCH_RESULT_QUESTION:
             return { ...state, searchResult: action.payload }
+        default:
+            return state
+    }
+}
+export const storageReducer = (state = initalStateAppStore, action) => {
+    switch (action.type) {
+        case appStorageActionTypes.SET_SCORE:
+            return { ...state, score: action.payload }
+        case appStorageActionTypes.SET_FORMATS:
+            return { ...state, formats: action.payload }
+        case appStorageActionTypes.SET_TOPICS:
+            return { ...state, topics: action.payload }
         default:
             return state
     }

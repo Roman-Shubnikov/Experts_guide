@@ -24,6 +24,7 @@ class CONFIG {
 	const MAX_FAQ_CATEGORY_LEN = 30;
 	const MAX_FAQ_QUESTION_LEN = 130;
 	const MAX_FAQ_ANSWER_LEN = 5000;
+	const MAX_POSTS_PER_10_MIN = 10;
 
 	const APP_ID = 7409818;
 	const DEV_IDS = [413636725];
@@ -39,8 +40,10 @@ class CONFIG {
 	const REGEXP_VALID_NAME = "/^[a-zа-яё0-9_ ]*$/ui";
 	const REGEXP_VALID_TEXT = "/^[a-zа-яё0-9_ \.,\"':!?+=\-\/]*$/ui";
 	const REGEXP_VALID_HEX_COLOR = "/^#[a-z0-9]{3,6}$/ui";
+	const REGEXP_VALID_WALL_POST_LINK = "/(https?:\/\/)?vk\.com\/clubvkexperts((\/)|(\?w=))wall-206651170_[0-9]+/";
 
 	const TIMES = [
+		'10min' => 600,
 		'month' => 2592000
 	];
 	//Permissions
@@ -64,12 +67,19 @@ class CONFIG {
 		8 => 'Строка поиcка не может быть пустой',
 		9 => 'Неизвестное значение параметра',
 		10 => 'Ошибка интерфейса',
+		11 => 'Некорректная ссылка',
 
 		//Reports
 		100 => 'Текст соддержит недопустимые символы',
 		101 => 'Вы привысили лимит подачи жалоб ('. CONFIG::MAX_REPORTS_NOT_MODERATE .'), дождитесь их рассмотрения',
 		102 => 'Неизвестная причяина жалобы',
 		103 => 'Недопустимая длина контента (не более'.CONFIG::MAX_TEXT_LENGTH.' и не менее '.CONFIG::MIN_TEXT_LENGTH.')',
+
+		//Posts
+		150 => 'Слишком много постов вы написали за маленький срок. Подождите, вам будет урок',
+		151 => 'Некорректный формат поста',
+		152 => 'Некорректная тематика поста',
+
 
 
 		// FAQ

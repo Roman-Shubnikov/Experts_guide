@@ -19,7 +19,7 @@ import { API_URL, ExpertsIcons28, PERMISSIONS } from '../../config';
 import { faqActions } from '../../store/main';
 
 
-export default props => {
+export const HelpCategories = props => {
     const dispatch = useDispatch();
     const [editing, setEditing] = useState(false);
     const { categories } = useSelector((state) => state.Faq)
@@ -67,6 +67,7 @@ export default props => {
         .catch(goDisconnect)
     }
     const goCategory = (id) => {
+        goPanel('help', 'help', true);
         dispatch(faqActions.setActiveCategory(id))
     }
     const Categories = () => {
@@ -78,8 +79,10 @@ export default props => {
                 category_render.push(
                     <Cell
                     expandable
+                    className="gray"
+                    style={{color: '#6f7985'}}
                     multiline
-                    removable={editing}
+                    mode={editing && "removable"}
                     onRemove={() => {
                         delCategory(item.id)
                     }}

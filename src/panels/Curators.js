@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import bridge from '@vkontakte/vk-bridge';
+import React from 'react';
 import {
 	VKCOM,
 	usePlatform,
@@ -20,53 +19,12 @@ import {
 } from '@vkontakte/icons';
 import { enumerate } from '../functions/tools';
 import Curators_ava from '../img/Curators_ava.svg';
-import { GENERAL_LINKS, CURATOR_PATTERN, API_URL } from '../config';
+import { GENERAL_LINKS, CURATOR_PATTERN } from '../config';
+import { useSelector } from 'react-redux';
 
-const Curators = props => {
-    const { tokenSearch } = props;
+export const Curators = props => {
     const platform = usePlatform();
-    const [curators, setCurators] = useState([]);
-    const [curatorsData, setCuratorsData] = useState(null);
-    useEffect(() => {
-        fetch(API_URL + `method=service.getActivists&` + window.location.search.replace('?', ''))
-        .then(data => data.json())
-        .then(curators_data => {
-            setCurators(curators_data.response)
-            bridge.send('VKWebAppCallAPIMethod', {
-                method: 'users.get',
-                params: {
-                    user_ids: curators_data.response.slice().toString(),
-                    fields: 'photo_100,screen_name,online',
-                    v: "5.131", 
-                    access_token: tokenSearch,
-                }
-            })
-            .then((data) => {
-                let vk_curators_info = [...data.response]
-                fetch(API_URL + `method=experts.getInfo&` + window.location.search.replace('?', ''),
-                {
-                    method: 'post',
-                    headers: { "Content-type": "application/json; charset=UTF-8" },
-                    body: JSON.stringify({
-                        user_ids: curators_data.response.slice().toString()
-                    })
-                })
-                .then(data => data.json())
-                .then(data => {
-                    let modify_data = [...data.response]
-                    modify_data = modify_data.map(i => i.info)
-                    vk_curators_info = vk_curators_info.map((item) => {
-                        let new_item = {...item};
-                        new_item.topic = modify_data.find((i) => i.user_id === item.id).topic_name
-                        return new_item
-                    })
-                    setCuratorsData(vk_curators_info)
-                })
-                .catch(e => console.log(e))
-            })
-        })
-        .catch(e => console.log(e))
-    }, [tokenSearch])
+    const curatorsData = useSelector(state => state.account.curators_data);
     return(
         <Panel id={props.id}>
             {platform !== VKCOM && 
@@ -79,7 +37,7 @@ const Curators = props => {
                 caption='Мы собрали всех кураторов, которые
                 рассказывают новое о контент-индустрии и тематических
                 лентах ВКонтакте'
-                bottom={<Subhead style={{marginTop: 10, color: '#818C99'}} weight="regular">11 тематик · {curators.length} {enumerate(curators.length, ['куратор', 'куратора', 'кураторов'])}</Subhead>}>
+                bottom={<Subhead style={{marginTop: 10, color: '#818C99'}} weight="regular">11 тематик · {curatorsData && curatorsData.length + " " + enumerate(curatorsData.length, ['куратор', 'куратора', 'кураторов'])}</Subhead>}>
                     Кураторы тематических лент
                 </RichCell>
             </Group>
@@ -135,5 +93,3 @@ const Curators = props => {
         </Panel>
     )
 }
-
-export default Curators;

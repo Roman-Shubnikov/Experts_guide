@@ -25,7 +25,7 @@ import {
 } from '@vkontakte/icons';
 import { API_URL, GENERAL_LINKS } from '../config';
 import { getIdByLink } from '../functions/tools';
-const Reports = props => {
+export const Reports = props => {
     const [reasons, setReasons] = useState(null);
     const [isLoading, setLoading] = useState(false);
     const [reason, setReason] = useState(1);
@@ -211,5 +211,3 @@ const Reports = props => {
         </Panel>
     )
 }
-
-export default Reports;

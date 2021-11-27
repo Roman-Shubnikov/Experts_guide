@@ -49,7 +49,7 @@ import {
 import { ExpertMenu, MenuArticles } from '../components';
 import Logo from '../img/logo'
 const easterEggMusic = new Audio('https://xelene.ru/experts_guide/music/riversolo.mp3')
-export default props => {
+export const Topics = props => {
 	const [scoreData, setScoreData] = useState(null);
 	const [heartClicks, setHeartClicks] = useState(0);
 	const [showPlayer, setShowPlayer] = useState(false);

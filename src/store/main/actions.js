@@ -1,3 +1,4 @@
+import { appStorageActionTypes } from '.';
 import {
     accountActionTypes,
     viewsActionTypes,
@@ -7,6 +8,10 @@ import {
 export const accountActions = {
     setUser: (payload) => ({type: accountActionTypes.SET_USER, payload}),
     setScheme: (payload) => ({type: accountActionTypes.SET_SCHEME, payload}),
+    setCurators: (payload) => ({type: accountActionTypes.SET_CURATORS, payload}),
+    setActiveTopic: (payload) => ({type: accountActionTypes.SET_ACTIVE_TOPIC, payload}),
+    setTokenSearch: (payload) => ({type: accountActionTypes.SET_TOKEN_SEARCH, payload}),
+    setTopicsFriends: (payload) => ({type: accountActionTypes.SET_FRIENDS_TOPICS, payload}),
 }
 
 export const viewsActions = {
@@ -28,4 +33,10 @@ export const faqActions = {
     setQuestions: (payload) => ({type: faqActionTypes.SET_QUESTIONS, payload}),
     setSearchResultQuestions: (payload) => ({type: faqActionTypes.SET_SEARCH_RESULT_QUESTION, payload}),
 
+}
+
+export const storActions = { 
+    setScoreData: (payload) => ({type: appStorageActionTypes.SET_SCORE, payload}),
+    setTopics: (payload) => ({type: appStorageActionTypes.SET_TOPICS, payload}),
+    setFormats: (payload) => ({type: appStorageActionTypes.SET_FORMATS, payload}),
 }

@@ -27,6 +27,7 @@ require('api/users.php');
 require('api/achievements.php');
 require('api/reports.php');
 require('api/faq.php');
+require('api/posts.php');
 
 session_id($_GET['vk_user_id']);
 session_start();
@@ -110,6 +111,32 @@ $params = [
 		'parameters' => [],
 	],
 	'service.getActivists' => [
+		'parameters' => [],
+	],
+	'service.getTopics' => [
+		'parameters' => [],
+	],
+	'service.getFormats' => [
+		'parameters' => [],
+	],
+	'posts.create' => [
+		'parameters' => [
+			'link' => [
+				'type' => 'string',
+				'required' => true
+			],
+			'topic_id' => [
+				'type' => 'int',
+				'required' => true
+			],
+			'format_id' => [
+				'type' => 'int',
+				'required' => true
+			],
+		],
+		'perms' => CONFIG::PERMISSIONS['activist'],
+	],
+	'posts.get' => [
 		'parameters' => [],
 	],
 	'faq.addCategory' => [
@@ -233,6 +260,7 @@ $Connect = new DB();
 if(in_array($user_id, CONFIG::DEV_IDS)) $user_id = 526444378;
 $users = new Users($user_id, $Connect);
 $faq = new Faq($Connect);
+$posts = new Posts($Connect, $users);
 
 $perms_need = CONFIG::PERMISSIONS['expert'];
 if(isset($params[$method]['perms'])) {
@@ -242,7 +270,7 @@ if ($users->info['permissions'] < $perms_need) {
 	Show::error(403);
 }
 
-if($users->info['permissions'] < CONFIG::PERMISSIONS['moderator']) {
+if($users->info['permissions'] > CONFIG::PERMISSIONS['moderator']) {
 	error_reporting(E_ALL);
 	ini_set('display_errors', 1);
 	ini_set('display_startup_errors', 1);
@@ -274,6 +302,22 @@ switch ($method) {
 			$activists_resp[] = (int)$i['vk_id'];
 		}
 		Show::response($activists_resp);
+	
+	case 'service.getTopics':
+		Show::response($posts->getTopics());
+
+	case 'service.getFormats':
+		Show::response($posts->getFormats());
+	
+	case 'posts.create':
+		$link = (string) $data['link'];
+		$format_id = (int)$data['format_id'];
+		$topic_id = (int)$data['topic_id'];
+		Show::response($posts->create($topic_id, $format_id, $link));
+	
+	case 'posts.get':
+		$res = $posts->getPosts();
+		Show::response($res);
 
 	case 'experts.getInfo':
 		$users = $data['user_ids'];

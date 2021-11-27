@@ -4,7 +4,7 @@ import {
 	ScreenSpinner
 } from '@vkontakte/vkui';
 
-export default props => {
+export const Loader = props => {
     return(
         <Panel id={props.id}>
             <ScreenSpinner />

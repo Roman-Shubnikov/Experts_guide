@@ -38,7 +38,7 @@ import {
 
 } from '@vkontakte/icons'
 import { It_28, Sience_28 } from './img/icons';
-
+// import 
 export const GROUP_EXPERTS_ID = 182611749;
 export const GROUP_FAN_EXPERTS_ID = 206651170;
 export const API_URL = 'https://xelene.ru/experts_guide/php/index.php?';
@@ -89,6 +89,7 @@ export const TOPICS = {
     science: 'Наука',
     photo: 'Фото',
     tourism: 'Туризм',
+    // all: 'Все тематики',
 }
 
 export const chatLinks = {
@@ -175,6 +176,7 @@ export const ExpertsIcons28 = {
     23: Icon28StarsOutline,
     24: Icon28StickerOutline,
 }
+export const TOPIC_ICONS_PATH = process.env.PUBLIC_URL + '/img/topics'
 export const PERMISSIONS = {
     expert: 0,
     moderator: 1,

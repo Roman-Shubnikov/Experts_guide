@@ -31,7 +31,7 @@ import {
 } from '@vkontakte/icons';
 import { ACTIONS_NORM, BASE_ARTICLE_TOPIC_LINK, TOPICS } from '../config';
 import { enumerate, getKeyByValue } from '../functions/tools';
-const Achievements = props => {
+const Profile = props => {
     const { achievements, vkInfoUser, userInfo } = props; 
     const platform = usePlatform();
     const appearence = useAppearance();
@@ -48,7 +48,7 @@ const Achievements = props => {
         <Panel id={props.id}>
             {platform !== VKCOM && 
             <PanelHeader>Профиль</PanelHeader>}
-            <Group>
+            {platform !== VKCOM && <Group>
                 <RichCell
                 hasActive={isVKHOVER}
                 hasHover={isVKHOVER}
@@ -66,7 +66,7 @@ const Achievements = props => {
                     </div>
                     
                 </RichCell>
-            </Group> 
+            </Group>}
             <Group>
             <Div>
                 <div className='infoblock'>
@@ -169,7 +169,7 @@ const Achievements = props => {
         </Panel>
     )
 }
-Achievements.propTypes = {
+Profile.propTypes = {
     achievements: PropTypes.array,
 }
-export default Achievements;
+export {Profile};

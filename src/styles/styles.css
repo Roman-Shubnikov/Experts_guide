@@ -196,6 +196,10 @@ a {
 .right-menu_topic-show {
     height: calc(var(--topic-width) * 10 + var(--my-topic-width));
 }
-.gray {
-    color: var(--gray);
+.gray,
+.gray .vkuiSimpleCell__children{
+    color: #6f7985;
+}
+.vkuiAvatar__img {
+    object-fit:cover;
 }
