@@ -75,6 +75,14 @@ $params = [
 	'account.get' => [
 		'parameters' => [],
 	],
+	'users.get' => [
+		'parameters' => [
+			'user_id' => [
+				'type' => 'int',
+				'required' => true,
+			]
+		],
+	],
 	'experts.getInfo' => [
 		'parameters' => [
 			'user_ids' => [
@@ -295,6 +303,11 @@ switch ($method) {
 		$res['achievements'] = $achiev->getAchievements($user_id);
 		Show::response($res);
 	
+	case 'users.get':
+		$user = $data['user_id'];
+		$res = $users->get($user);
+		Show::response($res);
+
 	case 'service.getActivists':
 		$activists = $Connect->db_get("SELECT vk_id FROM users WHERE permissions=2");
 		$activists_resp = [];
@@ -320,8 +333,8 @@ switch ($method) {
 		Show::response($res);
 
 	case 'experts.getInfo':
-		$users = $data['user_ids'];
-		$apiinfo = file_get_contents(CONFIG::API_EXPERTS_ADDRESS."/experts.getInfo?user_id={$users}&token=".CONFIG::API_EXPERTS_TOKEN);
+		$users_ids = $data['user_ids'];
+		$apiinfo = file_get_contents(CONFIG::API_EXPERTS_ADDRESS."/experts.getInfo?user_id={$users_ids}&token=".CONFIG::API_EXPERTS_TOKEN);
 		if(!$apiinfo) Show::error(10);
 		$apiinfo = json_decode($apiinfo, true);
 		if(empty($apiinfo)) Show::error(404);

@@ -39,4 +39,5 @@ export const storActions = {
     setScoreData: (payload) => ({type: appStorageActionTypes.SET_SCORE, payload}),
     setTopics: (payload) => ({type: appStorageActionTypes.SET_TOPICS, payload}),
     setFormats: (payload) => ({type: appStorageActionTypes.SET_FORMATS, payload}),
+    setPosts: (payload) => ({type: appStorageActionTypes.SET_POSTS, payload}),
 }

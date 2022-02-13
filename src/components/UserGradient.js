@@ -25,9 +25,10 @@ import {
     Icon28ArchiveOutline,
     Icon16Crown,
     Icon28LockOutline,
+    Icon16MusicMic,
 } from '@vkontakte/icons'
 import { enumerate, getHumanyTime, recog_number } from '../functions/tools';
-import { API_URL, ENUMERATE_VARIANTS } from '../config';
+import { API_URL, ENUMERATE_VARIANTS, PERMISSIONS } from '../config';
 import Gradient from '../components/Gradient'
 const UserGradient = props => {
     const {placeHolderText, userSearchedInfo, isExpert, tokenSearch} = props;
@@ -78,7 +79,6 @@ const UserGradient = props => {
                 setUserFriends(experts.slice(0, 100))
             })
             .catch(e => {
-                console.log(e);
                 setUserFriends(false);
             })
         }
@@ -95,7 +95,8 @@ const UserGradient = props => {
             <Avatar size={96} src={vkInfo.photo_100} alt='ava' />
             <Title style={{ marginBottom: 8, marginTop: 20, display: 'flex'}} level="2" weight="medium">
                 {vkInfo.first_name} {vkInfo.last_name}
-                {apiInfo.is_best && <Icon16Crown className='crown crown_user-gradient' />}
+                {apiInfo && apiInfo.is_best && <Icon16Crown className='crown crown_user-gradient' />}
+                {userSearchedInfo[1] && userSearchedInfo[1].permissions >= PERMISSIONS.activist && <Icon16MusicMic className='verified' />}
             </Title>
             <Text style={{ marginBottom: 24, color: 'var(--text_secondary)'}}>
                 {vkInfo.last_seen && getHumanyTime(vkInfo.last_seen.time).datetime} 
@@ -106,7 +107,7 @@ const UserGradient = props => {
             size="m" 
             mode="secondary">Перейти в профиль</Button>
         </Gradient>
-            {isExpert ? 
+            {isExpert && apiInfo ? 
             <Group mode='plain'>
                 <Spacing size={5} />
                 <Tabs>
@@ -146,13 +147,13 @@ const UserGradient = props => {
                 <SimpleCell
                 disabled
                 before={<Icon28NewsfeedOutline />}
-                after={apiInfo.actions_current_day + ' ' + enumerate(apiInfo.actions_current_day, ENUMERATE_VARIANTS.posts)}>
+                after={apiInfo.actions_current_day === -1 ? "Изучаем" : apiInfo.actions_current_day + ' ' + enumerate(apiInfo.actions_current_day, ENUMERATE_VARIANTS.posts)}>
                     За сегодня
                 </SimpleCell>
                 <SimpleCell
                 disabled
                 before={<Icon28ArchiveOutline />}
-                after={recog_number(apiInfo.actions_count) + ' ' + enumerate(apiInfo.actions_count, ENUMERATE_VARIANTS.posts)}>
+                after={apiInfo.actions_count === -1 ? "Изучаем" : recog_number(apiInfo.actions_count) + ' ' + enumerate(apiInfo.actions_count, ENUMERATE_VARIANTS.posts)}>
                     За все время
                 </SimpleCell>
                 </> : null}

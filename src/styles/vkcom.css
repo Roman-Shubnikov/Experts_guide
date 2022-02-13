@@ -1,8 +1,9 @@
-body[scheme="vkcom"] {
+body[scheme="vkcom_light"] {
     --scrollbar: rgba(0, 0, 0, 0.466);
-    --hover_scrollbar: rgb(0, 0, 0);
-    --subtext: #818C99;
+    --hover_scrollbar: black;
+    --subtext: #6f7985;
     --gray: #626D7A;
     --my-topic-width: 59px;
     --topic-width: 48px;
+    --blue: #5181B8;
 }

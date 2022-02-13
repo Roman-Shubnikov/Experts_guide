@@ -3,7 +3,7 @@
 ini_set( 'date.timezone', 'UTC' ); // Время по гринвичу
 
 class CONFIG {
-	const DB_HOST = '188.225.45.112';
+	const DB_HOST = '89.223.126.48';
 	const DB_NAME = 'experts_guide';
 	const DB_USER = 'sergey';
 	const DB_PASS = '1experptgiude';
@@ -18,7 +18,7 @@ class CONFIG {
 
 	const ACHIEV_PATH = 'https://xelene.ru/road/php/img/achievements';
 	const LINK_APP = 'https://vk.com/jedi_road_app';
-	const API_EXPERTS_ADDRESS = 'https://c3po.ru/api';
+	const API_EXPERTS_ADDRESS = 'https://xelene.ru/xpert_api';
 	const API_EXPERTS_TOKEN = '9h3d83h8r8ehe9xehd93u';
 
 	const MAX_FAQ_CATEGORY_LEN = 30;
@@ -41,6 +41,7 @@ class CONFIG {
 	const REGEXP_VALID_TEXT = "/^[a-zа-яё0-9_ \.,\"':!?+=\-\/]*$/ui";
 	const REGEXP_VALID_HEX_COLOR = "/^#[a-z0-9]{3,6}$/ui";
 	const REGEXP_VALID_WALL_POST_LINK = "/(https?:\/\/)?vk\.com\/clubvkexperts((\/)|(\?w=))wall-206651170_[0-9]+/";
+	const REGEXP_VK_ID_WIKI = "/\[(.+\|)(.+)\]/ui";
 
 	const TIMES = [
 		'10min' => 600,

@@ -64,6 +64,9 @@ export const GENERAL_LINKS = {
     achievements: 'https://vk.com/topic-206651170_48253467',
     premoderation: 'https://vk.com/pages?oid=-206651170&p=Премодерация',
     expert_rules: 'https://vk.com/@vkexperts-rules',
+    points: 'https://vk.com/@vkexperts-shop-and-incentive-points',
+    feedback: 'https://vk.com/app5619682_-206651170#592988',
+    info_expers: 'https://vk.com/@vkexperts-kto-takie-eksperty-vkontakte',
 }
 const WALL_SEARCH_BASE = 'https://vk.com/wall-206651170?q=%23'
 export const BASE_LINKS_MENU = {

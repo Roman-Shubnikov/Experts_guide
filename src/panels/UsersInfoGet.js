@@ -24,6 +24,7 @@ import {
 import { UserGradient } from '../components';
 import { API_URL } from '../config';
 import { prepareQueryString, resolveScreenName } from '../functions/tools';
+import { isEmptyObject } from 'jquery';
 let lastTypingTime;
 let typing = false;
 let searchval = '';
@@ -83,17 +84,39 @@ export const UsersInfoGet = props => {
 				.then(data => data.json())
 				.then(data => {
 					data = data.response[0]
-					console.log(data)
-					if(data.is_expert){
-						setIsExpert(true)
-						let user = data.info;
-						new_user_info.push(user);
-					} else {
-						setPlaceholderText(placeholderTexts.not_found)
-						new_user_info.push(null);
-					}
-					setInfoUser(new_user_info);
-					setFetching(false)
+						
+						fetch(API_URL + 'method=users.get&' + window.location.search.replace('?', ''),
+						{
+							method: 'post',
+							headers: { "Content-type": "application/json; charset=UTF-8" },
+							body: JSON.stringify({
+								'user_id': search_user,
+							})
+						})
+						.then(d => d.json())
+						.then(server_i => {
+							if(data.is_expert){
+
+								setIsExpert(true)
+								let user = data.info;
+								Object.assign(user, server_i.response)
+								new_user_info.push(user);
+							} else {
+								setPlaceholderText(placeholderTexts.not_found)
+								new_user_info.push(null);
+							}
+							setInfoUser(new_user_info);
+							setFetching(false)
+						})
+						.catch(err => {
+							setPlaceholderText(placeholderTexts.not_found)
+							new_user_info.push(null);
+							setInfoUser(new_user_info);
+							setFetching(false)
+
+						})
+					
+					
 				})
 				.catch(err => console.log(err))
 			})
@@ -159,9 +182,9 @@ export const UsersInfoGet = props => {
 			isExpert={isExpert}
 			tokenSearch={tokenSearch} />
 			}
-			{(fetching || !userSearchedInfo) && <Group>
+			{(fetching || isEmptyObject(userSearchedInfo)) && <Group>
 				{fetching ? <PanelSpinner /> : 
-				!userSearchedInfo && <Placeholder
+				isEmptyObject(userSearchedInfo) && <Placeholder
 				icon={getIconForPlaceholder()}>
 					{placeHolderText}
 				</Placeholder>}

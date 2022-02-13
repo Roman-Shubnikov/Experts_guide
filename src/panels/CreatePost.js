@@ -26,7 +26,7 @@ export const CreatePosts = props => {
 	const { goDisconnect, setPopout } = props.navigation;
 	const { showErrorAlert } = props.callbacks;
 	const { topics, formats } = useSelector(state => state.stor);
-	const setTopics = useCallback((data) => dispatch(storActions.setTopics(data)), [dispatch]);
+	
 	const setFormats = useCallback((data) => dispatch(storActions.setFormats(data)), [dispatch]);
 
 	const createPost = () => {
@@ -51,6 +51,7 @@ export const CreatePosts = props => {
 					
 				} else {
 					showErrorAlert(data.error.message)
+					setFetch(false);
 				}
 				
 			})
@@ -59,12 +60,7 @@ export const CreatePosts = props => {
 	
 	useEffect(() => {
 		// setPopout(<ScreenSpinner />)
-		fetch(API_URL + 'method=service.getTopics&' + window.location.search.replace('?', ''))
-			.then(data => data.json())
-			.then(data => {
-				setTopics(data.response)
-			})
-			.catch(e => goDisconnect())
+		
 		fetch(API_URL + 'method=service.getFormats&' + window.location.search.replace('?', ''))
 			.then(data => data.json())
 			.then(data => {

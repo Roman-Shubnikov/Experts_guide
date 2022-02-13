@@ -45,6 +45,18 @@ a {
 .green_progressbar .vkuiProgress__in {
     background: #4BB34B;
 }
+.green {
+    color: #4BB34B;
+}
+.red {
+    color: #FF3347;
+}
+.subtext {
+    color: var(--subtext);
+}
+.subtext .vkuiIcon {
+    color: #A5ABB6;
+}
 .blue_progressbar .vkuiProgress__in {
     background: #3F8AE0;
 }
@@ -59,6 +71,7 @@ a {
 }
 .infoblock {
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
 }
 .infoblock_item {
@@ -67,7 +80,7 @@ a {
     color: var(--subtext);
     font-weight: 400;
     line-height: 18px;
-    font-size: 14px;
+    font-size: 15px;
 }
 .infoblock_item-bottom {
     margin-top: 22px;
@@ -80,6 +93,10 @@ a {
 }
 .verified {
     color: #5C9CE6;
+    margin-left: 4px;
+    margin-top: 2px;
+}
+.icon-name {
     margin-left: 4px;
     margin-top: 2px;
 }
@@ -202,4 +219,7 @@ a {
 }
 .vkuiAvatar__img {
     object-fit:cover;
+}
+.search-header .vkuiPanelHeader__right { 
+    min-width: 0;
 }

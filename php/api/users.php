@@ -55,6 +55,22 @@ class Users {
 		return [$isBanned, $historyBans];
 	}
 
+	public function get($uid) {
+		$sql = "SELECT 
+				vk_id,
+				registration,
+				last_activity,
+				permissions
+				FROM users
+				WHERE users.vk_id=?";
+		$res = $this->Connect->db_get( $sql, [$uid] )[0];
+		$ban = $this->checkBanned($uid);
+		if($ban[0]){
+			$res['banned'] = $ban[1];
+		}
+		return $res;
+	}
+
 	private function _get() {
 		$time = time();
 		$user_id = $this->id;

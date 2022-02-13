@@ -29,4 +29,5 @@ export const appStorageActionTypes = {
     SET_SCORE: 'STOR.SET_SCORE',
     SET_TOPICS: 'STOR.SET_TOPICS',
     SET_FORMATS: 'STOR.SET_FORMATS',
+    SET_POSTS: 'STOR.SET_POSTS',
 }

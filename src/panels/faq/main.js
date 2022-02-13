@@ -59,7 +59,7 @@ export const Help = props => {
                 showErrorAlert(data.error.message)
             }
             })
-            .catch(goDisconnect)
+            .catch(err => {goDisconnect();console.log(err)})
     }
     const updateTyping = () => {
         if(!typing){
@@ -125,7 +125,7 @@ export const Help = props => {
                 return (<>
                     <Group>
                         <Placeholder
-                        icon={<NotePen28 size={56} />}
+                        icon={<NotePen28 size={155} />}
                         action={
                             <Button
                             href={GENERAL_LINKS.group_official_community}
@@ -155,7 +155,7 @@ export const Help = props => {
 
     return(
         <Panel id={props.id}>
-            <PanelHeader>
+            <PanelHeader className='search-header'>
                 {platform === VKCOM ? <Search value={search} placeholder='Введите ваш вопрос'
                 onChange={(e) => {updateTyping();
                             searchval = e.currentTarget.value

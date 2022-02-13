@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types'
 import { 
     Panel,
@@ -15,10 +15,8 @@ import {
     Tappable,
     SimpleCell,
     RichCell,
-    Progress,
     Spacing,
     Footer,
-    useAppearance,
 
 } from "@vkontakte/vkui"
 import {
@@ -30,20 +28,13 @@ import {
     Icon28Favorite,
 } from '@vkontakte/icons';
 import { ACTIONS_NORM, BASE_ARTICLE_TOPIC_LINK, TOPICS } from '../config';
-import { enumerate, getKeyByValue } from '../functions/tools';
+import { getKeyByValue } from '../functions/tools';
 const Profile = props => {
     const { achievements, vkInfoUser, userInfo } = props; 
     const platform = usePlatform();
-    const appearence = useAppearance();
     const [tooltipShow, setToolTipState] = useState(false);
-    const [actsWeekReal, setActsWeekReal] = useState(0);
     const [mouseOndescr, setMouseOndescr] = useState(false);
     const isVKHOVER = !(platform === VKCOM)
-    useEffect(() => {
-        setTimeout(() => {
-            setActsWeekReal(userInfo.actions_current_week)
-        }, 1000)
-    }, [userInfo.actions_current_week])
     return(
         <Panel id={props.id}>
             {platform !== VKCOM && 
@@ -67,29 +58,6 @@ const Profile = props => {
                     
                 </RichCell>
             </Group>}
-            <Group>
-            <Div>
-                <div className='infoblock'>
-                    <div className='infoblock_item'>
-                        Вы оценили <span style={{color: appearence === 'light' ? 'black' : 'var(--white)' ,fontWeight: 500}}>{userInfo.actions_current_week} {enumerate(userInfo.actions_current_week, ['запись', 'записи', 'записей'])}</span> на этой неделе
-                    </div>
-                    <div className='infoblock_item'>
-                        {ACTIONS_NORM}
-                    </div>
-                </div>
-                
-                <Progress 
-                className={(actsWeekReal >= ACTIONS_NORM) ? 'progressbar_big_height green_progressbar' : 'progressbar_big_height blue_progressbar'}
-                value={Math.min(actsWeekReal / ACTIONS_NORM *100, 100)}
-                />
-                <div className='infoblock_item infoblock_item-bottom'>
-                    {ACTIONS_NORM - userInfo.actions_current_week > 0 ?('Для преодоления порога необходимо оценить ещё ' + (ACTIONS_NORM - userInfo.actions_current_week) + ' ' + 
-                    enumerate(ACTIONS_NORM - userInfo.actions_current_week, ['запись', 'записи', 'записей'])): 
-                    "Вы достигли порога, не сбавляйте темп"}
-                </div>
-                
-            </Div>
-            </Group>
             <Group>
                 <SimpleCell
                 disabled

@@ -42,6 +42,7 @@ const initalStateAppStore = {
     score: null,
     topics: null,
     formats: null,
+    posts: null,
 
 }
 
@@ -110,6 +111,8 @@ export const storageReducer = (state = initalStateAppStore, action) => {
             return { ...state, formats: action.payload }
         case appStorageActionTypes.SET_TOPICS:
             return { ...state, topics: action.payload }
+        case appStorageActionTypes.SET_POSTS:
+            return { ...state, posts: action.payload }
         default:
             return state
     }

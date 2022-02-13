@@ -7,16 +7,24 @@ import {
     Placeholder,
     Div,
     UsersStack,
-    PanelSpinner
+    PanelSpinner,
+    Subhead
 } from '@vkontakte/vkui';
 import { API_URL, TOPICS, TOPIC_ICONS_PATH } from '../config';
 import { CuratorsTopic, Posts, ScoreTopic } from '../Units';
 import { useDispatch, useSelector } from 'react-redux';
 import { accountActions } from '../store/main';
-import { enumerate } from '../functions/tools';
+import { enumerate, getKeyByValue } from '../functions/tools';
+import { 
+    Icon16ArrowTriangleDown,
+    Icon16ArrowTriangleUp,
+    Icon16Minus,
+
+} from '@vkontakte/icons';
 export const Home = props => {
     const dispatch = useDispatch();
     const { activeTopic, user, tokenSearch, friends_topics} = useSelector((state) => state.account)
+    const { posts, topics } = useSelector(state => state.stor);
     const setTopicsFriends = useCallback((data) => dispatch(accountActions.setTopicsFriends(data)), [dispatch]);
     useEffect(() => {
         const getFriends = () => {
@@ -96,17 +104,34 @@ export const Home = props => {
         }
         return names;
     }
+    const getArrows = () => {
+        if(!topics) return;
+        let counters = {};
+        let counter_list = [];
+        for(let i=0;i<topics.length;i++) {
+            if(topics[i].topic_name === 'all') continue;
+            counter_list.push(topics[i].count)
+            counters[topics[i].topic_name] = topics[i].count
+        }
+        let max_count = getKeyByValue(counters, Math.max.apply(null, counter_list));
+        let min_count = getKeyByValue(counters, Math.min.apply(null, counter_list));
+
+        if(activeTopic === min_count) return <Icon16ArrowTriangleDown className='icon-name red' />
+        if(activeTopic === max_count) return <Icon16ArrowTriangleUp className='icon-name green' />
+        return <Icon16Minus className='icon-name' style={{color: '#A3ADB8'}} />
+    }
     return(
         <Panel id={props.id}>
             <div style={{display: 'flex'}}>
                 <Group style={{width: '40%', marginRight: 14}}>
-                    <Div style={{display: 'flex'}}>
+                    <Div style={{display: 'flex', padding: '15px 16px'}}>
                         <Avatar size={72} src={TOPIC_ICONS_PATH + '/' + activeTopic + '.png'} />
-                        <Div style={{padding: '28px 20px'}}>{TOPICS[activeTopic]}</Div>
+                        <Div style={{paddingTop: 19}}><div style={{display: 'flex'}}>{TOPICS[activeTopic]} {getArrows()}</div>
+                        <Subhead className='vkuiSimpleCell__description'>{posts ? posts.count[activeTopic] === 0 ? 'нет постов' : posts.count[activeTopic] + ' ' + enumerate(posts.count[activeTopic], ['пост', 'поста', 'постов']) : '...'}</Subhead></Div>
                     </Div>
                 </Group>
                 <Group style={{width: '60%'}}>
-                    <Div style={{height: 75}}>
+                    <Div style={{height: 79}}>
                         {friends_topics[activeTopic] ? 
                         friends_topics[activeTopic].length > 0 ?
                         <UsersStack
@@ -122,7 +147,7 @@ export const Home = props => {
                             <Placeholder>
                                 У вас нет друзей-экспертов в этой тематике
                             </Placeholder>
-                            : <PanelSpinner height={75} size='medium' />}
+                            : <PanelSpinner height={79} size='medium' />}
                     </Div>
                 </Group>
             </div>

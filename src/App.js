@@ -24,6 +24,7 @@ import {
 	Select,
 	FormItem,
 	SimpleCell,
+	Spacing,
 
 } from '@vkontakte/vkui';
 import {
@@ -33,12 +34,22 @@ import {
 	Icon28ReportOutline,
 	Icon28UserCircleOutline,
 	Icon28HelpCircleOutline,
+	Icon28LocationMapOutline,
 	Icon16Verified,
+	Icon28NameTagOutline,
+	Icon28MoneyWadOutline,
+	Icon28StorefrontOutline,
+	Icon28InboxOutline,
+	Icon28WalletOutline,
+	Icon28MessagesOutline,
+	Icon28LogoVkOutline,
+
 } from '@vkontakte/icons'
 import {
 	ProfileInfo,
 } from './components'
 import '@vkontakte/vkui/dist/vkui.css';
+import "@vkontakte/vkui/dist/unstable.css";
 import './styles/styles.css';
 import { calculateAdaptivity } from './functions/calcAdaptivity';
 import { 
@@ -58,7 +69,7 @@ import {
 	Disconnect,
 
 } from './panels'
-import { ACTIONS_NORM, API_URL, GENERAL_LINKS, ICON_TOPICS, TOPICS } from './config';
+import { ACTIONS_NORM, API_URL, GENERAL_LINKS, ICON_TOPICS, PERMISSIONS, TOPICS } from './config';
 import { errorAlertCreator, getKeyByValue } from './functions/tools';
 import { useDispatch, useSelector } from 'react-redux';
 import { accountActions, storActions, viewsActions } from './store/main';
@@ -87,6 +98,7 @@ const App = () => {
 	const setActiveTopic = useCallback((data) => dispatch(accountActions.setActiveTopic(data)), [dispatch]);
 	const setTokenSearch = useCallback((data) => dispatch(accountActions.setTokenSearch(data)), [dispatch]);
 	const setScoreData = useCallback((data) => dispatch(storActions.setScoreData(data)), [dispatch]);
+	const setTopics = useCallback((data) => dispatch(storActions.setTopics(data)), [dispatch]);
 	const [vkInfoUser, setVkInfoUser] = useState(null);
 	const [achievements, setAchievements] = useState(null);
 	const [isExpert, setIsExpert] = useState(null);
@@ -98,6 +110,9 @@ const App = () => {
 	const viewWidthVk = useAdaptivity().viewWidth;
 	const isDesktop = useRef();
 	const hasHeader = useRef()
+
+	const permissions = userInfo.permissions;
+    const activist_permission = permissions >= PERMISSIONS.activist;
 
 	const setHash = (hash) => {
 	  if(window.location.hash !== ''){
@@ -253,6 +268,13 @@ const App = () => {
 							setScoreData(sliced_data)
 						})
 						.catch(err => console.log(err))
+
+					fetch(API_URL + 'method=service.getTopics&' + window.location.search.replace('?', ''))
+					.then(data => data.json())
+					.then(data => {
+						setTopics(data.response)
+					})
+					.catch(e => goDisconnect())
 						
 				}else {
 					dispatch(viewsActions.setNeedEpic(false))
@@ -443,7 +465,7 @@ const App = () => {
 						activePanel={activePanel}
 						actsWeek={actsWeek}
 						vkInfoUser={vkInfoUser}
-						userInfo={userInfo.expert_info}
+						userInfo={userInfo}
 						goPanel={goPanel} />}
 				</Group>
 				<SplitLayout
@@ -516,7 +538,7 @@ const App = () => {
 							{hasHeader.current && <PanelHeader/>}
 							{isExpert === null ? <PanelSpinner /> : isExpert &&
 							<>
-							<EpicPC go={goPanel} />
+							<EpicPC go={goPanel} userInfo={userInfo} />
 							</>}
 							{/* {activeStory === "home" &&
 							<ScoreRight />} */}
@@ -537,7 +559,73 @@ const App = () => {
 							{activeStory === "home" && <Group>
 								{genRightMenu()}
 							</Group>}
-							{activeStory === "home" && 
+							{activeStory === 'searchInfo' &&
+							<Group><SimpleCell
+							style={{color: '#6f7985'}}
+							onClick={() => bridge.send(
+								'VKWebAppOpenApp',
+								{
+									app_id: 7867809,
+									location: ''
+								}
+							)}
+							before={<Icon28LocationMapOutline style={{color: '#A5ABB6'}} />}>
+								Геолокация экспертов
+							</SimpleCell></Group>}
+							{activeStory === 'profile' && <Group>
+								<SimpleCell 
+								href={GENERAL_LINKS.info_expers}
+								target="_blank" rel="noopener noreferrer"
+								before={<Icon28NameTagOutline />}
+								className='subtext'>
+									Информация
+								</SimpleCell>
+								<SimpleCell 
+								href={GENERAL_LINKS.expert_rules}
+								target="_blank" rel="noopener noreferrer"
+								before={<Icon28LogoVkOutline />}
+								className='subtext'>
+									Правила программы
+								</SimpleCell>
+								<Spacing separator />
+								<SimpleCell 
+								href={GENERAL_LINKS.points}
+								target="_blank" rel="noopener noreferrer"
+								before={<Icon28MoneyWadOutline />}
+								className='subtext'>
+									Баллы экспертов
+								</SimpleCell>
+								<SimpleCell 
+								href={GENERAL_LINKS.market}
+								target="_blank" rel="noopener noreferrer"
+								before={<Icon28StorefrontOutline />}
+								className='subtext'>
+									Магазин
+								</SimpleCell>
+								<SimpleCell 
+								href={GENERAL_LINKS.orders}
+								target="_blank" rel="noopener noreferrer"
+								before={<Icon28InboxOutline />}
+								className='subtext'>
+									Заказы
+								</SimpleCell>
+								<SimpleCell 
+								href={GENERAL_LINKS.billing}
+								target="_blank" rel="noopener noreferrer"
+								before={<Icon28WalletOutline />}
+								className='subtext'>
+									Детализация счёта
+								</SimpleCell>
+								<Spacing separator />
+								<SimpleCell 
+								href={GENERAL_LINKS.feedback}
+								target="_blank" rel="noopener noreferrer"
+								before={<Icon28MessagesOutline />}
+								className='subtext'>
+									Обратная связь
+								</SimpleCell>
+							</Group>}
+							{activeStory === "home" && activist_permission && 
 							<PostGroup
 							callbacks={callbacks} 
 							/>}

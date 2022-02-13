@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
 	Group,
     PanelSpinner,
@@ -8,12 +8,15 @@ import {
 
 } from '@vkontakte/vkui';
 import { API_URL } from '../config';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { storActions } from '../store/main';
 
 export const Posts = props => {
-    const [posts, setPosts] = useState(null)
+    const dispatch = useDispatch();
+    const setPosts = useCallback((data) => dispatch(storActions.setPosts(data)), [dispatch]);
     const [posts_well, setPosts_well] = useState(null);
     const { activeTopic } = useSelector(state => state.account);
+    const { posts } = useSelector(state => state.stor);
     const { goDisconnect } = props.navigation;
     const getPosts = () => {
         fetch(API_URL + 'method=posts.get&' + window.location.search.replace('?', ''))
@@ -29,7 +32,7 @@ export const Posts = props => {
     }, [])
     useEffect(() => {
         if(!posts) return
-        let new_posts = [...posts];
+        let new_posts = [...posts.items];
         new_posts = new_posts.filter(i => (i.topic === activeTopic) || (i.topic === 'all'));
         setPosts_well(new_posts);
     }, [posts, activeTopic])

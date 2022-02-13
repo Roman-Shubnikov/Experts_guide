@@ -94,7 +94,7 @@ class Faq {
                 'answer' => (string) $val['answer'],
                 'ismarkable' => (bool) $val['ismarkable'],
                 'support_need' => (bool) $val['support_need'],
-                'curators_need' => (bool) $info['curators_need'],
+                'curators_need' => (bool) $val['curators_need'],
             ];
         }
         return $res;

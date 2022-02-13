@@ -87,11 +87,11 @@ export default props => {
             onRemove={() => {
                 delQuestion(res.id)
             }}
-                    key={res.id}
-                    onClick={() => goQuestion(res.id)}
-                    >
-                        {res.question}
-                    </Cell>
+            key={res.id}
+            onClick={() => goQuestion(res.id)}
+            >
+                {res.question}
+            </Cell>
             )
         }else{
             return <Placeholder
