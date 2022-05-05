@@ -6,13 +6,13 @@ import {
 } from "@vkontakte/vkui"
 import { Cards } from '.';
 import { PERMISSIONS } from '../config';
-import { Icon16MusicMic } from '@vkontakte/icons';
+import { Icon28AchievementCircleFillBlue } from '@vkontakte/icons';
 export default ({vkInfoUser, userInfo, goPanel, activePanel}) => {
     const permission_activist = userInfo.permissions >= PERMISSIONS.activist;
     const genMainChild = () => {
         return(
             <div style={{display: 'flex'}}>
-                {vkInfoUser.first_name + ' ' + vkInfoUser.last_name} {permission_activist && <Icon16MusicMic className='verified' />}
+                {vkInfoUser.first_name + ' ' + vkInfoUser.last_name} {permission_activist && <Icon28AchievementCircleFillBlue className='verified' width={16} height={16} />}
             </div>
         )
     }

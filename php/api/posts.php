@@ -81,12 +81,13 @@ class Posts {
             $topics[$topic['id']] = $topic['topic_name'];
             $posts_count[$topic['topic_name']] = $this->Connect->db_get('SELECT COUNT(*) as count FROM posts WHERE topic_id=?', [$topic['id']])[0]['count'];
         }
-        $i = 0;
         foreach($vk_info as $post) {
+            if(array_key_exists('is_deleted', $post)) continue;
             $db_info = $posts_info[$post['owner_id'].'_'.$post['id']];
             $db_info['link'] = "http://vk.com/".$db_info['link'];
             $db_info['format'] = $formats[$db_info['format_id']];
             $db_info['topic'] = $topics[$db_info['topic_id']];
+            
             $photo = $post['attachments'][0];
             if(isset($photo['photo'])) {
                 $photo = $photo['photo']['sizes'][0]['url'];
@@ -101,7 +102,6 @@ class Posts {
             $out = array_merge_recursive($db_info, $additional);
 
             $posts[] = $out;
-            $i++;
         }
         return ['count' => $posts_count, 'items' => $posts];
     }

@@ -3,20 +3,13 @@ import PropTypes from 'prop-types'
 import { 
     Panel,
     Group,
-    Placeholder,
     usePlatform,
     VKCOM,
     PanelHeader,
-    Header,
-    Avatar,
-    PanelSpinner,
-    Div,
-    Tooltip,
-    Tappable,
     SimpleCell,
     RichCell,
     Spacing,
-    Footer,
+    Banner,
 
 } from "@vkontakte/vkui"
 import {
@@ -29,10 +22,12 @@ import {
 } from '@vkontakte/icons';
 import { ACTIONS_NORM, BASE_ARTICLE_TOPIC_LINK, TOPICS } from '../config';
 import { getKeyByValue } from '../functions/tools';
+import { Computer28 } from '../img/icons';
+
+
 const Profile = props => {
-    const { achievements, vkInfoUser, userInfo } = props; 
+    const { vkInfoUser, userInfo } = props; 
     const platform = usePlatform();
-    const [tooltipShow, setToolTipState] = useState(false);
     const [mouseOndescr, setMouseOndescr] = useState(false);
     const isVKHOVER = !(platform === VKCOM)
     return(
@@ -58,6 +53,13 @@ const Profile = props => {
                     
                 </RichCell>
             </Group>}
+            <Group>
+                <Banner
+                header='Мы обновили разделы'
+                before={<Computer28 size={28}/>}
+                subheader={'Теперь компьютерной версией заведуют новый интерфейс, а справ' +
+                    'очник эксперта по прежнему можно посмотреть с мобильного устройства'}/>
+            </Group>
             <Group>
                 <SimpleCell
                 disabled
@@ -97,43 +99,6 @@ const Profile = props => {
                     За все время
                 </SimpleCell>
             </Group>
-            <Group header={<Header indicator={achievements?.length >0 ? achievements?.length: null}>Достижения</Header>}>
-            {achievements === null ? <PanelSpinner/> :
-            achievements?.length >0 ? 
-                <Div className={'achievements' + (platform === VKCOM ? ' achievements-vkcom':'')} style={{paddingTop: 0}}>
-                    {achievements?.map((val, i) => 
-                    <Tooltip
-                    mode="light"
-                    key={val.id}
-                    text={val.description}
-                    isShown={tooltipShow === i}
-                    onClose={() => setToolTipState(false)}
-                    offsetX={10}>
-                        <Tappable
-                        className='achievements_item'
-                        onClick={() => setToolTipState(i)}>
-                            <Avatar
-                            style={{margin: '0 auto'}} 
-                            shadow={false} 
-                            size={platform === VKCOM ? 89 : 90} 
-                            src={val.photo} 
-                            alt={val.placeholder} />
-                        </Tappable>
-                        
-                    </Tooltip> 
-                    )}
-                    
-                </Div>
-                : 
-                    <Placeholder>Пока у вас нет достижений ¯\_(ツ)_/¯</Placeholder>}
-                
-            </Group>
-            <Footer>
-                <a href='https://vk.com/topic-206651170_48260713'
-                target="_blank" rel="noopener noreferrer">Сообщить об ошибке</a> · <a
-                href="https://vk.com/topic-206651170_48189045"
-                target="_blank" rel="noopener noreferrer">Предложить идею</a>
-            </Footer>
         </Panel>
     )
 }

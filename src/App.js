@@ -43,7 +43,6 @@ import {
 	Icon28WalletOutline,
 	Icon28MessagesOutline,
 	Icon28LogoVkOutline,
-
 } from '@vkontakte/icons'
 import {
 	ProfileInfo,
@@ -69,7 +68,7 @@ import {
 	Disconnect,
 
 } from './panels'
-import { ACTIONS_NORM, API_URL, GENERAL_LINKS, ICON_TOPICS, PERMISSIONS, TOPICS } from './config';
+import { ACTIONS_NORM, API_URL, APP_ID, GENERAL_LINKS, ICON_TOPICS, PERMISSIONS, TOPICS } from './config';
 import { errorAlertCreator, getKeyByValue } from './functions/tools';
 import { useDispatch, useSelector } from 'react-redux';
 import { accountActions, storActions, viewsActions } from './store/main';
@@ -161,7 +160,8 @@ const App = () => {
 		setActiveScene(view, panel)
 		bridge.send('VKWebAppEnableSwipeBack');
 	  }, [setActiveScene, historyPanels, setHistoryPanels])
-	const goDisconnect = () => {
+	const goDisconnect = (e) => {
+		console.log(e)
 		goPanel('disconnect', 'disconnect');
 	}
 	const showErrorAlert = (error = null, action = null) => {
@@ -274,7 +274,7 @@ const App = () => {
 					.then(data => {
 						setTopics(data.response)
 					})
-					.catch(e => goDisconnect())
+					.catch(e => goDisconnect(e))
 						
 				}else {
 					dispatch(viewsActions.setNeedEpic(false))
@@ -285,10 +285,10 @@ const App = () => {
 				
 				bridge.send("VKWebAppSendPayload", {"group_id": 206651170, "payload": {'action': 'openapp', "is_expert": info['is_expert'], 'poshil_naher': 'kozel'}});
 			})
-			.catch(err => {setPopout(null);goDisconnect()})
+			.catch(err => {setPopout(null);goDisconnect(err)})
 			
 		}
-		bridge.send("VKWebAppGetAuthToken", {"app_id": 7934508, "scope": ""})
+		bridge.send("VKWebAppGetAuthToken", {"app_id": APP_ID, "scope": ""})
 			.then(token => {
 				setTokenSearch(token.access_token);
 				fetchData(token.access_token);

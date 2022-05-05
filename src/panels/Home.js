@@ -8,9 +8,13 @@ import {
     Div,
     UsersStack,
     PanelSpinner,
-    Subhead
+    Subhead,
+    RichCell,
+    Button,
+    CellButton,
+    Text,
 } from '@vkontakte/vkui';
-import { API_URL, TOPICS, TOPIC_ICONS_PATH } from '../config';
+import { API_URL, ARTICLE_IMAGE, GENERAL_LINKS, TOPICS, TOPICS_LINKS, TOPIC_ICONS_PATH } from '../config';
 import { CuratorsTopic, Posts, ScoreTopic } from '../Units';
 import { useDispatch, useSelector } from 'react-redux';
 import { accountActions } from '../store/main';
@@ -19,8 +23,11 @@ import {
     Icon16ArrowTriangleDown,
     Icon16ArrowTriangleUp,
     Icon16Minus,
+    Icon24Add,
 
 } from '@vkontakte/icons';
+
+
 export const Home = props => {
     const dispatch = useDispatch();
     const { activeTopic, user, tokenSearch, friends_topics} = useSelector((state) => state.account)
@@ -75,10 +82,10 @@ export const Home = props => {
                 setTopicsFriends(new_friends_topics)
                 // setUserFriends(experts.slice(0, 100))
             })
-            .catch(e => {
-                console.log(e);
-                // setUserFriends(false);
-            })
+            // .catch(e => {
+            //     console.log(e);
+            //     // setUserFriends(false);
+            // })
         }
         setTimeout(() => {
             getFriends();
@@ -151,6 +158,48 @@ export const Home = props => {
                     </Div>
                 </Group>
             </div>
+            <Group>
+                {TOPICS_LINKS[activeTopic].length > 0 ? TOPICS_LINKS[activeTopic].map((val, i) => 
+                <RichCell
+                key={i}
+                disabled
+                caption={val.descr}
+                actions={
+                    <Button href={val.link}
+                    mode='secondary'
+                    size='m'
+                    target="_blank" rel="noopener noreferrer">
+                        {val.isArticle ? 'Читать' : val.text_button}
+                    </Button>
+                }
+                before={<Avatar 
+                size={72}
+                alt={activeTopic}
+                src={val.isArticle ? ARTICLE_IMAGE : val.img} />}>
+                    {val.title}
+                </RichCell>):
+                    <div>
+                        <Div>
+                        <Text style={{color: 'var(--subtext)'}}>Пока тут нет контента, связанного с этой тематической лентой,
+                            но если у вас такой есть, мы можем об
+                            судить его публикацию в этом блоке</Text>
+                        </Div>
+                        
+                        <CellButton
+                            target="_blank" rel="noopener noreferrer"
+                            href={GENERAL_LINKS.group_fan_community}
+                            before={
+                            <Avatar shadow={false} size={48}>
+                                <Icon24Add />
+                            </Avatar>
+                            }
+                        >
+                            Переговорить с активистами
+                        </CellButton>
+                    </div>
+                    
+                    }
+            </Group>
             <CuratorsTopic />
             <ScoreTopic />
             <Posts 

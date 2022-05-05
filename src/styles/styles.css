@@ -4,10 +4,6 @@
 @import './fonts/main.css';
 @import './animations.css';
 
-.vkui__root, .vkui__portal-root{
-    --font-common: "VK Regular", system-ui, "Helvetica Neue", Roboto, sans-serif;
-    /* --font-tt: "VK Medium"; */
-}
 
 
 div,p{
@@ -22,7 +18,7 @@ a {
     text-decoration: none;
     color: var(--dynamic_gray);
 }
-::-webkit-scrollbar {
+/* ::-webkit-scrollbar {
     width: 3px;
     background-color: var(--background_page);
 }
@@ -33,7 +29,7 @@ a {
 }
 ::-webkit-scrollbar-thumb:hover {
     background-color: var(--hover_scrollbar);
-}
+} */
 
 .vkuiSplitCol--spaced {
     margin-left: 0px;
@@ -42,8 +38,8 @@ a {
     margin-top: 4px;
     transition: all 0.5s ;
 }
-.green_progressbar .vkuiProgress__in {
-    background: #4BB34B;
+.vkuiRichCell>.vkuiAvatar {
+    margin-top: 10px;
 }
 .green {
     color: #4BB34B;

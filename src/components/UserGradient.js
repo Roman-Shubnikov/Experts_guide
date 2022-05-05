@@ -6,37 +6,37 @@ import {
 	Group, 
 	SimpleCell, 
 	Avatar,
-	Title,
-    Text,
     Placeholder,
     Header,
     HorizontalScroll,
     PanelSpinner,
     HorizontalCell,
-    Tabs,
-    TabsItem,
     Spacing,
+    RichCell,
+    ButtonGroup,
+    Card,
+    MiniInfoCell,
+
 } from '@vkontakte/vkui';	
 
 import {
-	Icon28ListOutline,
-    Icon28StatisticsOutline,
-    Icon28NewsfeedOutline,
-    Icon28ArchiveOutline,
     Icon16Crown,
     Icon28LockOutline,
-    Icon16MusicMic,
+    Icon20WorkOutline,
+    Icon20StatisticsOutline,
+    Icon20NotebookCheckOutline,
+    Icon20ListAddOutline,
+    Icon28AchievementCircleFillBlue,
+    Icon20Check,
 } from '@vkontakte/icons'
-import { enumerate, getHumanyTime, recog_number } from '../functions/tools';
+import { enumerate, recog_number } from '../functions/tools';
 import { API_URL, ENUMERATE_VARIANTS, PERMISSIONS } from '../config';
-import Gradient from '../components/Gradient'
 const UserGradient = props => {
     const {placeHolderText, userSearchedInfo, isExpert, tokenSearch} = props;
     const vkInfo = userSearchedInfo[0];
     const apiInfo = isExpert && userSearchedInfo[1];
     const [userFriends, setUserFriends] = useState(null);
-    const [activeTab, setActiveTab] = useState('general');
-
+    const isActivist = userSearchedInfo[1] && userSearchedInfo[1].permissions >= PERMISSIONS.activist
     useEffect(() => {
         const getFriends = () => {
             bridge.send('VKWebAppCallAPIMethod', {
@@ -91,81 +91,57 @@ const UserGradient = props => {
     return(
         <>
         <Group>
-        <Gradient>
-            <Avatar size={96} src={vkInfo.photo_100} alt='ava' />
-            <Title style={{ marginBottom: 8, marginTop: 20, display: 'flex'}} level="2" weight="medium">
-                {vkInfo.first_name} {vkInfo.last_name}
-                {apiInfo && apiInfo.is_best && <Icon16Crown className='crown crown_user-gradient' />}
-                {userSearchedInfo[1] && userSearchedInfo[1].permissions >= PERMISSIONS.activist && <Icon16MusicMic className='verified' />}
-            </Title>
-            <Text style={{ marginBottom: 24, color: 'var(--text_secondary)'}}>
-                {vkInfo.last_seen && getHumanyTime(vkInfo.last_seen.time).datetime} 
-            </Text>
-            <Button
-            target="_blank" rel="noopener noreferrer"
-            href={'https://vk.com/' + vkInfo.screen_name}
-            size="m" 
-            mode="secondary">Перейти в профиль</Button>
-        </Gradient>
-            {isExpert && apiInfo ? 
-            <Group mode='plain'>
-                <Spacing size={5} />
-                <Tabs>
-                    <HorizontalScroll>
-                        <div style={{paddingLeft: 16}}></div>
-                        <TabsItem
-                        hasHover={false}
-                        hasActive={false}
-                        onClick={() => setActiveTab('general')}
-                        selected={activeTab === 'general'}>
-                            Информация
-                        </TabsItem>
-                        <TabsItem
-                        hasHover={false}
-                        hasActive={false}
-                        onClick={() => setActiveTab('addition')}
-                        selected={activeTab === 'addition'}>
-                            Дополнительно
-                        </TabsItem>
-                    </HorizontalScroll>
-                </Tabs>
-                {activeTab === 'general' ? <>
-                <SimpleCell
+            <Card mode='outline' style={{height: 106, alignItems: 'center', display: 'flex'}}>
+                <RichCell
+                before={<Avatar 
+                    shadow={false}
+                    size={72} src={vkInfo.photo_100} alt='ava'>
+                        {isActivist && <Icon28AchievementCircleFillBlue
+                        style={{position: 'absolute', right: 0, bottom: 0}} />}
+                    </Avatar>}
                 disabled
-                before={<Icon28ListOutline />}
-                after={apiInfo.topic_name}>
-                    Курируемая тематика
-                </SimpleCell>
-                <SimpleCell
-                disabled
-                before={<Icon28StatisticsOutline />}
-                after={apiInfo.position === -1 ? "Изучаем" : apiInfo.position}>
-                    Позиция в рейтинге
-                </SimpleCell>
-                </> : 
-                activeTab === 'addition' ? <>
-                <SimpleCell
-                disabled
-                before={<Icon28NewsfeedOutline />}
-                after={apiInfo.actions_current_day === -1 ? "Изучаем" : apiInfo.actions_current_day + ' ' + enumerate(apiInfo.actions_current_day, ENUMERATE_VARIANTS.posts)}>
-                    За сегодня
-                </SimpleCell>
-                <SimpleCell
-                disabled
-                before={<Icon28ArchiveOutline />}
-                after={apiInfo.actions_count === -1 ? "Изучаем" : recog_number(apiInfo.actions_count) + ' ' + enumerate(apiInfo.actions_count, ENUMERATE_VARIANTS.posts)}>
-                    За все время
-                </SimpleCell>
-                </> : null}
-                
-            </Group> :
-            <Group mode='plain'>
-                <Placeholder>
-                    {placeHolderText}
-                </Placeholder>
-            </Group>}
+                caption={isExpert && apiInfo ? "Эксперт" : placeHolderText}
+                actions={<ButtonGroup>
+                    <Button
+                    target="_blank" rel="noopener noreferrer"
+                    href={'https://vk.com/' + vkInfo.screen_name}
+                    size="m" 
+                    mode='primary'>Открыть профиль</Button>
+                    <Button
+                    target="_blank" rel="noopener noreferrer"
+                    href={'https://vk.com/' + vkInfo.screen_name}
+                    size="m" 
+                    mode="secondary">Написать</Button>
+                </ButtonGroup>}>
+                    {vkInfo.first_name} {vkInfo.last_name}
+                    {apiInfo && apiInfo.is_best && <Icon16Crown className='crown crown_user-gradient' />}
+                </RichCell>
+            </Card>
+            {isExpert && apiInfo && <>
+            <Spacing />
+            {isActivist && <MiniInfoCell
+            before={<Icon20Check />}>
+                Пользователь является активистом
+            </MiniInfoCell>}
+            <MiniInfoCell
+            before={<Icon20WorkOutline />}>
+                Тематическая лента: {apiInfo.topic_name}
+            </MiniInfoCell>
+            <MiniInfoCell
+            before={<Icon20StatisticsOutline />}>
+                Позиция в общем рейтинге: {apiInfo.position === -1 ? "Изучаем" : apiInfo.position}
+            </MiniInfoCell>
+            <Spacing separator />
+            <MiniInfoCell
+            before={<Icon20NotebookCheckOutline />}>
+                Оценено публикаций сегодня: {apiInfo.actions_current_day === -1 ? "Изучаем" : apiInfo.actions_current_day + ' ' + enumerate(apiInfo.actions_current_day, ENUMERATE_VARIANTS.posts)}
+            </MiniInfoCell>
+            <MiniInfoCell
+            before={<Icon20ListAddOutline  />}>
+                Оценено публикаций за все время: {apiInfo.actions_count === -1 ? "Изучаем" : recog_number(apiInfo.actions_count) + ' ' + enumerate(apiInfo.actions_count, ENUMERATE_VARIANTS.posts)}
+            </MiniInfoCell>
+            </>}
         </Group>
-        
         {isExpert && 
         <Group header={<Header
                         indicator={userFriends && userFriends.length > 0 && userFriends.length}>Эксперты в друзьях</Header>}>
@@ -199,6 +175,7 @@ const UserGradient = props => {
                 </div>
             </HorizontalScroll>
         </Group>}
+        
         </>
     )
 }

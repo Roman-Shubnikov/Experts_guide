@@ -98,7 +98,7 @@ export const EpicPC = props => {
                 panel='reports'
                 icon={Icon28ReportOutline}
             >
-                Пожаловаться
+                Модерация
             </EpicItem>
             <EpicItem
                 go={go}

@@ -39,6 +39,7 @@ import {
 } from '@vkontakte/icons'
 import { It_28, Sience_28 } from './img/icons';
 // import 
+export const APP_ID = 7536939;
 export const GROUP_EXPERTS_ID = 182611749;
 export const GROUP_FAN_EXPERTS_ID = 206651170;
 export const API_URL = 'https://xelene.ru/experts_guide/php/index.php?';
@@ -59,7 +60,7 @@ export const GENERAL_LINKS = {
     ideas_for_guide: 'https://vk.com/topic-206651170_48189045',
     who_experts: 'https://vk.com/faq18060',
     theme_feed: 'https://vk.com/blog/themefeeds',
-    orders: 'https://vk.com/market?act=cart&owner_id=-182611749',
+    orders: 'https://vk.com/market?act=orders&owner_id=-182611749',
     curators: 'https://vk.com/@clubvkexperts-kuratory',
     achievements: 'https://vk.com/topic-206651170_48253467',
     premoderation: 'https://vk.com/pages?oid=-206651170&p=Премодерация',
@@ -110,6 +111,7 @@ export const chatLinks = {
 }
 
 export const BASE_ARTICLE_TOPIC_LINK = 'https://vk.com/@clubvkexperts-';
+export const TOPIC_LINKS_PHOTOS_PATH = process.env.PUBLIC_URL + '/img/photos_links'
 export const ACTIONS_NORM = 700;
 
 export const ICON_TOPICS = [
@@ -151,7 +153,140 @@ export const ENUMERATE_VARIANTS = {
     posts: ['пост', 'поста', 'постов'],
 }
 export const CURATOR_PATTERN = 'Куратор тематики ';
-
+export const ARTICLE_IMAGE = TOPIC_LINKS_PHOTOS_PATH + '/article.png'
+export const TOPICS_LINKS = {
+    it: [
+        {
+            title: 'кринжологи VK • hype talks', 
+            descr: 'Неофициальная беседа', 
+            link: 'https://vk.me/join/AJQ1d0g9Hhh_mY/eO9YWiVtn',
+            img: TOPIC_LINKS_PHOTOS_PATH + '/chat.jpg',
+            text_button: 'Открыть',
+        },
+        {
+            title: 'Правила оценки постов', 
+            descr: 'Статья', 
+            link: 'https://vk.com/@keksperts-it-guide',
+            img: TOPIC_LINKS_PHOTOS_PATH + '/',
+            isArticle: true,
+        },
+    ],
+    art: [
+        {
+            title: 'Эксперты: Арт', 
+            descr: 'Неофициальное сообщество', 
+            link: 'https://vk.com/club190570695',
+            img: TOPIC_LINKS_PHOTOS_PATH + '/art_comm.jpg',
+            text_button: 'Перейти',
+        },
+        {
+            title: 'Вопросы и ответы', 
+            descr: 'Статья', 
+            link: 'https://vk.com/@vkexpertsart-voprosy-i-otvety',
+            img: TOPIC_LINKS_PHOTOS_PATH + '/',
+            isArticle: true,
+        },
+        {
+            title: 'Правила оценки', 
+            descr: 'Статья', 
+            link: 'https://vk.com/@vkexpertsart-pravila-ocenki',
+            img: TOPIC_LINKS_PHOTOS_PATH + '/',
+            isArticle: true,
+        },
+    ],
+    games: [
+        {
+            title: 'Эксперты: Игры', 
+            descr: 'Неофициальное сообщество', 
+            link: 'https://vk.com/gameexperts',
+            img: TOPIC_LINKS_PHOTOS_PATH + '/games_comm.jpg',
+            text_button: 'Перейти',
+        },
+        {
+            title: 'F.A.Q.', 
+            descr: 'Статья', 
+            link: 'https://vk.com/@gameexperts-faq-game',
+            img: TOPIC_LINKS_PHOTOS_PATH + '/',
+            isArticle: true,
+        },
+    ],
+    cinema: [],
+    music: [
+        {
+            title: 'Эксперты VK | Музыка', 
+            descr: 'Неофициальное сообщество', 
+            link: 'https://vk.com/exp_muz',
+            img: TOPIC_LINKS_PHOTOS_PATH + '/music_comm.jpg',
+            text_button: 'Перейти',
+        },
+        {
+            title: 'Рекомендации к оцениванию публикаций', 
+            descr: 'Статья', 
+            link: 'https://vk.com/@exp_muz-gide',
+            img: TOPIC_LINKS_PHOTOS_PATH + '/',
+            isArticle: true,
+        },
+    ],
+    science: [],
+    sport : [
+        {
+            title: 'Советы по оцениваю постов', 
+            descr: 'Статья', 
+            link: 'https://vk.com/@dyumiin-faqforsport',
+            img: TOPIC_LINKS_PHOTOS_PATH + '/',
+            isArticle: true,
+        },
+    ],
+    style: [
+        {
+            title: '«Сломанная лапка, ожерелье, диадема»', 
+            descr: 'Статья', 
+            link: 'https://vk.com/@sevochika-statya-dlya-experta-stilya',
+            img: TOPIC_LINKS_PHOTOS_PATH + '/',
+            isArticle: true,
+        },
+    ],
+    tourism: [],
+    photo: [
+        {
+            title: 'Гайд по фотоленте', 
+            descr: 'Статья', 
+            link: 'https://vk.com/@efrektal-gaid-po-fotolente',
+            img: TOPIC_LINKS_PHOTOS_PATH + '/',
+            isArticle: true,
+        },
+        {
+            title: 'Эфректал', 
+            descr: 'Неофициальное сообщество', 
+            link: 'https://vk.com/efrektal',
+            img: TOPIC_LINKS_PHOTOS_PATH + '/photo_comm.jpg',
+            text_button: 'Перейти',
+        },
+        {
+            title: 'Эфректалчат', 
+            descr: 'Неофициальная беседа',
+            link: 'https://vk.me/join/AJQ1dw5R7hfduzzBmioax07a',
+            img: TOPIC_LINKS_PHOTOS_PATH + '/photo_chat.jpg',
+            text_button: 'Открыть',
+        },
+    ],
+    humor: [
+        {
+            title: 'Юмористическое шоу «ВКонтакте.ру»', 
+            descr: 'Статья', 
+            link: 'https://vk.com/@keksperts-humor-guide',
+            img: TOPIC_LINKS_PHOTOS_PATH + '/',
+            isArticle: true,
+        },
+        {
+            title: 'кринжологи VK • hype talks', 
+            descr: 'Неофициальная беседа',
+            link: 'https://vk.me/join/AJQ1d0g9Hhh_mY/eO9YWiVtn',
+            img: TOPIC_LINKS_PHOTOS_PATH + '/chat.jpg',
+            text_button: 'Открыть',
+        },
+    ],
+}
 export const ExpertsIcons28 = {
     0: Icon28CancelCircleOutline,
     1: Icon28BoxHeartOutline,

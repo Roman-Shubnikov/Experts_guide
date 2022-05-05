@@ -15,6 +15,9 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { faqActions } from '../../store/main';
 import { API_URL, PERMISSIONS } from '../../config';
+
+let scrollQuestionsStyle = {height: 704, overflowY: 'scroll'};
+
 export default props => {
     const dispatch = useDispatch();
     const { activeCategory, questions } = useSelector((state) => state.Faq)
@@ -111,7 +114,7 @@ export default props => {
         </Group>}
         <Group>
             
-            <List>
+            <List style={questions && questions.length > 16 ? scrollQuestionsStyle : {}}>
                 {Questions()}
             </List>
             
