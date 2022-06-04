@@ -28,6 +28,7 @@ export const HelpCreateQuestion = props => {
     const [answer, setAnswer] = useState('');
     const [snackbar, setSnackbar] = useState(null);
     const [check1, setCheck1] = useState(false);
+    // eslint-disable-next-line
     const [check2, setCheck2] = useState(false);
     const [check3, setCheck3] = useState(false);
     const [category_id, setCategory_id] = useState('');
@@ -97,9 +98,6 @@ export const HelpCreateQuestion = props => {
                             onChange={(e) => {setCategory_id(e.currentTarget.value)}}
                          />
                     </FormItem>
-                    {/* <Checkbox checked={check2} onChange={() => setCheck2(prev => !prev)}>
-                        Разрешить оценивать вопрос
-                    </Checkbox> */}
                     <Checkbox checked={check1} onChange={() => setCheck1(prev => !prev)}>
                         Добавить в вопрос кнопку обращения к активистам
                     </Checkbox>
