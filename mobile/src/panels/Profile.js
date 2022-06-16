@@ -9,7 +9,7 @@ import {
     SimpleCell,
     RichCell,
     Spacing,
-    Banner,
+    PanelHeaderBack,
 
 } from "@vkontakte/vkui"
 import {
@@ -19,10 +19,16 @@ import {
     Icon28ArchiveOutline,
     Icon16Crown,
     Icon28Favorite,
+	Icon28NameTagOutline,
+	Icon28MoneyWadOutline,
+	Icon28StorefrontOutline,
+	Icon28InboxOutline,
+	Icon28WalletOutline,
+	Icon28MessagesOutline,
+	Icon28LogoVkOutline,
 } from '@vkontakte/icons';
-import { ACTIONS_NORM, BASE_ARTICLE_TOPIC_LINK, TOPICS } from '../config';
+import { ACTIONS_NORM, BASE_ARTICLE_TOPIC_LINK, GENERAL_LINKS, TOPICS } from '../config';
 import { getKeyByValue } from '../functions/tools';
-import { Computer28 } from '../img/icons';
 
 
 const Profile = props => {
@@ -32,9 +38,10 @@ const Profile = props => {
     const isVKHOVER = !(platform === VKCOM)
     return(
         <Panel id={props.id}>
-            {platform !== VKCOM && 
-            <PanelHeader>Профиль</PanelHeader>}
-            {platform !== VKCOM && <Group>
+            <PanelHeader
+            before={<PanelHeaderBack onClick={() => window.history.back()} />}
+            >Профиль</PanelHeader>
+            <Group>
                 <RichCell
                 hasActive={isVKHOVER}
                 hasHover={isVKHOVER}
@@ -52,15 +59,6 @@ const Profile = props => {
                     </div>
                     
                 </RichCell>
-            </Group>}
-            <Group>
-                <Banner
-                header='Мы обновили разделы'
-                before={<Computer28 size={28}/>}
-                subheader={'Теперь компьютерной версией заведуют новый интерфейс, а справ' +
-                    'очник эксперта по прежнему можно посмотреть с мобильного устройства'}/>
-            </Group>
-            <Group>
                 <SimpleCell
                 disabled
                 after={userInfo.actions_current_day}
@@ -97,6 +95,51 @@ const Profile = props => {
                 before={<Icon28ArchiveOutline />}
                 >
                     За все время
+                </SimpleCell>
+                <Spacing separator={true} />
+                <SimpleCell 
+                href={GENERAL_LINKS.info_expers}
+                target="_blank" rel="noopener noreferrer"
+                before={<Icon28NameTagOutline />}>
+                    Информация
+                </SimpleCell>
+                <SimpleCell 
+                href={GENERAL_LINKS.expert_rules}
+                target="_blank" rel="noopener noreferrer"
+                before={<Icon28LogoVkOutline />}>
+                    Правила программы
+                </SimpleCell>
+                <Spacing separator />
+                <SimpleCell 
+                href={GENERAL_LINKS.points}
+                target="_blank" rel="noopener noreferrer"
+                before={<Icon28MoneyWadOutline />}>
+                    Баллы экспертов
+                </SimpleCell>
+                <SimpleCell 
+                href={GENERAL_LINKS.market}
+                target="_blank" rel="noopener noreferrer"
+                before={<Icon28StorefrontOutline />}>
+                    Магазин
+                </SimpleCell>
+                <SimpleCell 
+                href={GENERAL_LINKS.orders}
+                target="_blank" rel="noopener noreferrer"
+                before={<Icon28InboxOutline />}>
+                    Заказы
+                </SimpleCell>
+                <SimpleCell 
+                href={GENERAL_LINKS.billing}
+                target="_blank" rel="noopener noreferrer"
+                before={<Icon28WalletOutline />}>
+                    Детализация счёта
+                </SimpleCell>
+                <Spacing separator />
+                <SimpleCell 
+                href={GENERAL_LINKS.feedback}
+                target="_blank" rel="noopener noreferrer"
+                before={<Icon28MessagesOutline />}>
+                    Обратная связь
                 </SimpleCell>
             </Group>
         </Panel>

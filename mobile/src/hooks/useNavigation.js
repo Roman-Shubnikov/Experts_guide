@@ -26,10 +26,9 @@ export const useNavigation = () => {
     }
 
     const onEpicTap = (e) => {
-      setActiveScene(e.currentTarget.dataset.story, e.currentTarget.dataset.story);
+      goPanel(e.currentTarget.dataset.story, e.currentTarget.dataset.story);
     }
     const goPanel = useCallback((view, panel, forcePanel=false, replaceState=false) => {
-    
         const checkVisitedView = (view) => {
           let history = [...historyPanels];
           history.reverse();

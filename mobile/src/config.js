@@ -4,8 +4,6 @@ import {
 	Icon28PaletteOutline,
     Icon28BasketballBallOutline,
     Icon28CameraOutline,
-    Icon28MusicOutline,
-    Icon28PlaneOutline,
     Icon28MovieReelOutline,
     Icon28Smiles2Outline,
     Icon28TshirtOutline,
@@ -35,9 +33,13 @@ import {
     Icon28DiscountOutline,
     Icon28StarsOutline,
     Icon28StickerOutline,
+    Icon28ComputerSmartphoneOutline,
+    Icon28BookSpreadOutline,
+    Icon28BriefcaseOutline,
+    Icon28SongOutline,
+
 
 } from '@vkontakte/icons'
-import { It_28, Sience_28 } from './img/icons';
 // import 
 export const APP_ID = 7536939;
 export const GROUP_EXPERTS_ID = 182611749;
@@ -117,15 +119,15 @@ export const ACTIONS_NORM = 700;
 export const ICON_TOPICS = [
     {icon: Icon28PaletteOutline, topic: 'Арт', color: '#FF3347'},
     {icon: Icon28BasketballBallOutline, topic: 'Спорт', color: '#FFA000'},
-    {icon: It_28, topic: 'IT', color: '#3F8AE0'},
+    {icon: Icon28ComputerSmartphoneOutline, topic: 'IT', color: '#3F8AE0'},
     {icon: Icon28CameraOutline, topic: 'Фото', color: '#3F8AE0'},
-    {icon: Icon28MusicOutline, topic: 'Музыка', color: '#AA65F0'},
-    {icon: Icon28PlaneOutline, topic: 'Туризм', color: '#FF3347'},
+    {icon: Icon28SongOutline, topic: 'Музыка', color: '#AA65F0'},
+    {icon: Icon28BriefcaseOutline, topic: 'Туризм', color: '#FF3347'},
     {icon: Icon28MovieReelOutline, topic: 'Кино', color: '#76787A'},
     {icon: Icon28Smiles2Outline, topic: 'Юмор', color: '#FFA000'},
     {icon: Icon28TshirtOutline, topic: 'Стиль', color: '#3F8AE0'},
     {icon: Icon28GameOutline, topic: 'Игры', color: '#4BB34B'},
-    {icon: Sience_28, topic: 'Наука', color: '#76787A'},
+    {icon: Icon28BookSpreadOutline, topic: 'Наука', color: '#76787A'},
 ]
 
 export const SCORE_POSITION_COLORS = [

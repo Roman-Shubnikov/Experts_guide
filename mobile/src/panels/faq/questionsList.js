@@ -9,14 +9,14 @@ import {
 } from '@vkontakte/vkui';
 import { 
     Icon56AdvertisingOutline,
-    Icon28EditOutline
+    Icon28EditOutline,
+    Icon28ArticleOutline,
 
 } from '@vkontakte/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { faqActions } from '../../store/main';
 import { API_URL, PERMISSIONS } from '../../config';
 
-let scrollQuestionsStyle = {height: 704, overflowY: 'scroll'};
 
 export default props => {
     const dispatch = useDispatch();
@@ -85,6 +85,7 @@ export default props => {
             return questions.map((res, i) => 
             <Cell
             multiline
+            before={<Icon28ArticleOutline />}
             expandable
             mode={editing && "removable"}
             onRemove={() => {
@@ -106,20 +107,14 @@ export default props => {
     return(
         <>
         {moderator_permission && 
-        <Group>
+        <Group mode='plain'>
             <CellButton before={<Icon28EditOutline />}
                 onClick={() => setEditing(pv => !pv)}>
                     {editing ? "Готово" : "Редактировать"}
             </CellButton>
         </Group>}
-        <Group>
-            
-            <List style={questions && questions.length > 16 ? scrollQuestionsStyle : {}}>
-                {Questions()}
-            </List>
-            
-
-            
-        </Group></>
+        <List>
+            {Questions()}
+        </List></>
     )
 }

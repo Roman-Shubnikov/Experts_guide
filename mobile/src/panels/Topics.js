@@ -23,7 +23,6 @@ import {
 	FixedLayout,
 	IconButton,
 	Spacing,
-	useAppearance,
 } from '@vkontakte/vkui';
 import {
 	Icon56ErrorTriangleOutline,
@@ -47,7 +46,6 @@ import {
 	getKeyByValue,
 } from '../functions/tools';
 import { ExpertMenu, MenuArticles } from '../components';
-import Logo from '../img/logo'
 const easterEggMusic = new Audio('https://xelene.ru/experts_guide/music/riversolo.mp3')
 export const Topics = props => {
 	const [scoreData, setScoreData] = useState(null);
@@ -56,7 +54,6 @@ export const Topics = props => {
 	const [audio, setAudio] = useState(null);
 	const [audioPaused, setAudioPaused] = useState(true);
 	const platform = usePlatform();
-	const appearence = useAppearance();
 	const setActiveTopic = props.setActiveTopic;
 	const scoreGenerator = () => {
 		let render_score = [];
@@ -156,7 +153,7 @@ export const Topics = props => {
 	return(
 	<Panel id={props.id}>
 		<PanelHeader
-		left={platform !== VKCOM &&
+		before={platform !== VKCOM &&
 			(props.isExpert ? <PanelHeaderButton
 			onClick={() => bridge.send(
 				'VKWebAppOpenApp',

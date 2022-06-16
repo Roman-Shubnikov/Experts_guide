@@ -1,26 +1,22 @@
-import React, { useCallback, useEffect } from 'react';
-import bridge from '@vkontakte/vk-bridge';
+import React, { useState, useCallback } from 'react';
 import {
     Avatar,
 	Panel,
 	Group,
-    Placeholder,
     Div,
-    UsersStack,
-    PanelSpinner,
-    Subhead,
-    RichCell,
-    Button,
     CellButton,
     Text,
     PanelHeader,
     PanelHeaderButton,
     SimpleCell,
+    PanelHeaderContent,
+    List,
+    PanelHeaderContext,
+    IconButton,
 } from '@vkontakte/vkui';
-import { API_URL, ARTICLE_IMAGE, GENERAL_LINKS, TOPICS, TOPICS_LINKS, TOPIC_ICONS_PATH } from '../config';
+import { ARTICLE_IMAGE, GENERAL_LINKS, ICON_TOPICS, TOPICS, TOPICS_LINKS, TOPIC_ICONS_PATH } from '../config';
 import { CuratorsTopic, Posts, ScoreTopic } from '../Units';
 import { useDispatch, useSelector } from 'react-redux';
-import { accountActions } from '../store/main';
 import { enumerate, getKeyByValue } from '../functions/tools';
 import {
     Icon16ArrowTriangleDown,
@@ -29,95 +25,20 @@ import {
     Icon24Add,
     Icon28UserCircleOutline,
     Icon28UserCardOutline,
-
+    Icon16Dropdown,
+    Icon28HelpCircleOutline,
 } from '@vkontakte/icons';
 import { useNavigation } from '../hooks';
+import { accountActions } from '../store/main';
 
 
 export const Home = props => {
     const dispatch = useDispatch();
     const { onEpicTap } = useNavigation();
-    const { activeTopic, user, tokenSearch, friends_topics} = useSelector((state) => state.account)
+    const { activeTopic, user} = useSelector((state) => state.account)
+    const setActiveTopic = useCallback((data) => dispatch(accountActions.setActiveTopic(data)), [dispatch]);
     const { posts, topics } = useSelector(state => state.stor);
-    const setTopicsFriends = useCallback((data) => dispatch(accountActions.setTopicsFriends(data)), [dispatch]);
-    useEffect(() => {
-        const getFriends = () => {
-            bridge.send('VKWebAppCallAPIMethod', {
-				method: 'friends.get',
-				params: {
-					user_id: user.vk_id,
-                    fields: 'first_name,last_name,photo_100,domain',
-					v: "5.131", 
-					access_token: tokenSearch,
-				}
-			})
-            .then(async (data) => {
-                let friends = data.response.items;
-                let sliced_friend,curr_users,experts=[],friend_ids;
-                for(let i=0;i<friends.length;i+=100){
-                    sliced_friend = friends.slice(i, i+100);
-                    friend_ids = sliced_friend.map(item => (item.id))
-                    curr_users = await fetch(API_URL + 'method=experts.getInfo&' + window.location.search.replace('?', ''),
-                    {
-                        method: 'post',
-                        headers: { "Content-type": "application/json; charset=UTF-8" },
-                        body: JSON.stringify({
-                            'user_ids': friend_ids.join(','),
-                        })
-                    })
-                    curr_users = await curr_users.json()
-                    curr_users = curr_users.response;
-                    for(let j=0;j<curr_users.length;j++) {
-                        if(curr_users[j].is_expert) {
-                            let full_user = {...curr_users[j].info};
-                            let vk_info = sliced_friend[j];
-                            full_user.first_name = vk_info.first_name;
-                            full_user.last_name = vk_info.last_name;
-                            full_user.photo = vk_info.photo_100;
-                            full_user.domain = vk_info.domain;
-                            experts.push(full_user);
-                        }
-                    }
-                }
-                let new_friends_topics = {...friends_topics};
-                let topics = Object.keys(TOPICS);
-                for(let i=0;i<topics.length;i++) {
-                    let curr_topic = topics[i];
-                    new_friends_topics[curr_topic] = experts.filter((i) => (i.topic_name === TOPICS[curr_topic]))
-                    
-                }
-                setTopicsFriends(new_friends_topics)
-                // setUserFriends(experts.slice(0, 100))
-            })
-            // .catch(e => {
-            //     console.log(e);
-            //     // setUserFriends(false);
-            // })
-        }
-        setTimeout(() => {
-            getFriends();
-        }, 3000)
-         // eslint-disable-next-line
-    }, [user, tokenSearch])
-    const getNames = () => {
-        let names = '';
-        let experts = friends_topics[activeTopic].slice(0, 3);
-        for(let i=0;i<experts.length;i++) {
-            let name_expert = experts[i].first_name;
-            names += name_expert;
-            if(i+1 !== experts.length) {
-                names += ', ';
-            }
-        }
-        if(friends_topics[activeTopic].length !== 1) {
-        names += ' и ещё ' + friends_topics[activeTopic].length + ' '
-         + enumerate(friends_topics[activeTopic].length, 
-            ['друг оценивает', 'друга оценивают', 'друзей оценивают']) + ' эту тематику'
-        } else {
-            names += ' оценивает эту тематику'
-        }
-        return names;
-    }
+    const [contextOpened, setContext] = useState(false);
     const getArrows = () => {
         if(!topics) return;
         let counters = {};
@@ -134,54 +55,82 @@ export const Home = props => {
         if(activeTopic === max_count) return <Icon16ArrowTriangleUp className='icon-name green' />
         return <Icon16Minus className='icon-name' style={{color: '#A3ADB8'}} />
     }
+    const getActualTopic = () => {
+		let my_topic_index = ICON_TOPICS.findIndex((val, i) => val.topic === user.expert_info.topic_name)
+		let iconTopics_actual = ICON_TOPICS.slice();
+		if(user.expert_info.is_expert && my_topic_index !== -1){
+			let my_topic = iconTopics_actual.splice(my_topic_index, 1);
+			iconTopics_actual.unshift(my_topic[0])
+		}
+		return iconTopics_actual;
+	}
+    const genContext = () => {
+		let iconTopics_actual = getActualTopic();
+		return(
+            iconTopics_actual.map(Val => 
+            <SimpleCell
+            onClick={() => setActiveTopic(getKeyByValue(TOPICS, Val.topic))}
+            key={Val.topic}
+            before={<Val.icon />}>
+                {Val.topic}
+            </SimpleCell>
+                )
+			
+		)
+	}
     return(
         <Panel id={props.id}>
             <PanelHeader
-            left={
+            before={
                 <>
                     <PanelHeaderButton
+                    aria-label="Профиль"
                     data-story='profile'
                     onClick={onEpicTap}>
                         <Icon28UserCircleOutline />
                     </PanelHeaderButton>
                     <PanelHeaderButton
+                    aria-label="Участники"
                     data-story='searchInfo'
                     onClick={onEpicTap}>
                         <Icon28UserCardOutline />
                     </PanelHeaderButton>
                 </>
             }>
-                {TOPICS[activeTopic]}
+                <PanelHeaderContent
+                      aside={
+                        <Icon16Dropdown
+                          style={{
+                            transform: `rotate(${
+                                contextOpened ? "180deg" : "0"
+                            })`,
+                          }}
+                        />
+                      }
+                      onClick={() => setContext(p => !p)}
+                    >
+                      {TOPICS[activeTopic]}
+                </PanelHeaderContent>
             </PanelHeader>
-            <div style={{display: 'flex'}}>
-                <Group style={{width: '40%', marginRight: 14}}>
-                    <Div style={{display: 'flex', padding: '15px 16px'}}>
-                        <Avatar size={72} src={TOPIC_ICONS_PATH + '/' + activeTopic + '.png'} />
-                        <Div style={{paddingTop: 19}}><div style={{display: 'flex'}}>{TOPICS[activeTopic]} {getArrows()}</div>
-                        <Subhead className='vkuiSimpleCell__description'>{posts ? posts.count[activeTopic] === 0 ? 'нет постов' : posts.count[activeTopic] + ' ' + enumerate(posts.count[activeTopic], ['пост', 'поста', 'постов']) : '...'}</Subhead></Div>
-                    </Div>
-                </Group>
-                <Group style={{width: '60%'}}>
-                    <Div style={{height: 79}}>
-                        {friends_topics[activeTopic] ? 
-                        friends_topics[activeTopic].length > 0 ?
-                        <UsersStack
-                            photos={
-                                friends_topics[activeTopic].map(i => i.photo)
-                            }
-                            size="m"
-                            count={4}
-                            layout="vertical"
-                            >
-                                {getNames()}
-                            </UsersStack> :
-                            <Placeholder>
-                                У вас нет друзей-экспертов в этой тематике
-                            </Placeholder>
-                            : <PanelSpinner height={79} size='medium' />}
-                    </Div>
-                </Group>
-            </div>
+            <PanelHeaderContext
+            opened={contextOpened}
+            onClick={() => setContext(p => !p)}>
+                <List>
+                    {genContext()}
+                </List>
+                
+            </PanelHeaderContext>
+            <Group>
+                <SimpleCell
+                disabled
+                after={<IconButton data-story="help" onClick={onEpicTap}>
+                    <Icon28HelpCircleOutline style={{color: 'var(--accent)'}} />
+                    </IconButton>}
+                before={<Avatar size={72} src={TOPIC_ICONS_PATH + '/' + activeTopic + '.png'} />}
+                description={posts ? posts.count[activeTopic] === 0 ? 'нет постов' : posts.count[activeTopic] + ' ' + enumerate(posts.count[activeTopic], ['пост', 'поста', 'постов']) : '...'}>
+                    <div style={{display: 'flex'}}>{TOPICS[activeTopic]} {getArrows()}</div>
+                </SimpleCell>
+            </Group>
             <Group>
                 {TOPICS_LINKS[activeTopic].length > 0 ? TOPICS_LINKS[activeTopic].map((val, i) => 
                 <SimpleCell

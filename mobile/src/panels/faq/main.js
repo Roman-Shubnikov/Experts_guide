@@ -5,26 +5,20 @@ import {
 import {
     Button,
     Group,
-    Header,
-    Link,
     Panel,
     PanelHeader,
     PanelSpinner,
     Placeholder,
     Search,
     SimpleCell,
-    Tabs,
-    TabsItem,
-    usePlatform,
-    VKCOM,
-    Div,
-    Subhead,
+    PanelHeaderBack,
+
 
 } from '@vkontakte/vkui';
 import { useDispatch, useSelector } from 'react-redux';
 import { API_URL, GENERAL_LINKS} from '../../config';
 import { faqActions } from '../../store/main';
-import { NotePen28, SadlyEmoji } from '../../img/icons';
+import { SadlyEmoji } from '../../img/icons';
 import QuestionList from './questionsList';
 let lastTypingTime;
 let typing = false;
@@ -33,13 +27,11 @@ let searchval = '';
 export const Help = props => {
     const dispatch = useDispatch();
     const [search, setSearch] = useState('');
-    const { searchResult, activeTab } = useSelector((state) => state.Faq)
-    const setActiveTab = (tab) => dispatch(faqActions.setActiveTab(tab))
+    const { searchResult, activeCategory, categories } = useSelector((state) => state.Faq)
     const setSearchResult = (questions) => dispatch(faqActions.setSearchResultQuestions(questions))
     const { showErrorAlert, goPanel } = props.callbacks;
     const { goDisconnect } = props.navigation;
     const { activeStory } = useSelector((state) => state.views)
-    const platform = usePlatform();
 
     const getSearchQuestions = () => {
         if(searchval.length <= 0) return;
@@ -109,81 +101,25 @@ export const Help = props => {
             </Placeholder>
         }
     }
-    const setTab = (e) => {
-        let tab = e.currentTarget.dataset.tab;
-        setActiveTab(tab);
-    }
-    const isActiveTab = (tab) => {
-        return activeTab === tab;
-    }
     const content = () => {
-        switch(activeTab) {
-            case 'list':
-                if(search.length > 0) return <Group>{Searched()}</Group>;
-                return <QuestionList navigation={props.navigation} callbacks={props.callbacks} />;
-            case 'question_curators':
-                return (<>
-                    <Group>
-                        <Placeholder
-                        icon={<NotePen28 size={155} />}
-                        action={
-                            <Button
-                            href={GENERAL_LINKS.group_official_community}
-                            target="_blank"
-                            size='m'
-                            rel="noopener noreferrer">
-                                Задать вопрос
-                            </Button>
-                        }>
-                            Чтобы задать вопрос кураторам программы экспертов ВКонтакте,
-                            необходимо нажать на кнопку ниже и рассказать подробнее 
-                            о вашей проблеме.
-                        </Placeholder>
-                    </Group>
-                    <Group header={<Header>Рекомендация</Header>}>
-                        <Div style={{paddingTop: 0}}>
-                            <Subhead size={13} style={{color: '#818C99'}} weight='medium'>Чтобы ваш вопрос не затерялся в личных сообщениях рабочего сообщества,
-                            рекомендуем написать <Link>#вопрос</Link> в чате своей тематики.</Subhead>
-                        </Div>
-                    </Group>
-                    </>
-                )
-            default:
-                return <QuestionList navigation={props.navigation} callbacks={props.callbacks} />;
-        }
+        if(search.length > 0) return <Group>{Searched()}</Group>;
+        return <QuestionList navigation={props.navigation} callbacks={props.callbacks} />;
     }
 
     return(
         <Panel id={props.id}>
-            <PanelHeader className='search-header'>
-                {platform === VKCOM ? <Search value={search} placeholder='Введите ваш вопрос'
-                onChange={(e) => {updateTyping();
-                            searchval = e.currentTarget.value
-                            setSearch(e.currentTarget.value)}} /> : "Помощь"}
+            <PanelHeader
+            left={<PanelHeaderBack onClick={() => window.history.back()} />}>
+                {categories.find(v => v.id === activeCategory).title}
             </PanelHeader>
             <Group>
-                {platform !== VKCOM && <Search value={search} placeholder='Введите ваш вопрос'
+                <Search value={search} placeholder='Введите ваш вопрос'
                 onChange={(e) => {updateTyping();
                             searchval = e.currentTarget.value
-                            setSearch(e.currentTarget.value)}} />}
-                <Tabs>
-                    <TabsItem
-                    selected={isActiveTab('list')}
-                    data-tab='list'
-                    onClick={setTab}>
-                        Список вопросов
-                    </TabsItem>
-                    <TabsItem
-                    selected={isActiveTab('question_curators')}
-                    data-tab='question_curators'
-                    onClick={setTab}>
-                        Вопрос кураторам
-                    </TabsItem>
-                </Tabs>
-                
-            </Group>
-            {content()}
+                            setSearch(e.currentTarget.value)}} />
             
+                {content()}
+            </Group>
         </Panel>
     )
 }

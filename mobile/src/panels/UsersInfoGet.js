@@ -9,9 +9,8 @@ import {
 	FormItem,
 	Input,
 	PanelSpinner,
-	VKCOM,
-	usePlatform,
 	PanelHeader,
+	PanelHeaderBack,
 
 } from '@vkontakte/vkui';
 import {
@@ -39,7 +38,6 @@ export const UsersInfoGet = props => {
 	const [userSearchedInfo, setInfoUser] = useState(null);
 	const [fetching, setFetching] = useState(false);
 	const [isExpert, setIsExpert] = useState(false);
-	const platform = usePlatform();
 	const [placeHolderText,setPlaceholderText] = useState(placeholderTexts.default);
 	const { tokenSearch } = props;
 	const fetchUser = () => {
@@ -153,8 +151,9 @@ export const UsersInfoGet = props => {
 	}
     return(
         <Panel id={props.id}>
-			{platform !== VKCOM && 
-            <PanelHeader>Участники</PanelHeader>}
+            <PanelHeader
+			left={<PanelHeaderBack onClick={() => window.history.back()} />}
+			>Участники</PanelHeader>
             <Group>
 				<FormLayout>
 					<FormItem>

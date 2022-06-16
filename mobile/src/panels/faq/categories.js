@@ -12,6 +12,8 @@ import {
     PanelSpinner,
     Placeholder,
     CellButton,
+    PanelHeader,
+    PanelHeaderBack,
 
 } from '@vkontakte/vkui';
 import { useDispatch, useSelector } from 'react-redux';
@@ -30,7 +32,6 @@ export const HelpCategories = props => {
     const { activeStory } = useSelector((state) => state.views)
     const permissions = user.permissions;
     const admin_permission = permissions >= PERMISSIONS.admin;
-    const activist_permission = permissions >= PERMISSIONS.activist;
 
 
     const getCategories = () => {
@@ -39,7 +40,6 @@ export const HelpCategories = props => {
             .then(data => {
             if (data.result) {
                 setCategories(data.response)
-                goCategory(data.response[0].id)
             } else {
                 showErrorAlert(data.error.message)
             }
@@ -67,7 +67,7 @@ export const HelpCategories = props => {
         .catch(goDisconnect)
     }
     const goCategory = (id) => {
-        goPanel('help', 'help', true);
+        goPanel('help', 'helpQuestions', true);
         dispatch(faqActions.setActiveCategory(id))
     }
     const Categories = () => {
@@ -79,8 +79,6 @@ export const HelpCategories = props => {
                 category_render.push(
                     <Cell
                     expandable
-                    className="gray"
-                    style={{color: '#6f7985'}}
                     multiline
                     mode={editing && "removable"}
                     onRemove={() => {
@@ -88,7 +86,7 @@ export const HelpCategories = props => {
                     }}
                     key={item.id}
                     onClick={() => goCategory(item.id)}
-                    before={<Icon style={{color: item.color}} />}
+                    before={<Icon />}
                     >
                         {item.title}
                     </Cell>
@@ -109,12 +107,14 @@ export const HelpCategories = props => {
     },[])
     return(
         <Panel id={props.id}>
+            <PanelHeader
+            left={<PanelHeaderBack onClick={() => window.history.back()} />}>
+                Категории
+            </PanelHeader>
             <Group>
                 {Categories()}
             </Group>
-            {activist_permission && activeStory === "help" && 
-            <Group>
-            {admin_permission && <>
+            {admin_permission && <Group>
                 <CellButton before={<Icon28EditOutline />}
                     onClick={() => setEditing(pv => !pv)}>
                         {editing ? "Готово" : "Редактировать категории"}
@@ -122,12 +122,14 @@ export const HelpCategories = props => {
                 <CellButton before={<Icon28AddOutline />}
                 onClick={() => goPanel(activeStory, 'faqCreateCategory', true)}>
                     Добавить категорию
-            </CellButton></>}
-            <CellButton before={<Icon28AddOutline />}
-            onClick={() => goPanel(activeStory, 'faqCreateQuestion', true)}>
-                Добавить вопрос
-            </CellButton>
-            </Group>}
+                </CellButton>
+                <CellButton before={<Icon28AddOutline />}
+                onClick={() => goPanel(activeStory, 'faqCreateQuestion', true)}>
+                    Добавить вопрос
+                </CellButton>
+                </Group>}
+            
+    
         </Panel>
     )
 }

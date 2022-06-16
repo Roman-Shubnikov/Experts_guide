@@ -12,35 +12,16 @@ import {
 	usePlatform,
 	Platform,
 	useAdaptivity,
-	Panel,
-	PanelHeader,
 	SplitLayout,
 	SplitCol,
-	Group,
 	Epic,
 	Tabbar,
-	TabbarItem,
-	Select,
-	FormItem,
-	SimpleCell,
-	Spacing,
 	ANDROID,
+	CellButton,
 
 } from '@vkontakte/vkui';
 import {
-	Icon28HomeOutline,
-	Icon28UserCardOutline,
-	Icon28ListOutline,
-	Icon28ReportOutline,
-	Icon28UserCircleOutline,
-	Icon28HelpCircleOutline,
-	Icon28NameTagOutline,
-	Icon28MoneyWadOutline,
-	Icon28StorefrontOutline,
-	Icon28InboxOutline,
-	Icon28WalletOutline,
-	Icon28MessagesOutline,
-	Icon28LogoVkOutline,
+	Icon28BrainOutline,
 } from '@vkontakte/icons'
 import '@vkontakte/vkui/dist/vkui.css';
 import "@vkontakte/vkui/dist/unstable.css";
@@ -63,7 +44,7 @@ import {
 	Disconnect,
 
 } from './panels'
-import { ACTIONS_NORM, API_URL, APP_ID, GENERAL_LINKS, ICON_TOPICS, TOPICS } from './config';
+import { ACTIONS_NORM, API_URL, APP_ID, ICON_TOPICS, TOPICS } from './config';
 import { errorAlertCreator, getKeyByValue } from './functions/tools';
 import { useDispatch, useSelector } from 'react-redux';
 import { accountActions, storActions, viewsActions } from './store/main';
@@ -77,14 +58,13 @@ var backTimeout = false;
 const platformname = (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
 const App = () => {
 	const dispatch = useDispatch();
-	const { activeTab: faqActiveTab } = useSelector((state) => state.Faq)
 	const { 
 		user: userInfo, 
 		schemeSettings: {scheme}, 
 		activeTopic, 
 		tokenSearch
 	} = useSelector((state) => state.account)
-	const { setActiveScene, goPanel, setHash, onEpicTap } = useNavigation();
+	const { setActiveScene, goPanel, setHash } = useNavigation();
 	const { activeStory, historyPanels, snackbar, activePanel, need_epic } = useSelector((state) => state.views)
 	const setHistoryPanels = useCallback((history) => dispatch(viewsActions.setHistory(history)), [dispatch]);
 	const setCuratorsData = useCallback((data) => dispatch(accountActions.setCurators(data)), [dispatch]);
@@ -306,21 +286,7 @@ const App = () => {
 		return iconTopics_actual;
 	}
 
-	const genRightMenu = () => {
-		let menu_render = [];
-		let iconTopics_actual = getActualTopic();
-		iconTopics_actual.forEach((val) => menu_render.push({ label: val.topic, value: getKeyByValue(TOPICS, val.topic) }))
-		return(
-			<FormItem>
-				<Select
-				value={activeTopic}
-				onChange={e => setActiveTopic(e.currentTarget.value)}
-				placeholder="Не выбран"
-				options={menu_render} />
-			</FormItem>
-			
-		)
-	}
+	
 	
 	const callbacks = {showErrorAlert, goPanel}
 	const navigation = {goDisconnect, setPopout}
@@ -375,7 +341,11 @@ const App = () => {
 			<Help
 			navigation={navigation}
 			callbacks={callbacks}
-			id='help' />
+			id='helpQuestions' />
+			<HelpCategories
+			id='help'
+			navigation={navigation}
+			callbacks={callbacks} />
 			<HelpCreateCategory
 			id='faqCreateCategory'
 			navigation={navigation}
@@ -414,7 +384,18 @@ const App = () => {
 						<Epic activeStory={activeStory}
 						tabbar={need_epic && 
 							<Tabbar>
-								<TabbarItem
+								<CellButton
+								before={<Icon28BrainOutline />}
+								onClick={() => bridge.send(
+									'VKWebAppOpenApp',
+									{
+										app_id: 7171491,
+										location: ''
+									}
+								)}>
+									Моя карточка эксперта
+								</CellButton>
+								{/* <TabbarItem
 								data-story='home'
 								selected={activeStory === 'home'}
 								onClick={onEpicTap}
@@ -455,12 +436,11 @@ const App = () => {
 								onClick={onEpicTap}
 								text='Профиль'>
 									<Icon28UserCircleOutline />
-								</TabbarItem>
+								</TabbarItem> */}
 							</Tabbar>
 						}>
 							
 							{Views}
-							
 						</Epic>
 						</SkeletonTheme>
 					</SplitCol>
