@@ -33,7 +33,7 @@ a {
 } */
 
 .vkuiSplitCol--spaced {
-    margin-left: 0px;
+    padding-left: 0px;
 }
 .profile-chevron {
     margin-top: 4px;
