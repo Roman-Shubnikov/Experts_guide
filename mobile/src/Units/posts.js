@@ -11,9 +11,6 @@ import { API_URL } from '../config';
 import { useDispatch, useSelector } from 'react-redux';
 import { storActions } from '../store/main';
 
-
-let scrollPostsStyle = {height: 252, overflowY: 'scroll'};
-
 export const Posts = props => {
     const dispatch = useDispatch();
     const setPosts = useCallback((data) => dispatch(storActions.setPosts(data)), [dispatch]);
@@ -42,7 +39,6 @@ export const Posts = props => {
     }, [posts, activeTopic])
     return(
         <Group>
-            <div style={posts_well && posts_well.length > 3 ? scrollPostsStyle : {}}>
                 {posts_well ? 
                 posts_well.length > 0 ?
                 posts_well.map(i => 
@@ -59,7 +55,6 @@ export const Posts = props => {
                 </Placeholder> :
                 <PanelSpinner />
             }
-            </div>
             
         </Group>
     )

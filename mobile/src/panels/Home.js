@@ -13,23 +13,30 @@ import {
     Button,
     CellButton,
     Text,
+    PanelHeader,
+    PanelHeaderButton,
+    SimpleCell,
 } from '@vkontakte/vkui';
 import { API_URL, ARTICLE_IMAGE, GENERAL_LINKS, TOPICS, TOPICS_LINKS, TOPIC_ICONS_PATH } from '../config';
 import { CuratorsTopic, Posts, ScoreTopic } from '../Units';
 import { useDispatch, useSelector } from 'react-redux';
 import { accountActions } from '../store/main';
 import { enumerate, getKeyByValue } from '../functions/tools';
-import { 
+import {
     Icon16ArrowTriangleDown,
     Icon16ArrowTriangleUp,
     Icon16Minus,
     Icon24Add,
+    Icon28UserCircleOutline,
+    Icon28UserCardOutline,
 
 } from '@vkontakte/icons';
+import { useNavigation } from '../hooks';
 
 
 export const Home = props => {
     const dispatch = useDispatch();
+    const { onEpicTap } = useNavigation();
     const { activeTopic, user, tokenSearch, friends_topics} = useSelector((state) => state.account)
     const { posts, topics } = useSelector(state => state.stor);
     const setTopicsFriends = useCallback((data) => dispatch(accountActions.setTopicsFriends(data)), [dispatch]);
@@ -129,6 +136,23 @@ export const Home = props => {
     }
     return(
         <Panel id={props.id}>
+            <PanelHeader
+            left={
+                <>
+                    <PanelHeaderButton
+                    data-story='profile'
+                    onClick={onEpicTap}>
+                        <Icon28UserCircleOutline />
+                    </PanelHeaderButton>
+                    <PanelHeaderButton
+                    data-story='searchInfo'
+                    onClick={onEpicTap}>
+                        <Icon28UserCardOutline />
+                    </PanelHeaderButton>
+                </>
+            }>
+                {TOPICS[activeTopic]}
+            </PanelHeader>
             <div style={{display: 'flex'}}>
                 <Group style={{width: '40%', marginRight: 14}}>
                     <Div style={{display: 'flex', padding: '15px 16px'}}>
@@ -160,24 +184,17 @@ export const Home = props => {
             </div>
             <Group>
                 {TOPICS_LINKS[activeTopic].length > 0 ? TOPICS_LINKS[activeTopic].map((val, i) => 
-                <RichCell
+                <SimpleCell
+                href={val.link}
+                target="_blank" rel="noopener noreferrer"
                 key={i}
-                disabled
-                caption={val.descr}
-                actions={
-                    <Button href={val.link}
-                    mode='secondary'
-                    size='m'
-                    target="_blank" rel="noopener noreferrer">
-                        {val.isArticle ? 'Читать' : val.text_button}
-                    </Button>
-                }
+                description={val.descr}
                 before={<Avatar 
-                size={72}
+                size={48}
                 alt={activeTopic}
                 src={val.isArticle ? ARTICLE_IMAGE : val.img} />}>
                     {val.title}
-                </RichCell>):
+                </SimpleCell>):
                     <div>
                         <Div>
                         <Text style={{color: 'var(--subtext)'}}>Пока тут нет контента, связанного с этой тематической лентой,

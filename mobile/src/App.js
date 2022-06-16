@@ -17,7 +17,6 @@ import {
 	SplitLayout,
 	SplitCol,
 	Group,
-	PanelSpinner,
 	Epic,
 	Tabbar,
 	TabbarItem,
@@ -25,6 +24,7 @@ import {
 	FormItem,
 	SimpleCell,
 	Spacing,
+	ANDROID,
 
 } from '@vkontakte/vkui';
 import {
@@ -34,8 +34,6 @@ import {
 	Icon28ReportOutline,
 	Icon28UserCircleOutline,
 	Icon28HelpCircleOutline,
-	Icon28LocationMapOutline,
-	Icon16Verified,
 	Icon28NameTagOutline,
 	Icon28MoneyWadOutline,
 	Icon28StorefrontOutline,
@@ -44,9 +42,6 @@ import {
 	Icon28MessagesOutline,
 	Icon28LogoVkOutline,
 } from '@vkontakte/icons'
-import {
-	ProfileInfo,
-} from './components'
 import '@vkontakte/vkui/dist/vkui.css';
 import "@vkontakte/vkui/dist/unstable.css";
 import './styles/styles.css';
@@ -68,12 +63,11 @@ import {
 	Disconnect,
 
 } from './panels'
-import { ACTIONS_NORM, API_URL, APP_ID, GENERAL_LINKS, ICON_TOPICS, PERMISSIONS, TOPICS } from './config';
+import { ACTIONS_NORM, API_URL, APP_ID, GENERAL_LINKS, ICON_TOPICS, TOPICS } from './config';
 import { errorAlertCreator, getKeyByValue } from './functions/tools';
 import { useDispatch, useSelector } from 'react-redux';
 import { accountActions, storActions, viewsActions } from './store/main';
-import { EpicPC, PostGroup } from './Units';
-import { isEmptyObject } from 'jquery';
+import { useNavigation } from './hooks';
 const scheme_params = {
 
 	bright_light: { "status_bar_style": "dark", "action_bar_color": "#FFFFFF", 'navigation_bar_color': "#FFFFFF" },
@@ -90,10 +84,11 @@ const App = () => {
 		activeTopic, 
 		tokenSearch
 	} = useSelector((state) => state.account)
+	const { setActiveScene, goPanel, setHash, onEpicTap } = useNavigation();
 	const { activeStory, historyPanels, snackbar, activePanel, need_epic } = useSelector((state) => state.views)
 	const setHistoryPanels = useCallback((history) => dispatch(viewsActions.setHistory(history)), [dispatch]);
 	const setCuratorsData = useCallback((data) => dispatch(accountActions.setCurators(data)), [dispatch]);
-  	const setActiveScene = useCallback((story, panel) => dispatch(viewsActions.setActiveScene(story, panel)), [dispatch]);
+  	
 	const setActiveTopic = useCallback((data) => dispatch(accountActions.setActiveTopic(data)), [dispatch]);
 	const setTokenSearch = useCallback((data) => dispatch(accountActions.setTokenSearch(data)), [dispatch]);
 	const setScoreData = useCallback((data) => dispatch(storActions.setScoreData(data)), [dispatch]);
@@ -110,56 +105,6 @@ const App = () => {
 	const isDesktop = useRef();
 	const hasHeader = useRef()
 
-	const permissions = userInfo.permissions;
-    const activist_permission = permissions >= PERMISSIONS.activist;
-
-	const setHash = (hash) => {
-	  if(window.location.hash !== ''){
-		bridge.send("VKWebAppSetLocation", {"location": hash});
-		window.location.hash = hash
-	  }
-	}
-	const goPanel = useCallback((view, panel, forcePanel=false, replaceState=false) => {
-    
-		const checkVisitedView = (view) => {
-		  let history = [...historyPanels];
-		  history.reverse();
-		  let index = history.findIndex(item => item.view === view)
-		  if(index !== -1) {
-		   return history.length - index
-		  } else {
-			return null;
-		  }
-		}
-		const historyChange = (history, view, panel, replaceState) => {
-		  if(replaceState){
-			history.pop();
-			history.push({view, panel });
-			window.history.replaceState({ view, panel }, panel);
-		  } else {
-			history.push({view, panel });
-			window.history.pushState({ view, panel }, panel);
-		  }
-		  return history;
-		}
-		let history = [...historyPanels];
-		if(forcePanel){
-		  history = historyChange(history, view, panel, replaceState)
-		}else{
-		  let index = checkVisitedView(view);
-		  if(index !== null){
-			let new_history = history.slice(0, index);
-			history = new_history
-			window.history.pushState({ view, panel }, panel);
-			({view, panel} = history[history.length - 1])
-		  } else {
-			history = historyChange(history, view, panel, replaceState)
-		  }
-		}
-		setHistoryPanels(history);
-		setActiveScene(view, panel)
-		bridge.send('VKWebAppEnableSwipeBack');
-	  }, [setActiveScene, historyPanels, setHistoryPanels])
 	const goDisconnect = (e) => {
 		console.log(e)
 		goPanel('disconnect', 'disconnect');
@@ -325,7 +270,7 @@ const App = () => {
 		}else{
 		  window.history.pushState({ ...history[history.length - 1] }, history[history.length - 1].panel );
 		}
-	  }, [historyPanels, setHistoryPanels, setActiveScene])
+	  }, [historyPanels, setHistoryPanels, setActiveScene, setHash])
 	const handlePopstate = useCallback((e) => {
 		e.preventDefault();
 		goBack();
@@ -376,9 +321,7 @@ const App = () => {
 			
 		)
 	}
-	const onEpicTap = (e) => {
-		setActiveScene(e.currentTarget.dataset.story, e.currentTarget.dataset.story);
-	}
+	
 	const callbacks = {showErrorAlert, goPanel}
 	const navigation = {goDisconnect, setPopout}
 	const Views = [
@@ -456,31 +399,20 @@ const App = () => {
 	
 	return (
 		
-		<ConfigProvider scheme={scheme} platform={platform.current}>
+		<ConfigProvider scheme={scheme} platform={ANDROID}>
 			
 			<AppRoot>
-				<div style={{width: '100%'}}>
-				<Group>
-					{(isExpert === null || isEmptyObject(userInfo)) ? <PanelSpinner height={65} /> : isExpert && <ProfileInfo
-						activePanel={activePanel}
-						actsWeek={actsWeek}
-						vkInfoUser={vkInfoUser}
-						userInfo={userInfo}
-						goPanel={goPanel} />}
-				</Group>
 				<SplitLayout
 					style={{ justifyContent: "center" }}
 					popout={popout}>
 					
 					<SplitCol
-					animate={!isDesktop.current}
-					spaced={isDesktop.current}
-					width={isDesktop.current ? '704px' : '100%'}
-					maxWidth={isDesktop.current ? '704px' : '100%'}>
+					width='100%'
+					maxWidth='100%'>
 						<SkeletonTheme color={['bright_light', 'vkcom_light'].indexOf(scheme) !== -1 ? undefined : '#232323'} 
 						highlightColor={['bright_light', 'vkcom_light'].indexOf(scheme) !== -1 ? undefined : '#6B6B6B'}>
 						<Epic activeStory={activeStory}
-						tabbar={!isDesktop.current && need_epic && 
+						tabbar={need_epic && 
 							<Tabbar>
 								<TabbarItem
 								data-story='home'
@@ -532,24 +464,10 @@ const App = () => {
 						</Epic>
 						</SkeletonTheme>
 					</SplitCol>
-					{isDesktop.current && userInfo.expert_info &&
+					{/* {userInfo.expert_info &&
 					<SplitCol fixed width="280px" maxWidth="280px">
 						<Panel id='menu_epic'>
 							{hasHeader.current && <PanelHeader/>}
-							{isExpert === null ? <PanelSpinner /> : isExpert &&
-							<>
-							<EpicPC go={goPanel} userInfo={userInfo} />
-							</>}
-							{/* {activeStory === "home" &&
-							<ScoreRight />} */}
-							{activeStory === "home" && 
-							<Group>
-								<SimpleCell
-								href={GENERAL_LINKS.group_official}
-								target="_blank" rel="noopener noreferrer">
-									<div style={{display: 'flex'}}>Эксперты ВКонтакте <Icon16Verified className='verified' /></div>
-								</SimpleCell>
-							</Group>}
 							{activeStory === "help" && activePanel === 'help' && faqActiveTab === "list" && 
 							<HelpCategories
 							navigation={navigation}
@@ -559,19 +477,6 @@ const App = () => {
 							{activeStory === "home" && <Group>
 								{genRightMenu()}
 							</Group>}
-							{activeStory === 'searchInfo' &&
-							<Group><SimpleCell
-							style={{color: '#6f7985'}}
-							onClick={() => bridge.send(
-								'VKWebAppOpenApp',
-								{
-									app_id: 7867809,
-									location: ''
-								}
-							)}
-							before={<Icon28LocationMapOutline style={{color: '#A5ABB6'}} />}>
-								Геолокация экспертов
-							</SimpleCell></Group>}
 							{activeStory === 'profile' && <Group>
 								<SimpleCell 
 								href={GENERAL_LINKS.info_expers}
@@ -625,15 +530,10 @@ const App = () => {
 									Обратная связь
 								</SimpleCell>
 							</Group>}
-							{activeStory === "home" && activist_permission && 
-							<PostGroup
-							callbacks={callbacks} 
-							/>}
 						</Panel>
-					</SplitCol>}
+					</SplitCol>} */}
 					{snackbar}
 				</SplitLayout>
-				</div>
 			</AppRoot>
 		
 		</ConfigProvider>

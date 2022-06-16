@@ -174,9 +174,7 @@ export const Topics = props => {
 				<Icon28DoorArrowLeftOutline />
 			</PanelHeaderButton>)
 		}>{props.isExpert === null ? '...' : 
-		props.isExpert ? <Logo 
-						theme={appearence}
-						width={platform === VKCOM ? 200 : document.documentElement.clientWidth - 200} alt='Experts Guide' /> : 'Доступ закрыт'}</PanelHeader>
+		props.isExpert ? 'Тематики' : 'Доступ закрыт'}</PanelHeader>
 		{props.isExpert === null ? <ScreenSpinner /> : props.isExpert || 
 		<Group>
 			<Placeholder
