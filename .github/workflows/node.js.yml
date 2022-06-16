@@ -18,7 +18,7 @@ jobs:
       with:
         node-version: 14
         cache: 'npm'
-        cache-dependency-path: package-lock.json
+        cache-dependency-path: app_desktop/package-lock.json
     - run: set -eu
     - run: mkdir "$HOME/.ssh"
     - run: echo "${{ secrets.SSH_KEY }}" > "$HOME/.ssh/SSH_KEY"
