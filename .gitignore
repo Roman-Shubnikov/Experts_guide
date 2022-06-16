@@ -5,13 +5,14 @@ npm-debug.log*
 *.lock
 build.zip
 
-/node_modules
-
+app_desktop/node_modules
+mobile/node_modules
 # Optional npm cache directory
 .npm
 
 # Prod Bundle
-/build
+app_desktop/build
+mobile/build
 
 .vscode
 .idea

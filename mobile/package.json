@@ -1,0 +1,67 @@
+{
+  "name": "expert_guide",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "set \"GENERATE_SOURCEMAP=false\" && cross-env PORT=10888 HTTPS=true react-scripts start",
+    "build": "set \"GENERATE_SOURCEMAP=false\" && react-scripts build",
+    "tunnel": "vk-tunnel --insecure=1 --http-protocol=https --ws-protocol=wss --host=localhost --port=10888",
+    "deploy": "vk-miniapps-deploy"
+  },
+  "homepage": "./",
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/plugin-proposal-class-properties": "^7.13.0",
+    "cross-env": "^5.2.0",
+    "react-hot-loader": "^4.9.0",
+    "react-scripts": "^3.4.1",
+    "terser-brunch": "^4.0.0"
+  },
+  "dependencies": {
+    "@sentry/node": "^5.26.0",
+    "@sentry/react": "^5.26.0",
+    "@sentry/tracing": "^5.26.0",
+    "@types/react": "^17.0.14",
+    "@vkontakte/icons": "^1.142.0",
+    "@vkontakte/mvk-mini-apps-scroll-helper": "^1.2.0",
+    "@vkontakte/vk-bridge": "^2.4.4",
+    "@vkontakte/vk-miniapps-deploy": "0.0.17",
+    "@vkontakte/vk-qr": "^2.0.10",
+    "@vkontakte/vkjs": "^0.20.0",
+    "@vkontakte/vkui": "^4.28.0",
+    "babel-eslint": "^10.1.0",
+    "chalk": "^2.4.2",
+    "core-js": "^3.6.4",
+    "eruda": "^2.2.0",
+    "eruda-code": "^2.0.0",
+    "eruda-dom": "^2.0.0",
+    "eslint-plugin-react-hooks": "^1.7.0",
+    "jquery": "^3.6.0",
+    "prop-types": "^15.7.2",
+    "react": "^16.14.0",
+    "react-anchorme": "^2.1.0",
+    "react-animations": "^1.0.0",
+    "react-dom": "^16.9.0",
+    "react-loading-skeleton": "^2.2.0",
+    "react-redux": "^7.2.2",
+    "redux": "^4.0.5",
+    "redux-devtools-extension": "^2.13.8",
+    "redux-thunk": "^2.3.0",
+    "styled-components": "^5.3.0"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

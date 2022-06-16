@@ -23,13 +23,22 @@ jobs:
     - run: mkdir "$HOME/.ssh"
     - run: echo "${{ secrets.SSH_KEY }}" > "$HOME/.ssh/SSH_KEY"
     - run: chmod 600 "$HOME/.ssh/SSH_KEY"
-    - name: Building
+    - name: Building Desktop
       run: |
+        cd app_desktop
+        npm ci
+        npm run build
+    - name: Building Mobile
+      run: |
+        cd mobile
         npm ci
         npm run build
         cd build
         zip -r odr.zip *
-    - run: cp -a php/ build/
+    - run: |
+      cp -a php/ app_desktop/build/
+      cp -a php/ mobile/build/
     - name: Deploing
-      working-directory: ./build
-      run: rsync -e "ssh -i $HOME/.ssh/SSH_KEY -o StrictHostKeyChecking=no" --archive --compress --delete . root@89.223.126.48:/var/www/xelene.ru/experts_guide
+      run: |
+        rsync -e "ssh -i $HOME/.ssh/SSH_KEY -o StrictHostKeyChecking=no" --archive --compress --delete ./mobile/buld/* root@89.223.126.48:/var/www/xelene.ru/experts_guide/mobile
+        rsync -e "ssh -i $HOME/.ssh/SSH_KEY -o StrictHostKeyChecking=no" --archive --compress --delete ./app_desktop/buld/* root@89.223.126.48:/var/www/xelene.ru/experts_guide/desktop

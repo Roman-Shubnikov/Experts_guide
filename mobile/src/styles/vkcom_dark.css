@@ -1,0 +1,10 @@
+body[scheme="vkcom_dark"] {
+    --scrollbar: rgba(0, 0, 0, 0.466);
+    --hover_scrollbar: black;
+    --subtext: #6f7985;
+    --gray: #626D7A;
+    --my-topic-width: 59px;
+    --topic-width: 48px;
+    --blue: #5181B8;
+    --card: #292929;
+}

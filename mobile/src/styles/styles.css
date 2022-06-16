@@ -1,0 +1,222 @@
+@import './space_gray.css';
+@import './bright_light.css';
+@import './vkcom.css';
+@import './vkcom_dark.css';
+@import './fonts/main.css';
+@import './animations.css';
+
+
+
+div,p{
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none;   /* Chrome/Safari/Opera */
+    -khtml-user-select: none;    /* Konqueror */
+    -moz-user-select: none;      /* Firefox */
+    -ms-user-select: none;       /* Internet Explorer/Edge */
+    user-select: none;        
+}
+a {
+    text-decoration: none;
+    color: var(--dynamic_gray);
+}
+/* ::-webkit-scrollbar {
+    width: 3px;
+    background-color: var(--background_page);
+}
+::-webkit-scrollbar-thumb {
+    background-color:var(--scrollbar);
+    border-radius: 8px;
+    box-shadow: inset 1px 1px 10px var(--scrollbar);
+}
+::-webkit-scrollbar-thumb:hover {
+    background-color: var(--hover_scrollbar);
+} */
+
+.vkuiSplitCol--spaced {
+    margin-left: 0px;
+}
+.profile-chevron {
+    margin-top: 4px;
+    transition: all 0.5s ;
+}
+.vkuiRichCell>.vkuiAvatar {
+    margin-top: 10px;
+}
+.green {
+    color: #4BB34B;
+}
+.red {
+    color: #FF3347;
+}
+.subtext {
+    color: var(--subtext);
+}
+.subtext .vkuiIcon {
+    color: #A5ABB6;
+}
+.blue_progressbar .vkuiProgress__in {
+    background: #3F8AE0;
+}
+.progressbar_big_height {
+    height: 4px;
+}
+.vkuiProgress__in{
+    transition: all .7s ease-out;
+}
+.vkuiSimpleCell__after {
+    color: #818C99;
+}
+.infoblock {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.infoblock_item {
+    margin-bottom: 20px;
+    line-height: 18px;
+    color: var(--subtext);
+    font-weight: 400;
+    line-height: 18px;
+    font-size: 15px;
+}
+.infoblock_item-bottom {
+    margin-top: 22px;
+}
+.infoblock_item:last-child {
+    margin-bottom: 0;
+}
+.score_expert {
+    display: flex;
+}
+.verified {
+    color: #5C9CE6;
+    margin-left: 4px;
+    margin-top: 2px;
+}
+.icon-name {
+    margin-left: 4px;
+    margin-top: 2px;
+}
+.heart_bottom {
+    margin-left: 8px;
+    margin-top: 2px;
+    color: #FF3347;
+}
+.heart_anim {
+    animation: pulse_heart 3s linear infinite;
+}
+.crown {
+    color: #FFA000;
+}
+.crown_profile {
+    margin-top: 2px;
+    margin-left: 5px;
+}
+.crown_user-gradient {
+    margin-top: 4px;
+    margin-left: 5px;
+}
+.status-block {
+    background: var(--field_background);
+}
+.blue_Group .vkuiGroup__inner {
+    background: #4C98EE;
+    box-shadow: none;
+}
+
+.blue_Group .vkuiText,
+.blue_Group .vkuiSimpleCell__description,
+.blue_Group .vkuiSimpleCell__children {
+    color: #FFF;
+}
+.avatar {
+    position: relative;
+}
+.avatar_online {
+    width: 8px;
+    height: 8px;
+    position: absolute;
+    right: 2%;
+    bottom: 2%;
+    border-radius: 50%;
+    background-color: #4BB34B;
+    border: 2px solid var(--white);
+}
+.avatar_star-container {
+    width: 21px;
+    height: 13px;
+    position: absolute;
+    bottom: -10%;
+    border-radius: 8px;
+    background-color: var(--white);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+}
+.avatar_star-icon {
+    margin: 1.5px 5.5px;
+    position: relative;
+}
+.card_image {
+    height: 100px;
+    border-radius: 8px;
+    /* margin-right: 10px; */
+}
+.card_image_cell .vkuiHorizontalCell__content {
+    padding: 0px;
+}
+.achievements {
+    display: flex;
+    flex-wrap: wrap;
+    padding-bottom: 0;
+}
+.achievements-mobile {
+    margin: 0 auto;
+}
+.achievements-vkcom {
+    margin: 0 -13px;
+}
+.achievements_item {
+    margin: 0 8px;
+    padding: 4px;
+    margin-bottom: 16px;
+}
+.vkuiTitle--w-medium {
+    font-weight: 600;
+}
+.topics_skeleton {
+    display: flex;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+.topics_skeleton_items {
+    padding: 7px 0;
+    margin-left: 12px;
+    display: flex;
+    flex-direction: column;
+}
+.topics_avatar {
+    border-radius: 50%;
+}
+.right-menu_chevron {
+    color: var(--gray);
+    transition: all 0.5s;
+}
+.right-menu_topic {
+    transition: all .5s ease-out;
+    overflow: hidden;
+}
+.right-menu_topic-hidden {
+    height: var(--my-topic-width);
+}
+.right-menu_topic-show {
+    height: calc(var(--topic-width) * 10 + var(--my-topic-width));
+}
+.gray,
+.gray .vkuiSimpleCell__children{
+    color: #6f7985;
+}
+.vkuiAvatar__img {
+    object-fit:cover;
+}
+.search-header .vkuiPanelHeader__right { 
+    min-width: 0;
+}
