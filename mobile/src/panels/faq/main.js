@@ -102,7 +102,7 @@ export const Help = props => {
         }
     }
     const content = () => {
-        if(search.length > 0) return <Group>{Searched()}</Group>;
+        if(search.length > 0) return Searched();
         return <QuestionList navigation={props.navigation} callbacks={props.callbacks} />;
     }
 

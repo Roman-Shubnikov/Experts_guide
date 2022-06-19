@@ -57,7 +57,11 @@ a {
 .blue_progressbar .vkuiProgress__in {
     background: #3F8AE0;
 }
+.green_progressbar .vkuiProgress__in {
+    background: #4BB34B;
+}
 .progressbar_big_height {
+    border-radius: 2px;
     height: 4px;
 }
 .vkuiProgress__in{

@@ -11,13 +11,14 @@ import {
 	PanelSpinner,
 	PanelHeader,
 	PanelHeaderBack,
+	CellButton,
 
 } from '@vkontakte/vkui';
 import {
 	Icon16Clear,
 	Icon56BlockOutline,
 	Icon56CancelCircleOutline, 
-	Icon56MentionOutline,
+	Icon56FragmentsOutline,
 
 } from '@vkontakte/icons'
 import { UserGradient } from '../components';
@@ -28,7 +29,7 @@ let lastTypingTime;
 let typing = false;
 let searchval = '';
 const placeholderTexts = {
-	default: 'Начните вводить ссылку пользователя',
+	default: 'Начните вводить ссылку, тогда Вы сможете увидеть информацию о пользователе',
 	link_error: 'Недопустимый формат или неправильный адрес страницы',
 	not_found: 'Данный пользователь не состоит или был исключен из программы экспертов',
 	blocked: 'Данный пользователь удалён или заблокирован'
@@ -48,6 +49,11 @@ export const UsersInfoGet = props => {
 		let new_user_info = [];
 		searchval = prepareQueryString(searchval)
 		resolveScreenName(searchval, tokenSearch).then(search_user => {
+			if(!search_user) {
+				setFetching(false);
+				setInfoUser(null);
+				return;
+			}
 			bridge.send('VKWebAppCallAPIMethod', {
 				method: 'users.get',
 				params: {
@@ -146,7 +152,7 @@ export const UsersInfoGet = props => {
     }
 	const getIconForPlaceholder = () => {
 		if(placeHolderText === placeholderTexts.link_error) return <Icon56CancelCircleOutline />
-		if(placeHolderText === placeholderTexts.default) return <Icon56MentionOutline />
+		if(placeHolderText === placeholderTexts.default) return <Icon56FragmentsOutline />
 		if(placeHolderText === placeholderTexts.blocked) return <Icon56BlockOutline />
 	}
     return(
@@ -173,7 +179,7 @@ export const UsersInfoGet = props => {
 							}} />
 					</FormItem>
 				</FormLayout>
-			</Group>
+			
 			{userSearchedInfo &&
 			<UserGradient 
 			placeHolderText={placeHolderText}
@@ -181,13 +187,14 @@ export const UsersInfoGet = props => {
 			isExpert={isExpert}
 			tokenSearch={tokenSearch} />
 			}
-			{(fetching || isEmptyObject(userSearchedInfo)) && <Group>
-				{fetching ? <PanelSpinner /> : 
+			{(fetching || isEmptyObject(userSearchedInfo)) && 
+				fetching ? <PanelSpinner /> : 
 				isEmptyObject(userSearchedInfo) && <Placeholder
+				action={<CellButton centered href='https://vk.com/@clubvkexperts-participants' target="_blank" rel="noopener noreferrer">Узнать подробнее</CellButton>}
 				icon={getIconForPlaceholder()}>
 					{placeHolderText}
 				</Placeholder>}
-			</Group>}
+			</Group>
 			
         </Panel>
     )

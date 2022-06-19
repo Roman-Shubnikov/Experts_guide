@@ -384,7 +384,7 @@ const App = () => {
 						<Epic activeStory={activeStory}
 						tabbar={need_epic && 
 							<Tabbar>
-								<CellButton
+								{isExpert && <CellButton
 								before={<Icon28BrainOutline />}
 								onClick={() => bridge.send(
 									'VKWebAppOpenApp',
@@ -394,7 +394,7 @@ const App = () => {
 									}
 								)}>
 									Моя карточка эксперта
-								</CellButton>
+								</CellButton>}
 								{/* <TabbarItem
 								data-story='home'
 								selected={activeStory === 'home'}

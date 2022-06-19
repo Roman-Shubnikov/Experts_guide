@@ -13,6 +13,7 @@ import {
     List,
     PanelHeaderContext,
     IconButton,
+    Badge,
 } from '@vkontakte/vkui';
 import { ARTICLE_IMAGE, GENERAL_LINKS, ICON_TOPICS, TOPICS, TOPICS_LINKS, TOPIC_ICONS_PATH } from '../config';
 import { CuratorsTopic, Posts, ScoreTopic } from '../Units';
@@ -69,6 +70,7 @@ export const Home = props => {
 		return(
             iconTopics_actual.map(Val => 
             <SimpleCell
+            badge={Val.topic === user.expert_info.topic_name && <Badge />}
             onClick={() => setActiveTopic(getKeyByValue(TOPICS, Val.topic))}
             key={Val.topic}
             before={<Val.icon />}>
@@ -147,8 +149,7 @@ export const Home = props => {
                     <div>
                         <Div>
                         <Text style={{color: 'var(--subtext)'}}>Пока тут нет контента, связанного с этой тематической лентой,
-                            но если у вас такой есть, мы можем об
-                            судить его публикацию в этом блоке</Text>
+                            но если у вас такой есть, мы можем обсудить его публикацию в этом блоке</Text>
                         </Div>
                         
                         <CellButton

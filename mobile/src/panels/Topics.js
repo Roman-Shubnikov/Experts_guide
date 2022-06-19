@@ -25,7 +25,7 @@ import {
 	Spacing,
 } from '@vkontakte/vkui';
 import {
-	Icon56ErrorTriangleOutline,
+	Icon56LockOutline,
 	Icon16Verified,
 	Icon16Like,
 	Icon28BrainOutline,
@@ -175,18 +175,19 @@ export const Topics = props => {
 		{props.isExpert === null ? <ScreenSpinner /> : props.isExpert || 
 		<Group>
 			<Placeholder
-			icon={<Icon56ErrorTriangleOutline />}
+			header='Доступ закрыт'
+			icon={<Icon56LockOutline />}
 			action={
 					<Button
 					size='m'
 					mode='tertiary'
 					href={GENERAL_LINKS.who_experts}
 					target="_blank" rel="noopener noreferrer">
-						Кто такие эксперты?
+						Подать заявку
 					</Button>
 				
 			}>
-				Вы не являетесь экспертом ВКонтакте
+				У вас нет доступа к данному разделу. Он доступен только участникам программы экспертов
 			</Placeholder>
 		</Group>
 		

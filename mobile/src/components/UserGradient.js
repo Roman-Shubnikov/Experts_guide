@@ -14,7 +14,6 @@ import {
     Spacing,
     RichCell,
     ButtonGroup,
-    Card,
     MiniInfoCell,
 
 } from '@vkontakte/vkui';	
@@ -91,32 +90,30 @@ const UserGradient = props => {
     return(
         <>
         <Group>
-            <Card mode='outline' style={{height: 106, alignItems: 'center', display: 'flex'}}>
-                <RichCell
-                before={<Avatar 
-                    shadow={false}
-                    size={72} src={vkInfo.photo_100} alt='ava'>
-                        {isActivist && <Icon28AchievementCircleFillBlue
-                        style={{position: 'absolute', right: 0, bottom: 0}} />}
-                    </Avatar>}
-                disabled
-                caption={isExpert && apiInfo ? "Эксперт" : placeHolderText}
-                actions={<ButtonGroup>
-                    <Button
-                    target="_blank" rel="noopener noreferrer"
-                    href={'https://vk.com/' + vkInfo.screen_name}
-                    size="m" 
-                    mode='primary'>Открыть профиль</Button>
-                    <Button
-                    target="_blank" rel="noopener noreferrer"
-                    href={'https://vk.com/' + vkInfo.screen_name}
-                    size="m" 
-                    mode="secondary">Написать</Button>
-                </ButtonGroup>}>
-                    {vkInfo.first_name} {vkInfo.last_name}
-                    {apiInfo && apiInfo.is_best && <Icon16Crown className='crown crown_user-gradient' />}
-                </RichCell>
-            </Card>
+            <RichCell
+            before={<Avatar 
+                shadow={false}
+                size={72} src={vkInfo.photo_100} alt='ava'>
+                    {isActivist && <Icon28AchievementCircleFillBlue
+                    style={{position: 'absolute', right: 0, bottom: 0}} />}
+                </Avatar>}
+            disabled
+            caption={isExpert && apiInfo ? "Эксперт" : placeHolderText}
+            actions={<ButtonGroup>
+                <Button
+                target="_blank" rel="noopener noreferrer"
+                href={'https://vk.com/' + vkInfo.screen_name}
+                size="m" 
+                mode='primary'>Открыть профиль</Button>
+                <Button
+                target="_blank" rel="noopener noreferrer"
+                href={'https://vk.com/' + vkInfo.screen_name}
+                size="m" 
+                mode="secondary">Написать</Button>
+            </ButtonGroup>}>
+                {vkInfo.first_name} {vkInfo.last_name}
+                {apiInfo && apiInfo.is_best && <Icon16Crown className='crown crown_user-gradient' />}
+            </RichCell>
             {isExpert && apiInfo && <>
             <Spacing />
             {isActivist && <MiniInfoCell

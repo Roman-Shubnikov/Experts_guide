@@ -460,14 +460,14 @@ const App = () => {
 			
 			<AppRoot>
 				<div style={{width: '100%'}}>
-				<Group>
+				{isExpert && <Group>
 					{(isExpert === null || isEmptyObject(userInfo)) ? <PanelSpinner height={65} /> : isExpert && <ProfileInfo
 						activePanel={activePanel}
 						actsWeek={actsWeek}
 						vkInfoUser={vkInfoUser}
 						userInfo={userInfo}
 						goPanel={goPanel} />}
-				</Group>
+				</Group>}
 				<SplitLayout
 					style={{ justifyContent: "center" }}
 					popout={popout}>
