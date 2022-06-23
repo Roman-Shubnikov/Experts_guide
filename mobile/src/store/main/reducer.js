@@ -22,6 +22,8 @@ const initalStateViews = {
     activeStory: 'loading',
     activePanel: 'load',
     historyPanels: [{view: 'home', panel: 'home'}],
+    historyModals: null,
+    currentModal: null,
     snackbar: null,
     need_epic: true,
     historyPanelsView: ['home'],
@@ -80,6 +82,10 @@ export const viewsReducer = (state = initalStateViews, action) => {
             return {...state, need_epic: action.payload}
         case viewsActionTypes.SET_SNACKBAR:
             return {...state, snackbar: action.payload}
+        case viewsActionTypes.SET_CURRENT_MODAL:
+            return {...state, currentModal: action.payload}
+        case viewsActionTypes.SET_MODAL_HISTORY:
+            return {...state, historyModals: action.payload}
         default: 
             return state
     }

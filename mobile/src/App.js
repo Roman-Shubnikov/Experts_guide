@@ -16,12 +16,17 @@ import {
 	SplitCol,
 	Epic,
 	Tabbar,
-	ANDROID,
 	CellButton,
+	FixedLayout,
+	ModalCard,
+	ModalRoot,
+	Button,
 
 } from '@vkontakte/vkui';
 import {
 	Icon28BrainOutline,
+	Icon56NewsfeedOutline,
+
 } from '@vkontakte/icons'
 import '@vkontakte/vkui/dist/vkui.css';
 import "@vkontakte/vkui/dist/unstable.css";
@@ -43,9 +48,9 @@ import {
 	HelpQuestion,
 	Disconnect,
 
-} from './panels'
+} from './panels';
 import { ACTIONS_NORM, API_URL, APP_ID, ICON_TOPICS, TOPICS } from './config';
-import { errorAlertCreator, getKeyByValue } from './functions/tools';
+import { enumerate, errorAlertCreator, getKeyByValue } from './functions/tools';
 import { useDispatch, useSelector } from 'react-redux';
 import { accountActions, storActions, viewsActions } from './store/main';
 import { useNavigation } from './hooks';
@@ -63,8 +68,9 @@ const App = () => {
 		schemeSettings: {scheme}, 
 		activeTopic, 
 		tokenSearch
-	} = useSelector((state) => state.account)
-	const { setActiveScene, goPanel, setHash } = useNavigation();
+	} = useSelector((state) => state.account);
+	const modalClose = () => setActiveModal(null);
+	const { setActiveScene, goPanel, setHash, setActiveModal, currentModal } = useNavigation();
 	const { activeStory, historyPanels, snackbar, activePanel, need_epic } = useSelector((state) => state.views)
 	const setHistoryPanels = useCallback((history) => dispatch(viewsActions.setHistory(history)), [dispatch]);
 	const setCuratorsData = useCallback((data) => dispatch(accountActions.setCurators(data)), [dispatch]);
@@ -74,6 +80,7 @@ const App = () => {
 	const setScoreData = useCallback((data) => dispatch(storActions.setScoreData(data)), [dispatch]);
 	const setTopics = useCallback((data) => dispatch(storActions.setTopics(data)), [dispatch]);
 	const [vkInfoUser, setVkInfoUser] = useState(null);
+	
 	const [achievements, setAchievements] = useState(null);
 	const [isExpert, setIsExpert] = useState(null);
 	const [popout, setPopout] = useState(<ScreenSpinner size='large' />);
@@ -85,6 +92,7 @@ const App = () => {
 	const isDesktop = useRef();
 	const hasHeader = useRef()
 
+	
 	const goDisconnect = (e) => {
 		console.log(e)
 		goPanel('disconnect', 'disconnect');
@@ -92,7 +100,7 @@ const App = () => {
 	const showErrorAlert = (error = null, action = null) => {
 		errorAlertCreator(setPopout, error, action)
 	}
-	const Init = useCallback(() => {
+	const Init = useCallback(async () => {
 		const brigeSchemeChange = (params) => {
 			// bridge.send("VKWebAppSetViewSettings", params);
 		  }
@@ -116,7 +124,7 @@ const App = () => {
 			}
 		});
 		
-		bridge.send("VKWebAppInit");
+		
 		async function fetchData(token) {
 			const user = await bridge.send('VKWebAppGetUserInfo');
 			setVkInfoUser(user);
@@ -213,10 +221,13 @@ const App = () => {
 			.catch(err => {setPopout(null);goDisconnect(err)})
 			
 		}
+		await bridge.send("VKWebAppInit");
 		bridge.send("VKWebAppGetAuthToken", {"app_id": APP_ID, "scope": ""})
 			.then(token => {
 				setTokenSearch(token.access_token);
+				console.log(token);
 				fetchData(token.access_token);
+				
 			})
 		
 			// eslint-disable-next-line
@@ -275,7 +286,6 @@ const App = () => {
 	  isDesktop.current = viewWidthVk >= ViewWidth.SMALL_TABLET;
 	}, [viewWidthVk, platform])
 
-	
 	const getActualTopic = () => {
 		let my_topic_index = ICON_TOPICS.findIndex((val, i) => val.topic === userInfo.expert_info.topic_name)
 		let iconTopics_actual = ICON_TOPICS.slice();
@@ -366,13 +376,32 @@ const App = () => {
 			id='load' />
 		</View>,
 	];
-	
+	const modals = (
+		<ModalRoot
+		onClose={modalClose}
+		activeModal={currentModal}>
+		  <ModalCard
+			id='answers'
+			onClose={modalClose}
+			icon={<Icon56NewsfeedOutline />}
+			header={(ACTIONS_NORM - userInfo.expert_info?.actions_current_week < 0) ? "Порог достигнут" : 
+			'Вы оценили ' + userInfo.expert_info?.actions_current_week + " " + enumerate(userInfo.expert_info?.actions_current_week, ['запись', 'записи', 'записей'])}
+			subheader={(ACTIONS_NORM - userInfo.expert_info?.actions_current_week < 0) ? 
+			<p><b>Порог достигнут.</b><br/>
+			<br/>Но это не повод расслабляться. Публикации интересных авторов не ждут.</p> : "Для преодоления порога необходимо оценить ещё " +
+			  (ACTIONS_NORM - userInfo.expert_info?.actions_current_week) +
+			  " " + enumerate(userInfo.expert_info?.actions_current_week, ['запись', 'записи', 'записей'])}
+			actions={<Button mode='primary' stretched size='l' onClick={modalClose}>Понятно</Button>}>
+		  </ModalCard>
+		</ModalRoot>
+	  )
 	return (
 		
-		<ConfigProvider scheme={scheme} platform={ANDROID}>
+		<ConfigProvider scheme={scheme} platform={platform.current}>
 			
 			<AppRoot>
 				<SplitLayout
+					modal={modals}
 					style={{ justifyContent: "center" }}
 					popout={popout}>
 					
@@ -395,52 +424,23 @@ const App = () => {
 								)}>
 									Моя карточка эксперта
 								</CellButton>}
-								{/* <TabbarItem
-								data-story='home'
-								selected={activeStory === 'home'}
-								onClick={onEpicTap}
-								text='Главная'>
-									<Icon28HomeOutline />
-								</TabbarItem>
-								<TabbarItem
-								data-story='searchInfo'
-								selected={activeStory === 'searchInfo'}
-								onClick={onEpicTap}
-								text='Участники'>
-									<Icon28UserCardOutline />
-								</TabbarItem>
-								<TabbarItem
-								data-story='topics'
-								selected={activeStory === 'topics'}
-								onClick={onEpicTap}
-								text='Тематики'>
-									<Icon28ListOutline />
-								</TabbarItem>
-								<TabbarItem
-								data-story='reports'
-								selected={activeStory === 'reports'}
-								onClick={onEpicTap}
-								text='Репорты'>
-									<Icon28ReportOutline />
-								</TabbarItem>
-								<TabbarItem
-								data-story='help'
-								selected={activeStory === 'help'}
-								onClick={onEpicTap}
-								text='Помощь'>
-									<Icon28HelpCircleOutline />
-								</TabbarItem>
-								<TabbarItem
-								data-story='profile'
-								selected={activeStory === 'profile'}
-								onClick={onEpicTap}
-								text='Профиль'>
-									<Icon28UserCircleOutline />
-								</TabbarItem> */}
 							</Tabbar>
 						}>
 							
 							{Views}
+							<FixedLayout>
+							{isExpert && <CellButton
+								before={<Icon28BrainOutline />}
+								onClick={() => bridge.send(
+									'VKWebAppOpenApp',
+									{
+										app_id: 7171491,
+										location: ''
+									}
+								)}>
+									Моя карточка эксперта
+								</CellButton>}
+							</FixedLayout>
 						</Epic>
 						</SkeletonTheme>
 					</SplitCol>

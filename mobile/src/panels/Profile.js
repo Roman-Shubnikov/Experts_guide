@@ -39,11 +39,13 @@ import {
 import { ACTIONS_NORM, BASE_ARTICLE_TOPIC_LINK, chatLinks, GENERAL_LINKS, TOPICS } from '../config';
 import { enumerate, getKeyByValue } from '../functions/tools';
 import { useSelector } from 'react-redux';
+import { useNavigation } from '../hooks';
 
 
 const Profile = props => {
     const { vkInfoUser, userInfo } = props; 
     const platform = usePlatform();
+    const { setActiveModal } = useNavigation();
     const {activeTopic} = useSelector((state) => state.account);
     const isVKHOVER = !(platform === VKCOM);
     
@@ -73,7 +75,7 @@ const Profile = props => {
                     
                 </RichCell>
                 <Div>
-                    <Card>
+                    <Card onClick={() => setActiveModal('answers')}>
                         <Div style={{paddingTop: 25, paddingBottom: 25}}>
                             <div style={{display: 'flex', justifyContent: 'center'}}>
                                 <Subhead style={{marginBottom: 20, color: 'var(--dynamic_gray)', fontSize: 14}}>

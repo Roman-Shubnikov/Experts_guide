@@ -1,30 +1,35 @@
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { viewsActions } from "../store/main";
 import * as Sentry from "@sentry/react";
 import bridge from '@vkontakte/vk-bridge'; // VK Brige
-import { errorAlertCreator } from "../functions/tools";
+import { errorAlertCreator, setActiveModalCreator } from "../functions/tools";
 
 const queryString = require('query-string');
 
 
 export const useNavigation = () => {
     const dispatch = useDispatch();
-    const { activeStory, historyPanels, snackbar, activePanel } = useSelector((state) => state.views)
+    const { activeStory, historyPanels, snackbar, activePanel, historyModals, currentModal } = useSelector((state) => state.views)
     const setActiveStory = useCallback((story) => dispatch(viewsActions.setActiveStory(story)), [dispatch]);
     const setActiveScene = useCallback((story, panel) => dispatch(viewsActions.setActiveScene(story, panel)), [dispatch]);
     const setPopout = useCallback((popout) => dispatch(viewsActions.setPopout(popout)), [dispatch]);
     const setHistoryPanels = useCallback((history) => dispatch(viewsActions.setHistory(history)), [dispatch]);
     const setSnackbar = useCallback((payload) => dispatch(viewsActions.setSnackbar(payload)), [dispatch])
     
-    const hash = queryString.parse(window.location.hash);
+    const setCurrentModal = useCallback((payload) => dispatch(viewsActions.setCurrentModal(payload)), [dispatch])
+    const setModalHistory = useCallback((payload) => dispatch(viewsActions.setHistoryModals(payload)), [dispatch])
+
+    const hash = useMemo(() => queryString.parse(window.location.hash), []);
     const setHash = (hash) => {
       if(window.location.hash !== ''){
         bridge.send("VKWebAppSetLocation", {"location": hash});
         window.location.hash = hash
       }
     }
-
+    const setActiveModal = (activeModal) => {
+      setActiveModalCreator(setCurrentModal, setModalHistory, historyModals, activeModal)
+    }
     const onEpicTap = (e) => {
       goPanel(e.currentTarget.dataset.story, e.currentTarget.dataset.story);
     }
@@ -92,5 +97,10 @@ export const useNavigation = () => {
         snackbar,
         hash,
         onEpicTap,
+        setActiveModal,
+        currentModal,
+        setCurrentModal,
+        setModalHistory,
+        historyModals,
     }
 }

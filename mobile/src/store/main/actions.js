@@ -23,6 +23,8 @@ export const viewsActions = {
     setHistory: (payload) => ({ type: viewsActionTypes.SET_HISTORY, payload}),
     setNeedEpic: (payload) => ({ type: viewsActionTypes.SET_NEED_EPIC, payload}),
     setSnackbar: (payload) => ({ type: viewsActionTypes.SET_SNACKBAR, payload}),
+    setCurrentModal: (payload) => ({ type: viewsActionTypes.SET_CURRENT_MODAL, payload}),
+    setHistoryModals: (payload) => ({ type: viewsActionTypes.SET_MODAL_HISTORY, payload}),
 }
 
 export const faqActions = {

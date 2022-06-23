@@ -20,7 +20,6 @@ export const Posts = props => {
     const { goDisconnect } = props.navigation;
     const getPosts = () => {
         fetch(API_URL + 'method=posts.get&' + window.location.search.replace('?', ''))
-            .then(data => {console.log(JSON.stringify(data)); return data})
 			.then(data => data.json())
 			.then(data => {
 				setPosts(data.response)

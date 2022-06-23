@@ -12,11 +12,11 @@ import {
     Icon28EditOutline,
     Icon28ArticleOutline,
 
+
 } from '@vkontakte/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { faqActions } from '../../store/main';
 import { API_URL, PERMISSIONS } from '../../config';
-
 
 export default props => {
     const dispatch = useDispatch();

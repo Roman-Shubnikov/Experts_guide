@@ -89,7 +89,7 @@ export const prepareQueryString = (q) => {
         if(/vk\.com\/.+/.test(user_string)){
             //На самом деле точка после \w нужна
             // eslint-disable-next-line
-            user_string = user_string.match(/(?<=vk\.com\/)[\w\.]+/ui)[0];
+            user_string = user_string.match(/.*(vk\.com\/)([\w\.]+)/ui)[2];
         }
     }
     return user_string;

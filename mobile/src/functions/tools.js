@@ -82,6 +82,20 @@ export const errorAlertCreator = (setPopout, error = null, action = null) => {
         />
     )
 }
+export const setActiveModalCreator = (setModal, setModalHistory, modalHistory, activeModal) => {
+    activeModal = activeModal || null;
+    let modalHistoryF = modalHistory ? [...modalHistory] : [];
+
+    if (activeModal === null) {
+        modalHistoryF = [];
+    } else if (modalHistoryF.indexOf(activeModal) !== -1) {
+        modalHistoryF = modalHistoryF.splice(0, modalHistoryF.indexOf(activeModal) + 1);
+    } else {
+        modalHistoryF.push(activeModal);
+    }
+    setModal(activeModal);
+    setModalHistory(modalHistoryF)
+}
 
 export const prepareQueryString = (q) => {
     let user_string = q;
@@ -89,7 +103,7 @@ export const prepareQueryString = (q) => {
         if(/vk\.com\/.+/.test(user_string)){
             //На самом деле точка после \w нужна
             // eslint-disable-next-line
-            user_string = user_string.match(/(?<=vk\.com\/)[\w\.]+/ui)[0];
+            user_string = user_string.match(/.*(vk\.com\/)([\w\.]+)/ui)[2];
         }
     }
     return user_string;

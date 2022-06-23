@@ -15,11 +15,13 @@ import {
 
 
 } from '@vkontakte/vkui';
+import { Icon28SearchOutline } from '@vkontakte/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { API_URL, GENERAL_LINKS} from '../../config';
 import { faqActions } from '../../store/main';
 import { SadlyEmoji } from '../../img/icons';
 import QuestionList from './questionsList';
+
 let lastTypingTime;
 let typing = false;
 let searchval = '';
@@ -81,6 +83,7 @@ export const Help = props => {
             return searchResult.map((res, i) => 
             <SimpleCell
             expandable
+            before={<Icon28SearchOutline />}
             multiline
             key={res.id}
             onClick={() => goQuestion(res.id)}
