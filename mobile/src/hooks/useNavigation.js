@@ -78,12 +78,12 @@ export const useNavigation = () => {
     const showErrorAlert = useCallback((error = null, action = null) => {
         errorAlertCreator(setPopout, error, action)
       }, [setPopout])
-    const goDisconnect = (e=null) => {
+    const goDisconnect = useCallback((e=null) => {
         console.log(e)
         Sentry.captureException(e);
         dispatch(viewsActions.setGlobalError(e))
         goPanel('disconnect', 'disconnect', true, false);
-    }
+    }, [dispatch, goPanel])
     return {
         setActiveScene,
         setHash,

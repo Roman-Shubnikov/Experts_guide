@@ -6,7 +6,11 @@
 @import './animations.css';
 
 
-
+body {
+    --red: #FF3347;
+    --green: #4BB34B;
+    --blue: #3F8AE0;
+}
 div,p{
     -webkit-touch-callout: none; /* iOS Safari */
     -webkit-user-select: none;   /* Chrome/Safari/Opera */
@@ -43,10 +47,10 @@ a {
     margin-top: 10px;
 }
 .green {
-    color: #4BB34B;
+    color: var(--green);
 }
 .red {
-    color: #FF3347;
+    color: var(--red);
 }
 .subtext {
     color: var(--subtext);
@@ -55,14 +59,17 @@ a {
     color: #A5ABB6;
 }
 .blue_progressbar .vkuiProgress__in {
-    background: #3F8AE0;
+    background: var(--blue);
 }
 .green_progressbar .vkuiProgress__in {
-    background: #4BB34B;
+    background: var(--green);
+}
+.red_progressbar .vkuiProgress__in {
+    background: var(--red);
 }
 .progressbar_big_height {
-    border-radius: 2px;
-    height: 4px;
+    border-radius: 5px;
+    height: 20px;
 }
 .vkuiProgress__in{
     transition: all .7s ease-out;
@@ -223,4 +230,15 @@ a {
 }
 .search-header .vkuiPanelHeader__right { 
     min-width: 0;
+}
+.progress .vkuiCounter__in {
+    font-size: 11px;
+}
+.no-icon,
+.no-padding {
+    padding-left: 0;
+    padding-right: 0;
+}
+.no-icon .vkuiMiniInfoCell__icon {
+    margin-right: 0;
 }

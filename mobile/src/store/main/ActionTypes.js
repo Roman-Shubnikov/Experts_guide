@@ -5,6 +5,7 @@ export const accountActionTypes = {
     SET_ACTIVE_TOPIC: 'ACCOUNT.SET_ACTIVE_TOPIC',
     SET_TOKEN_SEARCH: 'ACCOUNT.SET_TOKEN_SEARCH',
     SET_FRIENDS_TOPICS: 'ACCOUNT.SET_FRIENDS_TOPICS',
+    SET_STATISTIC: 'ACCOUNT.SET_STATISTIC',
     
 }
 export const viewsActionTypes = {

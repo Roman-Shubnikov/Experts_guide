@@ -79,7 +79,8 @@ class Users {
 				vk_id,
 				registration,
 				last_activity,
-				permissions
+				permissions,
+				is_active
 				FROM users
 				WHERE users.vk_id=?";
 		$res = $this->Connect->db_get( $sql, [$user_id] )[0];
@@ -112,6 +113,7 @@ class Users {
 				],
 				'registration' => (int) $data['registration'],
 				'permissions' => (int) $data['permissions'],
+				'is_active' => (int) $data['is_active'],
 				
 			];	
 		}

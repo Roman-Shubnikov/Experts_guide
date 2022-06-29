@@ -15,7 +15,10 @@ const initalStateAccount = {
     activeTopic: 'art',
     tokenSearch: '',
     friends_topics: {},
+    statistic_user: null,
+
 }
+
 const initalStateViews = {
     scheme: "bright_light",
     default_scheme: "bright_light",
@@ -62,6 +65,8 @@ export const accountReducer = (state = initalStateAccount, action) => {
             return { ...state, tokenSearch: action.payload}
         case accountActionTypes.SET_FRIENDS_TOPICS:
             return { ...state, friends_topics: action.payload}
+        case accountActionTypes.SET_STATISTIC:
+            return { ...state, statistic_user: action.payload}
         default: 
             return state
 

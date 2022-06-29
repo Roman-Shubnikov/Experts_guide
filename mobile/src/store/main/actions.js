@@ -12,6 +12,7 @@ export const accountActions = {
     setActiveTopic: (payload) => ({type: accountActionTypes.SET_ACTIVE_TOPIC, payload}),
     setTokenSearch: (payload) => ({type: accountActionTypes.SET_TOKEN_SEARCH, payload}),
     setTopicsFriends: (payload) => ({type: accountActionTypes.SET_FRIENDS_TOPICS, payload}),
+    setStatistic: (payload) => ({ type: accountActionTypes.SET_STATISTIC, payload}),
 }
 
 export const viewsActions = {
@@ -25,6 +26,7 @@ export const viewsActions = {
     setSnackbar: (payload) => ({ type: viewsActionTypes.SET_SNACKBAR, payload}),
     setCurrentModal: (payload) => ({ type: viewsActionTypes.SET_CURRENT_MODAL, payload}),
     setHistoryModals: (payload) => ({ type: viewsActionTypes.SET_MODAL_HISTORY, payload}),
+    
 }
 
 export const faqActions = {

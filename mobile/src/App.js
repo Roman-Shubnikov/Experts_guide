@@ -17,17 +17,30 @@ import {
 	Epic,
 	Tabbar,
 	CellButton,
-	FixedLayout,
 	ModalCard,
 	ModalRoot,
 	Button,
+	ModalPage,
+	Group,
+	SimpleCell,
+	Spacing,
+	Separator,
+	Div,
+	Subhead,
+	Progress,
+	Card,
+
+
 
 } from '@vkontakte/vkui';
 import {
 	Icon28BrainOutline,
 	Icon56NewsfeedOutline,
+	Icon28ListCheckOutline,
+	Icon28StatisticsOutline,
+	Icon28ArchiveOutline,
 
-} from '@vkontakte/icons'
+} from '@vkontakte/icons';
 import '@vkontakte/vkui/dist/vkui.css';
 import "@vkontakte/vkui/dist/unstable.css";
 import './styles/styles.css';
@@ -54,6 +67,7 @@ import { enumerate, errorAlertCreator, getKeyByValue } from './functions/tools';
 import { useDispatch, useSelector } from 'react-redux';
 import { accountActions, storActions, viewsActions } from './store/main';
 import { useNavigation } from './hooks';
+import { ModalHeader } from './components';
 const scheme_params = {
 
 	bright_light: { "status_bar_style": "dark", "action_bar_color": "#FFFFFF", 'navigation_bar_color': "#FFFFFF" },
@@ -92,7 +106,10 @@ const App = () => {
 	const isDesktop = useRef();
 	const hasHeader = useRef()
 
-	
+	const processCount = (count) => {
+        if(count === 0) return 'нет записей';
+        return count;
+    }
 	const goDisconnect = (e) => {
 		console.log(e)
 		goPanel('disconnect', 'disconnect');
@@ -225,7 +242,6 @@ const App = () => {
 		bridge.send("VKWebAppGetAuthToken", {"app_id": APP_ID, "scope": ""})
 			.then(token => {
 				setTokenSearch(token.access_token);
-				console.log(token);
 				fetchData(token.access_token);
 				
 			})
@@ -335,7 +351,7 @@ const App = () => {
 		<View id='profile' activePanel={activePanel} key='profile'>
 			<Profile 
 			id='profile'
-			userInfo={userInfo.expert_info}
+			userInfo={userInfo}
 			vkInfoUser={vkInfoUser}
 			goPanel={goPanel}
 			achievements={achievements} />
@@ -393,6 +409,83 @@ const App = () => {
 			  " " + enumerate(userInfo.expert_info?.actions_current_week, ['запись', 'записи', 'записей'])}
 			actions={<Button mode='primary' stretched size='l' onClick={modalClose}>Понятно</Button>}>
 		  </ModalCard>
+		  <ModalPage
+		  id='statistic_user'
+		  header={
+			<ModalHeader
+			onClick={modalClose}>
+				Подробная статистика
+			</ModalHeader>
+		  }>
+			<Group>
+				<Div style={{paddingTop: 0}}>
+                    <Card onClick={() => setActiveModal('answers')}>
+                        <Div style={{paddingTop: 25, paddingBottom: 25}}>
+                            <div style={{display: 'flex', justifyContent: 'center'}}>
+                                <Subhead style={{marginBottom: 20, color: 'var(--dynamic_gray)', fontSize: 14}}>
+                                    Вы оценили {userInfo.expert_info?.actions_current_week} {enumerate(userInfo.expert_info?.actions_current_week, ['публикацию', 'публикации', 'публикаций'])} за неделю
+                                </Subhead>
+                            </div>
+                            
+                            <Progress value={Math.min(100, userInfo.expert_info?.actions_current_week/ACTIONS_NORM * 100)} 
+                            className={(userInfo.expert_info?.actions_current_week/ACTIONS_NORM * 100 >= 100 ? ' green_progressbar' : '')} />
+                        </Div>
+                        
+                    </Card>
+                </Div>
+				<SimpleCell
+                disabled
+                after={processCount(userInfo.expert_info?.actions_current_day)}
+                before={<Icon28StatisticsOutline />}
+                >
+                    Сегодня
+                </SimpleCell>
+                <Spacing separator={true} />
+                <SimpleCell
+                disabled
+                after={processCount(userInfo.expert_info?.actions_current_week)}
+                before={<Icon28ListCheckOutline />}
+                >
+                    Неделю
+                </SimpleCell>
+                <SimpleCell
+                disabled
+                after={processCount(userInfo.expert_info?.actions_previous_week)}
+                before={<Icon28ListCheckOutline />}
+                >
+                    Прошлая неделя
+                </SimpleCell>
+                <SimpleCell
+                disabled
+                after={processCount(userInfo.expert_info?.actions_current_month)}
+                before={<Icon28ListCheckOutline />}
+                >
+                    Месяц
+                </SimpleCell>
+                <Spacing>
+                    <Separator />
+                </Spacing>
+                <SimpleCell
+                disabled
+                after={processCount(userInfo.expert_info?.actions_count)}
+                before={<Icon28ArchiveOutline />}
+                >
+                    За все время
+                </SimpleCell>
+				<Div>
+					<Button
+					stretched
+					href='https://vk.com/write-202714962'
+					target="_blank" rel="noopener noreferrer"
+					size='l'
+					before={<Icon28StatisticsOutline />}>
+						Активность за неделю
+					</Button>
+				</Div>
+				
+			</Group>
+
+		  </ModalPage>
 		</ModalRoot>
 	  )
 	return (
@@ -414,6 +507,7 @@ const App = () => {
 						tabbar={need_epic && 
 							<Tabbar>
 								{isExpert && <CellButton
+								hasActive={false}
 								before={<Icon28BrainOutline />}
 								onClick={() => bridge.send(
 									'VKWebAppOpenApp',
@@ -428,19 +522,6 @@ const App = () => {
 						}>
 							
 							{Views}
-							<FixedLayout>
-							{isExpert && <CellButton
-								before={<Icon28BrainOutline />}
-								onClick={() => bridge.send(
-									'VKWebAppOpenApp',
-									{
-										app_id: 7171491,
-										location: ''
-									}
-								)}>
-									Моя карточка эксперта
-								</CellButton>}
-							</FixedLayout>
 						</Epic>
 						</SkeletonTheme>
 					</SplitCol>

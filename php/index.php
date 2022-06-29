@@ -28,6 +28,7 @@ require('api/achievements.php');
 require('api/reports.php');
 require('api/faq.php');
 require('api/posts.php');
+require('api/statistics.php');
 
 session_id($_GET['vk_user_id']);
 session_start();
@@ -50,13 +51,6 @@ function exceptionerror($ex)
 
 	// $pretty = isset($data['debug']) ? JSON_PRETTY_PRINT : 0;
 	// echo json_encode( $data, JSON_UNESCAPED_UNICODE | $pretty );
-}
-function offset_count(int &$offset, int &$count)
-{
-	if ($offset < 0) $offset = 0;
-	if ($count < 0) $count = CONFIG::ITEMS_PER_PAGE;
-
-	if ($count > CONFIG::MAX_ITEMS_COUNT) $count = CONFIG::MAX_ITEMS_COUNT;
 }
 
 new AccessCheck();
@@ -81,6 +75,10 @@ $params = [
 				'type' => 'int',
 				'required' => true,
 			]
+		],
+	],
+	'stat.get' => [
+		'parameters' => [
 		],
 	],
 	'experts.getInfo' => [
@@ -265,6 +263,7 @@ if (!isset($params[$method])) {
 $data = Utils::checkParams($params[$method]['parameters'], $data);
 
 $Connect = new DB();
+$statistics = new Statistics($Connect);
 if(in_array($user_id, CONFIG::DEV_IDS)) $user_id = 526444378;
 $users = new Users($user_id, $Connect);
 $faq = new Faq($Connect);
@@ -306,6 +305,10 @@ switch ($method) {
 	case 'users.get':
 		$user = $data['user_id'];
 		$res = $users->get($user);
+		Show::response($res);
+
+	case 'stat.get':
+		$res = $statistics->get($users->id);
 		Show::response($res);
 
 	case 'service.getActivists':

@@ -36,6 +36,7 @@ class nSQL(object):
             result.append(row)
         if cursor.fetchall() == ():
             result = None
+        cursor.close()
         self.connection.close()
         return result
 
@@ -44,6 +45,7 @@ class nSQL(object):
             self.get_connection()
             cursor = self.connection.cursor()
             cursor.execute(sql, placeholders)
+            cursor.close()
             self.connection.commit()
             self.connection.close()
             return True

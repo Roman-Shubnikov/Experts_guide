@@ -14,6 +14,8 @@ from base64 import b64encode
 from collections import OrderedDict
 from flask import request, Flask
 from config import *
+import datetime
+import calendar
 ## pip install requests vk_api flask
 
 
@@ -22,6 +24,11 @@ sql = nSQL(host, login, password, db)
 class Global:
 	pass
 exp = Global()
+
+def get_points_day(t):
+    dt = t.replace(second=0, microsecond=0, minute=0, hour=0)
+    ts = int(dt.timestamp())
+    return str(ts)
 
 def is_valid(*, query: dict, secret: str):
     vk_subset = OrderedDict(sorted(x for x in query.items() if x[0][:3] == "vk_"))
@@ -68,6 +75,19 @@ def get_topics():
 def update_experts():
 	while True:
 		# try:
+			print('Обновляю статистику')
+			curr_date = datetime.date.today()
+			curr_weekday = curr_date.weekday()
+			curr_day = curr_date.day
+			curr_time = time.time()
+			user_statistic_exist_day_list = []
+			current_statistic = sql.db_get("SELECT user_id FROM statistic_experts WHERE week_day=%s and day=%s", (curr_weekday, curr_day))
+			
+			if current_statistic is not None:
+				print(f"Текущая статистика на день (50/{len(current_statistic)})", current_statistic [: 50])
+				for expert in current_statistic:
+					user_statistic_exist_day_list.append(expert['user_id'])
+
 			exp_token = get_expert_token(user_token)
 			get_topics()
 			exp.experts_ = {}
@@ -78,13 +98,26 @@ def update_experts():
 			for topic in exp.topics_count:
 				sql.query("UPDATE topics SET count=%s WHERE id=%s", (exp.topics_count[topic], topic))
 			st = 0
+			sql.query("DELETE FROM statistic_experts WHERE day=%s", (curr_day))
+			insert_statistic = []
+			query_statistic = "INSERT INTO statistic_experts (user_id,actions_day,week_day,day,time) VALUES (%s,%s,%s,%s,%s)"
 			for i in ["current_month", "current_week", "current_day", "previous_week"]:
 				data = get_chart(exp_token, i)
 				for d in data:
-					if d["user_id"] not in exp.experts_:
-						exp.experts_[d["user_id"]] = {"user_id": d["user_id"], "actions_count": -1, "position": -1, "topic_name": d["topic_name"]}
+					user_id = d["user_id"]
+					if user_id not in exp.experts_:
+						exp.experts_[user_id] = {"user_id": user_id, "actions_count": -1, "position": -1, "topic_name": d["topic_name"]}
 						st += 1
-					exp.experts_[d["user_id"]]["actions_" + i] = d["actions_count"]
+					exp.experts_[user_id]["actions_" + i] = d["actions_count"]
+					if i == 'current_day':
+						insert_statistic.append((user_id, d["actions_count"], curr_weekday, curr_day, curr_time))
+						print(f"Записал для {user_id} новую статистику {d['actions_count']}")
+			sql.get_connection()
+			cursor = sql.connection.cursor()
+			cursor.executemany(query_statistic, insert_statistic)
+			cursor.close()
+			sql.connection.commit()
+			sql.connection.close()
 			st2 = 0
 			for i in exp.experts_.keys():
 				for j in ["current_month", "current_week", "current_day", "previous_week"]:
