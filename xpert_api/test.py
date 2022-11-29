@@ -1,28 +1,33 @@
-import datetime
-import calendar
+from sql import nSQL
+
+sql = nSQL('89.223.126.48', 'test', '123', 'test')
+
+a = sql.db_get("SELECT id, price FROM users")
+print(a)
+# id = 2
+# b = sql.db_get("SELECT * FROM users WHERE id=%s", (id))
+# print(b)
+
+# c = sql.query("DELETE FROM users WHERE id=%s", (id))
+# print(c)
 
 
-def get_points_day(t:datetime.datetime):
-    dt_start = t.replace(second=0, microsecond=0, minute=0, hour=0)
-    dt_end = t.replace(second=59, microsecond=99, minute=59, hour=23)
-    ts_start = int(dt_start.timestamp())
-    ts_end = int(dt_end.timestamp())
-    return [ts_start, ts_end]
 
-c = calendar.Calendar()
-curr_date = datetime.date.today()
-curr_month = c.monthdatescalendar(curr_date.year, curr_date.month)
-curr_week_obj = []
-for i, week in enumerate(curr_month):
-    try:
-        week.index(curr_date)
-    except ValueError:
-        continue
-    curr_week_obj = [i, week]
-    break
-curr_week = curr_week_obj[1]
-print(curr_date.day)
-# print(get_points_day(datetime.datetime.now()))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

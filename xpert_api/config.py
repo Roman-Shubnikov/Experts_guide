@@ -1,4 +1,4 @@
-user_token = '1639de7df03c138e03e804d7a553ffe3d980350573275b823328eba5ee9eca7e00e0bc7f7490bca18d0fa' # токен пользователя в экспертах
+user_token = 'vk1.a.P2fU_2vbTuKI5Zbo4Vkit2pSa_-kEtZQLqW15Uh4MpJ0bGo8JbpTUxiwXgiDNVI_A90doBJ_6Xw76lK9Zi6XyVKku4iQHFx_rYlLFGKIH5ycqr_pPLjYNfoINRgLpqwtrOmpz-MD_1jNCAC54_mh2HUbtg4KSy-SiVolnlETIen2oODr6ejaXqmaAT3OIzcD' # токен пользователя в экспертах
 service_token = user_token # токен для запросов к вк апи
 app_id = 7409818 # id приложения
 path_api = '/xpert_api'
@@ -8,4 +8,4 @@ login = 'sergey'
 password = '1experptgiude'
 db = 'experts_guide'
 
-#gunicorn --bind 0.0.0.0:4000 wsgi:app
+#gunicorn --bind 0.0.0.0:4001 wsgi:app
